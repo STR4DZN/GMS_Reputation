@@ -1,0 +1,60 @@
+<article
+  class="gms-reputation-player-card {{#each classes}}{{this}} {{/each}}"
+  data-player-card
+  data-gms-visual-generation="3"
+  data-gms-v2-surface="social-plate"
+  data-subject-id="{{subjectId}}"
+  data-profile-id="{{profileId}}"
+  data-reading-order="portrait identity relationship hearts score special"
+  data-secondary-disclosure="{{disclosure.available}}"
+  data-relation-band="{{relationship.bandId}}"
+  data-relation-polarity="{{relationship.polarity}}"
+  data-detail-enabled="{{detailEnabled}}"
+  {{#if detailEnabled}}tabindex="0" aria-label="{{detailAccessibleLabel}}"{{/if}}
+>
+  <span class="gms-reputation-player-card__frame" aria-hidden="true"></span>
+  <span class="gms-reputation-player-card__trace" aria-hidden="true"></span>
+  <span class="gms-reputation-player-card__vector-mark" aria-hidden="true"></span>
+  <span class="gms-reputation-player-card__serial" aria-hidden="true">REL</span>
+
+  <div class="gms-reputation-player-card__portrait" data-read-stage="portrait" data-gms-v2-role="optical-well">
+    {{> "modules/gms-reputation/templates/partials/portrait-frame.hbs" portrait}}
+  </div>
+
+  <header class="gms-reputation-player-card__heading">
+    <div class="gms-reputation-player-card__identity" data-read-stage="identity">
+      {{> "modules/gms-reputation/templates/partials/identity.hbs" identity}}
+    </div>
+    <span
+      class="gms-reputation-player-card__relation"
+      data-read-stage="relationship"
+      data-relation-band="{{relationship.bandId}}"
+      data-relation-polarity="{{relationship.polarity}}"
+    >{{relationship.label}}</span>
+  </header>
+
+  <div class="gms-reputation-player-card__hearts" data-read-stage="hearts" data-gms-v2-role="reputation-track">
+    {{> "modules/gms-reputation/templates/partials/heart-track.hbs" hearts}}
+  </div>
+
+  <aside class="gms-reputation-player-card__score" data-read-stage="score" aria-label="{{score.accessibleLabel}}" data-gms-v2-role="score-well">
+    <strong>{{score.text}}</strong>
+    <small>/ {{score.limit}}</small>
+  </aside>
+
+  {{#if special.active}}
+    <aside class="gms-reputation-player-card__special" data-read-stage="special" data-special-state="{{special.state}}" data-gms-v2-role="special-protocol">
+      <span class="gms-reputation-player-card__special-sigil" aria-hidden="true"><img src="{{special.sigilAsset}}" alt="" draggable="false"></span>
+      <strong>{{special.label}}</strong>
+    </aside>
+  {{/if}}
+
+  {{#if disclosure.available}}
+    <details class="gms-reputation-player-card__disclosure">
+      <summary>DETALHES</summary>
+      <div class="gms-reputation-player-card__secondary">
+        <p>{{disclosure.descriptionPreview}}</p>
+      </div>
+    </details>
+  {{/if}}
+</article>

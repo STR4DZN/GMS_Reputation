@@ -1,0 +1,25 @@
+<section class="gms-reputation-portrait-editor" data-portrait-editor data-portrait-kind="{{kind}}">
+  <div class="gms-reputation-portrait-editor__preview" data-portrait-preview tabindex="0" aria-label="Pré-visualização e posicionamento do retrato">
+    {{> "modules/gms-reputation/templates/partials/portrait-frame.hbs"}}
+  </div>
+
+  <div class="gms-reputation-portrait-editor__source">
+    <input type="hidden" name="portraitSrc" value="{{portrait.src}}">
+    <label>
+      <span>LINK DIRETO // IMAGEM OU GIF</span>
+      <input type="url" name="portraitUrl" value="{{remoteUrl}}" placeholder="https://site.com/imagem.gif" autocomplete="off" spellcheck="false">
+    </label>
+    <button type="button" data-action="usePortraitUrl">USAR LINK</button>
+    <button type="button" data-action="pickPortrait">ESCOLHER NO FOUNDRY</button>
+    <button type="button" data-action="removePortrait">REMOVER</button>
+  </div>
+
+  <div class="gms-reputation-portrait-editor__calibration">
+    <label><span>ZOOM</span><output>{{portrait.zoom}}%</output><input type="range" name="portraitZoom" min="50" max="300" step="1" value="{{portrait.zoom}}"></label>
+    <label><span>POSIÇÃO X</span><output>{{portrait.x}}%</output><input type="range" name="portraitX" min="0" max="100" step="1" value="{{portrait.x}}"></label>
+    <label><span>POSIÇÃO Y</span><output>{{portrait.y}}%</output><input type="range" name="portraitY" min="0" max="100" step="1" value="{{portrait.y}}"></label>
+    <button type="button" data-action="resetPortraitFrame">RESETAR ENQUADRAMENTO</button>
+  </div>
+
+  <p class="gms-reputation-portrait-editor__hint">Arraste a prévia para reposicionar. Setas movem 1%; Shift + seta move 5%.</p>
+</section>

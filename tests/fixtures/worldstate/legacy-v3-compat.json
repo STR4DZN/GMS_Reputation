@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 3,
+  "revision": 9,
+  "groups": {
+    "legacy-group": { "id": "legacy-group", "name": "Grupo legado", "description": "", "active": true, "archived": false, "sortOrder": 1, "metadata": { "createdAt": 1760000030000, "updatedAt": 1760000030000 } }
+  },
+  "subjects": {
+    "legacy-sub": { "id": "legacy-sub", "realName": "Legado", "alias": "Legado", "groupId": "legacy-group", "description": "", "portrait": { "src": "", "zoom": 100, "x": 50, "y": 50 }, "active": true, "archived": false, "sortOrder": 1, "metadata": { "legacyNames": [], "tags": [], "createdAt": 1760000030000, "updatedAt": 1760000030000 } }
+  },
+  "profiles": {
+    "legacy-profile": {
+      "id": "legacy-profile", "name": "Perfil legado", "groupId": null,
+      "source": { "journalUuid": null, "pageId": null, "pageUuid": null },
+      "focal": { "name": "Perfil legado", "portrait": { "src": "", "zoom": 100, "x": 50, "y": 50 }, "description": "" },
+      "relationships": { "legacy-sub": { "subjectId": "legacy-sub", "score": 3, "communion": false, "bond": false, "note": "", "revision": 1, "updatedAt": 1760000031000, "updatedBy": "gm-golden" } },
+      "active": true, "archived": false, "sortOrder": 1,
+      "metadata": { "createdAt": 1760000030000, "updatedAt": 1760000031000 }
+    }
+  },
+  "history": [],
+  "migration": { "legacyMacroImported": false },
+  "metadata": { "moduleVersion": "legacy", "createdAt": 1760000030000, "updatedAt": 1760000031000, "createdBy": "gm-golden", "updatedBy": "gm-golden" }
+}

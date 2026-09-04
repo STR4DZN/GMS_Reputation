@@ -1,0 +1,75 @@
+<section class="gms-subject-detail gms-v2-tech-texture" data-subject-detail-root data-gms-visual-generation="3" data-gms-build="59.10" data-profile-id="{{profileId}}" data-subject-id="{{subjectId}}" data-relation-band="{{relationship.bandId}}" data-relation-polarity="{{relationship.polarity}}">
+  {{#if found}}
+    <header class="gms-subject-detail__header" data-gms-v2-role="detail-masthead">
+      <span class="gms-subject-detail__header-notch" aria-hidden="true"></span>
+      <div>
+        <small>{{profileName}}</small>
+        <strong>DETALHES DA RELAÇÃO</strong>
+      </div>
+      <button type="button" data-subject-detail-close aria-label="Fechar detalhes"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+    </header>
+
+    <div class="gms-subject-detail__hero" data-gms-v2-role="identity-dossier">
+      <span class="gms-subject-detail__hero-frame" aria-hidden="true"></span>
+      <div class="gms-subject-detail__portrait" data-gms-v2-role="detail-optical-well">
+        {{> "modules/gms-reputation/templates/partials/portrait-frame.hbs" portrait}}
+      </div>
+      <div class="gms-subject-detail__identity">
+        {{> "modules/gms-reputation/templates/partials/identity.hbs" identity}}
+        {{#if identity.hasDistinctRealName}}<small class="gms-subject-detail__real-name">NOME REAL // {{identity.realName}}</small>{{/if}}
+        <span class="gms-subject-detail__relation" data-polarity="{{relationship.polarity}}">{{relationship.label}}</span>
+        <div class="gms-subject-detail__meter" data-gms-v2-role="detail-reputation-track">
+          {{> "modules/gms-reputation/templates/partials/heart-track.hbs" hearts}}
+        </div>
+      </div>
+      <aside class="gms-subject-detail__score" aria-label="{{score.accessibleLabel}}" data-gms-v2-role="detail-score-well">
+        <strong>{{score.text}}</strong><small>/ {{score.limit}}</small>
+      </aside>
+      {{#if special.active}}
+        <aside class="gms-subject-detail__special" data-special-state="{{special.state}}" data-gms-v2-role="detail-special-protocol">
+          <span class="gms-subject-detail__special-sigil" aria-hidden="true"><img src="{{special.sigilAsset}}" alt=""></span>
+          <strong>{{special.label}}</strong>
+        </aside>
+      {{/if}}
+    </div>
+
+    <div class="gms-subject-detail__body" data-gms-v2-role="detail-records">
+      <section class="gms-subject-detail__section gms-subject-detail__biography" data-gms-v2-section="biography">
+        <h3>Biografia</h3>
+        {{#if hasDescription}}<p>{{description}}</p>{{else}}<p class="is-empty">Nenhuma biografia registrada.</p>{{/if}}
+      </section>
+
+      {{#if hasTags}}
+        <section class="gms-subject-detail__section" data-gms-v2-section="tags">
+          <h3>Marcadores</h3>
+          <div class="gms-subject-detail__tags">{{#each tags}}<span>{{this}}</span>{{/each}}</div>
+        </section>
+      {{/if}}
+
+      <section class="gms-subject-detail__section gms-subject-detail__history" data-gms-v2-section="history">
+        <h3>Histórico</h3>
+        {{#if hasHistory}}
+          <div class="gms-subject-detail__history-list">
+            {{#each history}}
+              <article>
+                <time>{{timestampText}}</time>
+                <strong>{{typeLabel}} // {{actorLabel}}</strong>
+                {{#if hasChanges}}<p>{{#each changes}}{{label}}: {{before}} → {{after}}{{#unless @last}} · {{/unless}}{{/each}}</p>{{/if}}
+                {{#if reason}}<p>{{reason}}</p>{{/if}}
+              </article>
+            {{/each}}
+          </div>
+        {{else}}
+          <p class="is-empty">Nenhum evento de histórico foi registrado para esta relação.</p>
+        {{/if}}
+      </section>
+    </div>
+  {{else}}
+    <div class="gms-subject-detail__missing">
+      <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+      <strong>Relação não encontrada</strong>
+      <p>O perfil ou personagem solicitado não está mais disponível.</p>
+      <button type="button" data-subject-detail-close>Fechar</button>
+    </div>
+  {{/if}}
+</section>

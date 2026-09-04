@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 5,
+  "revision": 0,
+  "groups": {},
+  "subjects": {},
+  "profiles": {},
+  "history": [],
+  "migration": {
+    "legacyMacroImported": false,
+    "sourceUiVersion": null,
+    "importedAt": null,
+    "sourceJournalUuid": null
+  },
+  "metadata": {
+    "moduleVersion": "1.2.0-dev.59.10",
+    "createdAt": 1760000000000,
+    "updatedAt": 1760000000000,
+    "createdBy": "gm-golden",
+    "updatedBy": "gm-golden"
+  }
+}

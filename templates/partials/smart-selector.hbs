@@ -1,0 +1,58 @@
+<div
+  class="gms-smart-selector"
+  data-smart-selector="{{id}}"
+  data-value="{{value}}"
+  data-open="false"
+>
+  <button
+    type="button"
+    class="gms-smart-selector__trigger"
+    data-smart-selector-toggle
+    aria-haspopup="listbox"
+    aria-expanded="false"
+  >
+    <span class="gms-smart-selector__eyebrow">{{label}}</span>
+    {{#if current.image}}<img data-smart-selector-current-image src="{{current.image}}" alt="" aria-hidden="true">{{else}}<img data-smart-selector-current-image hidden alt="" aria-hidden="true">{{/if}}
+    <span class="gms-smart-selector__current">
+      <strong data-smart-selector-current-primary>{{current.primary}}</strong>
+      <small data-smart-selector-current-secondary {{#if current.secondary}}{{else}}hidden{{/if}}>{{current.secondary}}</small>
+    </span>
+    <em data-smart-selector-current-badge {{#if current.badge}}{{else}}hidden{{/if}}>{{current.badge}}</em>
+    <i class="fa-solid {{icon}} gms-smart-selector__chevron" aria-hidden="true"></i>
+  </button>
+
+  <div class="gms-smart-selector__popover" data-smart-selector-popover hidden>
+    <header>
+      <div><small>{{label}}</small><strong>{{count}} registros</strong></div>
+      {{#if searchable}}
+        <label class="gms-smart-selector__search">
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          <input type="search" data-smart-selector-search placeholder="{{searchPlaceholder}}" autocomplete="off" spellcheck="false">
+        </label>
+      {{/if}}
+    </header>
+    <div class="gms-smart-selector__options" role="listbox" aria-label="{{label}}">
+      {{#each items}}
+        <button
+          type="button"
+          role="option"
+          class="gms-smart-selector__option"
+          data-smart-selector-option="{{value}}"
+          data-smart-selector-search="{{searchText}}"
+          data-selected="{{selected}}"
+          aria-selected="{{selected}}"
+          {{#if disabled}}aria-disabled="true" disabled{{/if}}
+        >
+          {{#if image}}<img src="{{image}}" alt="" aria-hidden="true" loading="lazy" decoding="async">{{else}}<span class="gms-smart-selector__placeholder" aria-hidden="true"><i class="fa-solid fa-user"></i></span>{{/if}}
+          <span class="gms-smart-selector__option-copy">
+            <strong data-smart-selector-option-primary>{{primary}}</strong>
+            {{#if secondary}}<small data-smart-selector-option-secondary>{{secondary}}</small>{{else}}<small data-smart-selector-option-secondary hidden></small>{{/if}}
+          </span>
+          {{#if badge}}<em data-smart-selector-option-badge>{{badge}}</em>{{else}}<em data-smart-selector-option-badge hidden></em>{{/if}}
+          <i class="fa-solid fa-check gms-smart-selector__check" aria-hidden="true"></i>
+        </button>
+      {{/each}}
+    </div>
+    <p class="gms-smart-selector__empty" data-smart-selector-empty hidden>{{emptyText}}</p>
+  </div>
+</div>

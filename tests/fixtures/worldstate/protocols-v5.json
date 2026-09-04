@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 5,
+  "revision": 31,
+  "groups": {},
+  "subjects": {
+    "sub-bond": { "id": "sub-bond", "realName": "", "alias": "Vínculo", "description": "", "portrait": { "src": "", "zoom": 100, "x": 50, "y": 50 }, "active": true, "archived": false, "sortOrder": 10, "metadata": { "legacyNames": [], "tags": [], "createdAt": 1760000010000, "updatedAt": 1760000010000 } },
+    "sub-communion": { "id": "sub-communion", "realName": "", "alias": "Comunhão", "description": "", "portrait": { "src": "", "zoom": 100, "x": 50, "y": 50 }, "active": true, "archived": false, "sortOrder": 20, "metadata": { "legacyNames": [], "tags": [], "createdAt": 1760000010100, "updatedAt": 1760000010100 } },
+    "sub-dual": { "id": "sub-dual", "realName": "", "alias": "Duplo Sinc", "description": "", "portrait": { "src": "", "zoom": 100, "x": 50, "y": 50 }, "active": true, "archived": false, "sortOrder": 30, "metadata": { "legacyNames": [], "tags": [], "createdAt": 1760000010200, "updatedAt": 1760000010200 } }
+  },
+  "profiles": {
+    "pro-protocol": {
+      "id": "pro-protocol",
+      "name": "Protocolos",
+      "groupId": null,
+      "source": { "journalUuid": null, "pageId": null, "pageUuid": null },
+      "focal": { "name": "Protocolos", "portrait": { "src": "", "zoom": 100, "x": 50, "y": 50 }, "description": "" },
+      "relationships": {
+        "sub-bond": { "subjectId": "sub-bond", "score": 11, "communion": false, "bond": true, "note": "", "revision": 1, "updatedAt": 1760000011000, "updatedBy": "gm-golden" },
+        "sub-communion": { "subjectId": "sub-communion", "score": 11, "communion": true, "bond": false, "note": "", "revision": 1, "updatedAt": 1760000011100, "updatedBy": "gm-golden" },
+        "sub-dual": { "subjectId": "sub-dual", "score": 12, "communion": true, "bond": true, "note": "", "revision": 2, "updatedAt": 1760000011200, "updatedBy": "gm-golden" }
+      },
+      "subjectIds": ["sub-bond", "sub-communion", "sub-dual"],
+      "active": true,
+      "archived": false,
+      "sortOrder": 10,
+      "metadata": { "createdAt": 1760000010300, "updatedAt": 1760000011200 }
+    }
+  },
+  "history": [],
+  "migration": { "legacyMacroImported": false, "sourceUiVersion": null, "importedAt": null, "sourceJournalUuid": null },
+  "metadata": { "moduleVersion": "1.2.0-dev.59.10", "createdAt": 1760000010000, "updatedAt": 1760000011200, "createdBy": "gm-golden", "updatedBy": "gm-golden" }
+}

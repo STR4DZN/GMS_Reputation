@@ -1,0 +1,15 @@
+<span
+  class="gms-reputation-portrait gms-reputation-portrait--{{kind}} is-fit-{{fit}} {{#if hasImage}}has-image{{else}}is-empty{{/if}}"
+  data-portrait-kind="{{kind}}"
+  data-portrait-source="{{source.origin}}"
+  data-portrait-animated="{{source.animated}}"
+  role="img"
+  aria-label="{{label}}"
+  style="--gms-portrait-zoom:{{portraitScale}};--gms-portrait-x:{{portrait.x}}%;--gms-portrait-y:{{portrait.y}}%;"
+>
+  {{#if hasImage}}
+    <img class="gms-reputation-portrait__image" src="{{portrait.src}}" alt="" aria-hidden="true" draggable="false" decoding="async" loading="lazy">
+  {{else}}
+    <span class="gms-reputation-portrait__placeholder" aria-hidden="true"><i></i><b>SEM IMG</b></span>
+  {{/if}}
+</span>

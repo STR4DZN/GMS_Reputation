@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 5,
+  "revision": 14,
+  "groups": {
+    "grp-court": {
+      "id": "grp-court",
+      "name": "Corte",
+      "description": "Perfis da corte.",
+      "active": true,
+      "archived": false,
+      "sortOrder": 10,
+      "metadata": { "createdAt": 1760000000100, "updatedAt": 1760000000100 }
+    }
+  },
+  "subjects": {
+    "sub-alfa": {
+      "id": "sub-alfa",
+      "realName": "Alfa Real",
+      "alias": "Alfa",
+      "description": "Contato principal.",
+      "portrait": { "src": "portraits/alfa.webp", "zoom": 110, "x": 48, "y": 52 },
+      "active": true,
+      "archived": false,
+      "sortOrder": 10,
+      "metadata": { "legacyNames": [], "tags": ["corte"], "createdAt": 1760000000200, "updatedAt": 1760000000200 }
+    },
+    "sub-beta": {
+      "id": "sub-beta",
+      "realName": "Beta Real",
+      "alias": "Beta",
+      "description": "Contato secundário.",
+      "portrait": { "src": "https://example.test/beta.gif", "zoom": 100, "x": 50, "y": 50 },
+      "active": true,
+      "archived": false,
+      "sortOrder": 20,
+      "metadata": { "legacyNames": ["B"], "tags": [], "createdAt": 1760000000300, "updatedAt": 1760000000300 }
+    }
+  },
+  "profiles": {
+    "pro-main": {
+      "id": "pro-main",
+      "name": "Matriz Principal",
+      "groupId": "grp-court",
+      "source": { "journalUuid": null, "pageId": null, "pageUuid": null },
+      "focal": {
+        "name": "Focal Principal",
+        "portrait": { "src": "focal/main.webp", "zoom": 100, "x": 50, "y": 50 },
+        "description": "Descrição focal preservada."
+      },
+      "relationships": {
+        "sub-alfa": { "subjectId": "sub-alfa", "score": 5, "communion": false, "bond": false, "note": "Confiança crescente.", "revision": 3, "updatedAt": 1760000001000, "updatedBy": "gm-golden" },
+        "sub-beta": { "subjectId": "sub-beta", "score": -2, "communion": false, "bond": false, "note": "Cautela.", "revision": 2, "updatedAt": 1760000001100, "updatedBy": "gm-golden" }
+      },
+      "subjectIds": ["sub-alfa", "sub-beta"],
+      "active": true,
+      "archived": false,
+      "sortOrder": 10,
+      "metadata": { "createdAt": 1760000000400, "updatedAt": 1760000001100 }
+    }
+  },
+  "history": [
+    { "id": "hist-1", "timestamp": 1760000001000, "userId": "gm-golden", "profileId": "pro-main", "subjectId": "sub-alfa", "type": "relationship-update", "before": { "score": 4 }, "after": { "score": 5 }, "reason": "Sessão", "transactionId": "tx-1" }
+  ],
+  "migration": {
+    "legacyMacroImported": true,
+    "sourceUiVersion": "legacy",
+    "importedAt": 1759999999000,
+    "sourceJournalUuid": "JournalEntry.legacy"
+  },
+  "metadata": {
+    "moduleVersion": "1.2.0-dev.59.10",
+    "createdAt": 1760000000000,
+    "updatedAt": 1760000001100,
+    "createdBy": "gm-golden",
+    "updatedBy": "gm-golden"
+  }
+}

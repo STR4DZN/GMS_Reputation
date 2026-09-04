@@ -1,0 +1,13 @@
+<section class="gms-reputation-focal-profile" data-player-focal-profile data-gms-visual-generation="3" data-gms-v2-surface="focal-dossier" data-profile-id="{{profileId}}" aria-labelledby="gms-focal-name-{{profileId}}">
+  <span class="gms-reputation-focal-profile__corner" aria-hidden="true"></span>
+  <div class="gms-reputation-focal-profile__visual" data-gms-v2-role="focal-optical-well">
+    {{> "modules/gms-reputation/templates/partials/portrait-frame.hbs" portrait}}
+  </div>
+  <div class="gms-reputation-focal-profile__copy">
+    <small class="gms-reputation-focal-profile__eyebrow">PERFIL FOCAL</small>
+    <h2 id="gms-focal-name-{{profileId}}">{{name}}</h2>
+    {{#if hasDescription}}
+      <p>{{description}}</p>
+    {{/if}}
+  </div>
+</section>

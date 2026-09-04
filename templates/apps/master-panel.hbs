@@ -1,0 +1,424 @@
+<section class="gms-master-panel gms-v2-tech-texture" data-master-panel-root data-gms-visual-generation="3" data-gms-build="59.10" data-gms-v2-surface="command-deck" data-master-active-section="{{activeSection}}">
+  {{> "modules/gms-reputation/templates/partials/background-art.hbs"}}
+  {{#if authorized}}
+    <header class="gms-master-panel__header" data-gms-v2-role="command-masthead">
+      <span class="gms-master-panel__header-mark" aria-hidden="true"></span>
+      <div><small>GMS // CONTROLE DE REPUTAÇÃO</small><strong>MATRIZ SOCIAL</strong><span>Perfis, personagens e relações em um fluxo único de comando.</span></div>
+    </header>
+
+    <section class="gms-master-panel__selection-bus" aria-label="Seleção ativa">
+      <div class="gms-master-panel__selection-copy">
+        <small>CONTEXTO GLOBAL</small>
+        <strong>Defina a matriz e o personagem usados em todas as áreas.</strong>
+      </div>
+      <div class="gms-master-panel__selectors">
+        {{> "modules/gms-reputation/templates/partials/smart-selector.hbs" profileSelector}}
+        {{> "modules/gms-reputation/templates/partials/smart-selector.hbs" subjectSelector}}
+      </div>
+    </section>
+
+    <section class="gms-master-panel__savebar" data-gms-v2-role="save-bus" data-master-save-state="synced" data-pending-count="0" aria-live="polite">
+      <div class="gms-master-panel__save-state">
+        <i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i>
+        <span><strong data-master-save-label>Sincronizado</strong><small data-master-save-pending-count>sem alterações pendentes</small></span>
+      </div>
+      <div class="gms-master-panel__history-actions" aria-label="Desfazer e refazer">
+        <button type="button" data-master-undo {{#if undoRedo.canUndo}}{{else}}disabled{{/if}} title="{{#if undoRedo.undoTarget}}{{undoRedo.undoTarget.label}}{{else}}Nada para desfazer{{/if}}"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i><span>Desfazer</span></button>
+        <button type="button" data-master-redo {{#if undoRedo.canRedo}}{{else}}disabled{{/if}} title="{{#if undoRedo.redoTarget}}{{undoRedo.redoTarget.label}}{{else}}Nada para refazer{{/if}}"><i class="fa-solid fa-rotate-right" aria-hidden="true"></i><span>Refazer</span></button>
+      </div>
+      <div class="gms-master-panel__save-actions">
+        <button type="button" data-master-discard-pending disabled>Descartar</button>
+        <button type="button" data-master-save-now disabled><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i><span>Salvar mudanças</span></button>
+      </div>
+    </section>
+
+    <div class="gms-master-panel__layout">
+      <nav class="gms-master-panel__nav" data-gms-v2-role="command-rail" role="tablist" aria-label="Áreas do controle de reputação">
+        {{#each sections}}
+          <button type="button" role="tab" data-master-section-choice="{{id}}" data-active="{{active}}" aria-selected="{{active}}">
+            <i class="fa-solid {{icon}}" aria-hidden="true"></i><span class="gms-master-panel__nav-copy"><small>{{kicker}}</small><strong>{{label}}</strong></span>
+          </button>
+        {{/each}}
+      </nav>
+
+      <main class="gms-master-panel__content" data-gms-v2-role="command-workspace">
+        <section data-master-section-panel="subjects" data-gms-v2-bay="subject-registry-bay">
+          <header><small>ORGANIZAÇÃO CENTRAL</small><h2>Matrizes, perfis e grupos</h2></header>
+
+          <section class="gms-master-profile-hub" data-master-subject-admin>
+            <div class="gms-master-profile-hub__intro"><small>BIBLIOTECA DE PERSPECTIVAS</small><strong>Grupos organizam perfis; cada perfil define uma matriz de relações.</strong><p>Navegue pela lista compacta e abra os formulários somente ao criar algo.</p></div>
+            <div class="gms-master-profile-hub__actions">
+              <details class="gms-master-create-composer">
+                <summary><i class="fa-solid fa-folder-plus" aria-hidden="true"></i><span><small>ORGANIZAÇÃO</small><strong>Novo grupo</strong></span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary>
+                <div class="gms-master-create-composer__body">
+                  <label><span>Nome do grupo</span><input type="text" data-master-new-group-name maxlength="160" placeholder="Ex.: Nexus"></label>
+                  <button type="button" data-master-create-group><i class="fa-solid fa-plus" aria-hidden="true"></i><span>Criar grupo</span></button>
+                </div>
+              </details>
+              <details class="gms-master-create-composer gms-master-create-composer--profile">
+                <summary><i class="fa-solid fa-address-card" aria-hidden="true"></i><span><small>PERSPECTIVA</small><strong>Novo perfil</strong></span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary>
+                <div class="gms-master-create-composer__body gms-master-create-composer__body--profile">
+                  <label><span>Nome da matriz</span><input type="text" data-master-new-profile-name maxlength="240" placeholder="Ex.: Reputação com Lapso"></label>
+                  <label><span>Nome focal</span><input type="text" data-master-new-profile-focal-name maxlength="240" placeholder="Ex.: Lapso"></label>
+                  <fieldset class="gms-master-group-choice gms-master-group-choice--new-profile" aria-label="Grupo do novo perfil">
+                    <legend>Grupo do novo perfil</legend>
+                    <div>{{#each newProfileGroupChoices}}<button type="button" data-master-new-profile-group-choice="{{value}}" data-active="{{active}}" aria-pressed="{{active}}"><span>{{primary}}</span><small>{{secondary}}</small></button>{{/each}}</div>
+                  </fieldset>
+                  <button type="button" data-master-create-profile><i class="fa-solid fa-plus" aria-hidden="true"></i><span>Criar e abrir perfil</span></button>
+                </div>
+              </details>
+            </div>
+          </section>
+
+          <section class="gms-master-profile-index" aria-label="Lista de grupos e perfis">
+            <header class="gms-master-profile-index__head"><div><small>ÍNDICE DE PERFIS</small><strong>Grupos</strong><span>Abra um grupo para ver seus Perfis.</span></div><label><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input type="search" data-master-profile-list-search placeholder="Buscar grupo ou perfil..." autocomplete="off"></label></header>
+            <div class="gms-master-profile-groups">
+              {{#each profileGroups}}
+                <details class="gms-master-profile-group" data-master-group="{{id}}" data-system="{{system}}">
+                  <summary class="gms-master-profile-group__summary">
+                    <span class="gms-master-profile-group__glyph" aria-hidden="true"><i class="fa-solid {{#if system}}fa-box-archive{{else}}fa-folder-tree{{/if}}"></i></span>
+                    <span class="gms-master-profile-group__summary-copy"><small>{{#if system}}SEM CLASSIFICAÇÃO{{else}}GRUPO DE PERFIS{{/if}}</small><strong>{{name}}</strong>{{#if description}}<em>{{description}}</em>{{/if}}</span>
+                    <span class="gms-master-profile-group__count"><b>{{profiles.length}}</b><small>PERFIS</small></span>
+                    <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                  </summary>
+                  <div class="gms-master-profile-group__body">
+                    {{#if system}}{{else}}
+                      <div class="gms-master-profile-group__editor" data-master-subject-admin>
+                        <label><span>Nome do grupo</span><input type="text" data-master-group-name maxlength="160" value="{{name}}"></label>
+                        <div class="gms-master-profile-group__actions">
+                          <button type="button" data-master-group-move="up" {{#if canMoveUp}}{{else}}disabled{{/if}} title="Mover grupo para cima"><i class="fa-solid fa-arrow-up"></i></button>
+                          <button type="button" data-master-group-move="down" {{#if canMoveDown}}{{else}}disabled{{/if}} title="Mover grupo para baixo"><i class="fa-solid fa-arrow-down"></i></button>
+                          <button type="button" data-master-group-save><i class="fa-solid fa-floppy-disk"></i><span>Salvar nome</span></button>
+                        </div>
+                      </div>
+                    {{/if}}
+                    <div class="gms-master-profile-group__profiles">
+                      {{#if profiles.length}}
+                        {{#each profiles}}
+                          <button type="button" class="gms-master-profile-entry" data-master-profile-choice="{{id}}" data-selected="{{selected}}">
+                            <span class="gms-master-profile-entry__thumb">{{#if image}}<img src="{{image}}" alt="">{{else}}<i class="fa-solid fa-user-astronaut" aria-hidden="true"></i>{{/if}}</span>
+                            <span class="gms-master-profile-entry__copy"><strong>{{focalName}}</strong><small>{{name}}</small></span>
+                            <span class="gms-master-profile-entry__status">{{#if archived}}ARQUIVADO{{else}}{{#if selected}}ABERTO{{else}}{{#if active}}ATIVO{{else}}INATIVO{{/if}}{{/if}}{{/if}}</span>
+                            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                          </button>
+                        {{/each}}
+                      {{else}}<p class="gms-master-profile-group__empty">Nenhum perfil neste grupo.</p>{{/if}}
+                    </div>
+                  </div>
+                </details>
+              {{/each}}
+            </div>
+          </section>
+
+        </section>
+
+        <section data-master-section-panel="profile" data-gms-v2-bay="profile-editor-bay" hidden>
+          <header><small>CONFIGURAÇÃO DA MATRIZ</small><h2>Perfil selecionado</h2></header>
+          {{#if profileEditor}}
+            <section class="gms-master-profile-editor" data-master-subject-admin aria-label="Editar perfil selecionado">
+              <header class="gms-master-profile-editor__head">
+                <div><small>PERFIL SELECIONADO</small><strong>{{profileEditor.name}}</strong><p>Defina nome, grupo, disponibilidade e ordem desta matriz. A apresentação aparece logo abaixo.</p></div>
+                <span data-state="{{#if profileEditor.archived}}archived{{else}}{{#if profileEditor.active}}active{{else}}inactive{{/if}}{{/if}}">{{#if profileEditor.archived}}ARQUIVADO{{else}}{{#if profileEditor.active}}ATIVO{{else}}INATIVO{{/if}}{{/if}}</span>
+              </header>
+
+              <div class="gms-master-profile-editor__metrics">
+                <article><small>GRUPO</small><strong>{{profileEditor.groupName}}</strong></article>
+                <article><small>NO PERFIL</small><strong>{{profileEditor.rosterCount}}</strong><span>/ {{profileEditor.totalSubjects}} personagens</span></article>
+                <article><small>RELAÇÕES</small><strong>{{profileEditor.relationshipCount}}</strong></article>
+                <article><small>ATUALIZADO</small><span>{{profileEditor.updatedAtText}}</span></article>
+              </div>
+
+              <div class="gms-master-profile-editor__form">
+                <label class="is-wide"><span>Nome da matriz</span><input type="text" data-master-profile-editor-name maxlength="240" value="{{profileEditor.name}}" placeholder="Ex.: Reputação com Lapso"></label>
+                <fieldset class="gms-master-profile-editor__groups" aria-label="Grupo do perfil">
+                  <legend>Grupo</legend>
+                  <div>{{#each profileGroupChoices}}<button type="button" data-master-profile-editor-group-choice="{{value}}" data-active="{{active}}" aria-pressed="{{active}}"><span>{{primary}}</span><small>{{secondary}}</small></button>{{/each}}</div>
+                </fieldset>
+                <div class="gms-master-profile-editor__status">
+                  <label><input type="checkbox" data-master-profile-editor-active {{#if profileEditor.active}}checked{{/if}}><span><b>Perfil ativo</b><small>Disponível na navegação dos Players.</small></span></label>
+                  <label><input type="checkbox" data-master-profile-editor-archived {{#if profileEditor.archived}}checked{{/if}}><span><b>Arquivado</b><small>Oculta o Perfil das listas normais sem apagar os dados.</small></span></label>
+                </div>
+              </div>
+
+              <footer class="gms-master-profile-editor__actions">
+                <div class="gms-master-profile-editor__order"><button type="button" data-master-profile-move="up" {{#if profileEditor.canMoveUp}}{{else}}disabled{{/if}}><i class="fa-solid fa-arrow-up" aria-hidden="true"></i><span>Subir no grupo</span></button><button type="button" data-master-profile-move="down" {{#if profileEditor.canMoveDown}}{{else}}disabled{{/if}}><i class="fa-solid fa-arrow-down" aria-hidden="true"></i><span>Descer no grupo</span></button></div>
+                <button type="button" class="is-primary" data-master-save-profile-editor><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i><span>Salvar Perfil</span></button>
+              </footer>
+            </section>
+          {{else}}<p class="is-empty">Selecione um Perfil na aba Perfis para editar.</p>{{/if}}
+        </section>
+
+        <section data-master-section-panel="characters" data-gms-v2-bay="character-registry-bay" hidden>
+          <header><small>CADASTRO SOCIAL</small><h2>Personagens</h2></header>
+          {{#if subjectEditor}}
+            <section class="gms-master-character-editor" data-master-subject-admin aria-label="Editar personagem selecionado">
+              <header class="gms-master-character-editor__head">
+                <div><small>CADASTRO DO PERSONAGEM</small><strong>{{subjectEditor.alias}}</strong><p>Edite identidade, biografia, marcadores e disponibilidade. O retrato permanece nesta mesma área.</p></div>
+                <span data-state="{{#if subjectEditor.archived}}archived{{else}}{{#if subjectEditor.active}}active{{else}}inactive{{/if}}{{/if}}">{{#if subjectEditor.archived}}ARQUIVADO{{else}}{{#if subjectEditor.active}}ATIVO{{else}}INATIVO{{/if}}{{/if}}</span>
+              </header>
+              <div class="gms-master-character-editor__grid">
+                <label><span>Apelido / nome exibido</span><input type="text" data-master-subject-alias maxlength="240" value="{{subjectEditor.alias}}" placeholder="Ex.: Corvo"></label>
+                <label><span>Nome real</span><input type="text" data-master-subject-real-name maxlength="240" value="{{subjectEditor.realName}}" placeholder="Ex.: Daniel Shirako"></label>
+                <label class="is-wide"><span>Descrição / biografia</span><textarea data-master-subject-description maxlength="12000" rows="6" placeholder="Descrição exibida nos detalhes do Player...">{{subjectEditor.description}}</textarea></label>
+                <label class="is-wide"><span>Marcadores</span><input type="text" data-master-subject-tags maxlength="1200" value="{{subjectEditor.tagsText}}" placeholder="Ex.: Nexus, contato, piloto"></label>
+              </div>
+              <div class="gms-master-character-editor__status">
+                <label><input type="checkbox" data-master-subject-active {{#if subjectEditor.active}}checked{{/if}}><span>Personagem ativo</span></label>
+                <label><input type="checkbox" data-master-subject-archived {{#if subjectEditor.archived}}checked{{/if}}><span>Arquivado</span></label>
+              </div>
+              <div class="gms-master-character-editor__actions">
+                <div><button type="button" data-master-subject-move="up" {{#if subjectEditor.canMoveUp}}{{else}}disabled{{/if}}><i class="fa-solid fa-arrow-up" aria-hidden="true"></i><span>Subir</span></button><button type="button" data-master-subject-move="down" {{#if subjectEditor.canMoveDown}}{{else}}disabled{{/if}}><i class="fa-solid fa-arrow-down" aria-hidden="true"></i><span>Descer</span></button></div>
+                <button type="button" data-master-save-subject><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i><span>Salvar personagem</span></button>
+              </div>
+            </section>
+          {{else}}
+            <p class="is-empty">Nenhum personagem selecionado.</p>
+          {{/if}}
+
+          <section class="gms-master-subject-registry" data-master-subject-admin>
+            <header class="gms-master-subject-registry__head">
+              <div><small>PERSONAGENS AVALIADOS</small><strong>Elenco do perfil atual</strong><p>Escolha quem aparece neste perfil. Remover alguém da matriz preserva o cadastro e a relação.</p></div>
+              <label class="gms-master-subject-registry__search"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input type="search" data-master-character-list-search placeholder="Filtrar personagens cadastrados..." autocomplete="off"></label>
+              <details class="gms-master-subject-registry__composer" data-master-subject-admin>
+                <summary><i class="fa-solid fa-user-plus" aria-hidden="true"></i><strong>Adicionar personagem</strong><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary>
+                <div class="gms-master-subject-registry__create">
+                  <label><span>Apelido</span><input type="text" data-master-new-subject-alias maxlength="240" placeholder="Ex.: Corvo"></label>
+                  <label><span>Nome real</span><input type="text" data-master-new-subject-real-name maxlength="240" placeholder="Ex.: Daniel Shirako"></label>
+                  <button type="button" data-master-create-subject><i class="fa-solid fa-plus" aria-hidden="true"></i><span>Adicionar</span></button>
+                </div>
+              </details>
+            </header>
+            <div class="gms-master-panel__bulk-select-head"><label><input type="checkbox" data-master-bulk-select-all><span>Selecionar todos</span></label><small>Checkbox = edição em massa. Clique no personagem para abrir.</small></div>
+            <div class="gms-master-panel__subject-list gms-master-subject-registry__list">
+              {{#each subjects}}
+                <article data-selected="{{selected}}" data-active="{{active}}" data-archived="{{archived}}" data-in-profile="{{inProfile}}">
+                  <label class="gms-master-panel__bulk-check"><input type="checkbox" data-master-bulk-subject value="{{id}}" aria-label="Selecionar {{alias}} para operação em massa"></label>
+                  <button type="button" class="gms-master-panel__subject-choice" data-master-subject-choice="{{id}}" aria-label="Abrir {{alias}}"><strong>{{alias}}</strong><span>{{realName}}</span><small>{{#if archived}}ARQUIVADO{{else}}{{#if active}}{{#if inProfile}}NO PERFIL{{else}}FORA DO PERFIL{{/if}}{{else}}INATIVO{{/if}}{{/if}}</small><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
+                  <button type="button" class="gms-master-profile-roster-toggle" data-master-profile-roster-toggle="{{id}}" data-in-profile="{{inProfile}}" aria-pressed="{{inProfile}}" title="{{#if inProfile}}Remover {{alias}} deste Perfil{{else}}Adicionar {{alias}} a este Perfil{{/if}}"><i class="fa-solid {{#if inProfile}}fa-user-minus{{else}}fa-user-plus{{/if}}" aria-hidden="true"></i><span>{{#if inProfile}}Remover{{else}}Adicionar{{/if}}</span></button>
+                </article>
+              {{/each}}
+            </div>
+          </section>
+
+          <section class="gms-master-panel__bulk" data-gms-v2-role="bulk-command-strip" aria-label="Edição em massa">
+            <header><small>OPERAÇÕES MÚLTIPLAS</small><strong>Edição em massa</strong></header>
+            <div class="gms-master-panel__bulk-grid">
+              <label><span>Score</span><select data-master-bulk-score-mode><option value="keep">Manter</option><option value="delta">Somar</option><option value="set">Definir</option></select></label>
+              <label><span>Valor</span><input type="number" data-master-bulk-score-value value="0" step="0.5" min="-10" max="12"></label>
+              <label><span>Vínculo</span><select data-master-bulk-bond><option value="keep">Manter</option><option value="on">Ativar</option><option value="off">Desativar</option></select></label>
+              <label><span>Comunhão</span><select data-master-bulk-communion><option value="keep">Manter</option><option value="on">Ativar</option><option value="off">Desativar</option></select></label>
+              <label class="gms-master-panel__bulk-reason"><span>Motivo opcional</span><input type="text" data-master-reason="bulk" maxlength="2000" placeholder="Ex.: consequência da missão"></label>
+            </div>
+            <div class="gms-master-panel__bulk-actions"><button type="button" data-master-bulk-apply-relationship><i class="fa-solid fa-bolt" aria-hidden="true"></i> Aplicar relação</button><button type="button" data-master-bulk-action="archive">Arquivar</button><button type="button" data-master-bulk-action="restore">Restaurar</button><button type="button" data-master-bulk-action="activate">Ativar</button><button type="button" data-master-bulk-action="deactivate">Desativar</button><button type="button" data-master-bulk-action="top">Mover ao topo</button><button type="button" data-master-bulk-action="bottom">Mover ao fim</button></div>
+          </section>
+        </section>
+
+        <section data-master-section-panel="relationship" data-gms-v2-bay="relationship-control-bay" hidden>
+          <header class="gms-master-panel__relationship-heading"><div><small>EDIÇÃO DE REPUTAÇÃO</small><h2>Reputação e protocolos</h2></div><p>Leitura, ajuste e protocolos da relação selecionada.</p></header>
+          {{#if hasSelection}}
+            <div class="gms-master-reputation-console" data-master-relation-console data-gms-v2-role="relationship-console" data-relation-band="{{selection.relationBand}}">
+              <section class="gms-master-reputation-console__readout">
+                <div class="gms-master-reputation-console__identity">{{> "modules/gms-reputation/templates/partials/identity.hbs" selection.identity}}<span data-master-relation-preview>{{selection.relationLabel}}</span><small>{{selection.relationCode}}</small></div>
+                <div class="gms-master-reputation-console__score"><strong data-master-score-preview>{{selection.score}}</strong><span>/ <b data-master-score-limit-preview>{{selection.scoreLimit}}</b></span></div>
+                <div class="gms-master-reputation-console__hearts"><small>LEITURA ATUAL</small>{{> "modules/gms-reputation/templates/partials/heart-track.hbs" selection.hearts}}</div>
+              </section>
+
+              <section class="gms-master-reputation-console__editor">
+                <header><div><small>RÉGUA DE REPUTAÇÃO</small><strong>Ajuste visual</strong></div><span>PASSO 0,5</span></header>
+                <label class="gms-master-reputation-console__range"><span>-10</span><input type="range" data-master-score-range value="{{selection.score}}" step="0.5" min="-10" max="{{selection.scoreLimit}}"><span>+{{selection.scoreLimit}}</span></label>
+                <div class="gms-master-reputation-console__step-row" aria-label="Ajuste rápido de reputação"><button type="button" data-master-score-delta="-1">−1</button><button type="button" data-master-score-delta="-0.5">−0,5</button><button type="button" data-master-score-delta="0.5">+0,5</button><button type="button" data-master-score-delta="1">+1</button></div>
+                <div class="gms-master-reputation-console__direct"><label><span>VALOR EXATO</span><input type="number" data-master-score-input value="{{selection.score}}" step="0.5" min="-10" max="{{selection.scoreLimit}}"></label><button type="button" data-master-apply-score><i class="fa-solid fa-check" aria-hidden="true"></i><span>Aplicar</span></button></div>
+                <label class="gms-master-reputation-console__reason"><span>MOTIVO OPCIONAL</span><input type="text" data-master-reason="single" maxlength="2000" placeholder="Ex.: escolha durante a sessão"></label>
+              </section>
+
+              <section class="gms-master-reputation-console__presets" aria-label="Presets de reputação">
+                <header><small>ATALHOS SEMÂNTICOS</small><strong>Presets</strong></header>
+                <div>{{#each selection.quickPresets}}<button type="button" data-master-score-preset="{{value}}" data-preset-tone="{{tone}}"><span>{{label}}</span><strong>{{value}}</strong></button>{{/each}}</div>
+              </section>
+
+              <section class="gms-master-reputation-console__protocols" aria-label="Protocolos especiais">
+                <header><div><small>PROTOCOLOS ESPECIAIS</small><strong>Vínculo / Comunhão</strong></div><span>Duplo//Sinc é derivado automaticamente</span></header>
+                <div class="gms-master-panel__special-readout" data-special-state="{{selection.special.state}}">
+                  {{#if selection.special.active}}
+                    <img src="{{selection.special.sigilAsset}}" alt="" aria-hidden="true">
+                  {{else}}
+                    <span class="gms-master-panel__special-placeholder" aria-hidden="true"><i class="fa-solid fa-link-slash"></i></span>
+                  {{/if}}
+                  <div><strong>{{#if selection.special.active}}{{selection.special.label}}{{else}}SEM ESTADO ESPECIAL{{/if}}</strong><p>Vínculo e Comunhão expandem o limite para +12; Duplo//Sinc continua derivado dos dois.</p></div>
+                </div>
+                <div class="gms-master-panel__special-editor" data-gms-v2-role="protocol-console">
+                  <label><input type="checkbox" data-master-bond {{#if selection.special.bondActive}}checked{{/if}}><span><b>VÍNCULO</b><small>Enlace especial</small></span></label>
+                  <label><input type="checkbox" data-master-communion {{#if selection.special.communionActive}}checked{{/if}}><span><b>COMUNHÃO</b><small>Sincronia profunda</small></span></label>
+                  <div class="gms-master-panel__protocol-derived" data-active="{{selection.special.dualSyncActive}}" aria-label="Duplo//Sinc derivado automaticamente">
+                    <i aria-hidden="true"></i><span><b>DUPLO//SINC</b><small>Vínculo + Comunhão</small></span>
+                  </div>
+                  <button type="button" data-master-apply-specials><i class="fa-solid fa-link" aria-hidden="true"></i><span>Aplicar protocolos</span></button>
+                </div>
+              </section>
+            </div>
+          {{else}}<p class="is-empty">Selecione um perfil e personagem.</p>{{/if}}
+        </section>
+
+        <section data-master-section-panel="portrait" data-gms-v2-bay="optics-bay" hidden>
+          <header><small>ÓPTICA DO CADASTRO</small><h2>Retrato do personagem</h2></header>
+          {{#if hasSelection}}
+            <div data-master-portrait-editor data-gms-v2-role="optics-console">{{> "modules/gms-reputation/templates/partials/portrait-editor.hbs" selection.portraitEditor}}</div>
+            <div class="gms-master-panel__portrait-save"><button type="button" data-master-save-portrait><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> Salvar retrato</button></div>
+          {{else}}<p class="is-empty">Selecione um personagem.</p>{{/if}}
+        </section>
+
+        <section data-master-section-panel="focal" data-gms-v2-bay="focal-bay" hidden>
+          <header><small>APRESENTAÇÃO AO JOGADOR</small><h2>Identidade do perfil</h2></header>
+          {{#if focal}}
+            <div class="gms-master-focal-workspace">
+              <div class="gms-master-focal-workspace__preview">{{> "modules/gms-reputation/templates/partials/focal-profile.hbs" focal}}</div>
+              <div class="gms-master-focal-workspace__editor" data-master-focal-editor>
+                <div class="gms-master-focal-workspace__copy">
+                  <label><span>Nome focal</span><input type="text" data-master-focal-name maxlength="240" value="{{focalName}}"></label>
+                  <label><span>Descrição</span><textarea data-master-focal-description maxlength="12000" rows="7" placeholder="Descrição do perfil focal...">{{focalDescription}}</textarea></label>
+                </div>
+                {{> "modules/gms-reputation/templates/partials/portrait-editor.hbs" focalEditor}}
+                <button type="button" class="gms-master-focal-workspace__save" data-master-save-focal><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i><span>Salvar perfil focal</span></button>
+              </div>
+            </div>
+          {{else}}<p class="is-empty">Nenhum perfil selecionado.</p>{{/if}}
+        </section>
+
+        <section data-master-section-panel="history" data-gms-v2-bay="audit-log-bay" hidden>
+          <header><small>REGISTRO DE ALTERAÇÕES</small><h2>Auditoria e histórico</h2></header>
+          {{#if history.length}}
+            <div class="gms-master-panel__history" data-gms-v2-role="audit-timeline">
+              {{#each history}}
+                <article data-history-type="{{type}}">
+                  <time>{{timestampText}}</time>
+                  <div><strong>{{typeLabel}}</strong><small>{{actorLabel}}{{#if transactionId}} // {{transactionId}}{{/if}}</small></div>
+                  {{#if hasChanges}}<div class="gms-history-changes">{{#each changes}}<span><b>{{label}}</b><em>{{before}}</em><i class="fa-solid fa-chevron-right" aria-hidden="true"></i><strong>{{after}}</strong></span>{{/each}}</div>{{/if}}
+                  {{#if reason}}<p>{{reason}}</p>{{/if}}
+                </article>
+              {{/each}}
+            </div>
+          {{else}}<p class="is-empty">Ainda não há eventos registrados para esta seleção.</p>{{/if}}
+        </section>
+
+
+        <section data-master-section-panel="cleanup" data-gms-v2-bay="cleanup-bay" hidden>
+          <header><small>GERENCIADOR DE LIMPEZA</small><h2>Excluir dados antigos</h2></header>
+          {{#if permissions.isFullGM}}
+            <section class="gms-master-cleanup" data-master-cleanup-root data-cleanup-unlocked="false">
+              <div class="gms-master-cleanup__warning">
+                <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                <div><strong>Exclusão permanente</strong><p>Use esta área apenas para remover registros antigos. Antes de cada exclusão, o módulo cria o backup mundial automático. Personagens removem suas relações dos perfis; Perfis removem suas próprias relações; Grupos preservam os Perfis e os movem para “Sem Grupo”.</p></div>
+              </div>
+
+              <div class="gms-master-cleanup__toolbar">
+                <label class="gms-master-cleanup__search"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input type="search" data-master-cleanup-search placeholder="Buscar personagem, perfil ou grupo..." autocomplete="off"></label>
+                <label class="gms-master-cleanup__unlock"><input type="checkbox" data-master-cleanup-unlock><span><strong>Desbloquear exclusões</strong><small>Entendo que os botões abaixo apagam dados permanentemente.</small></span></label>
+              </div>
+
+              <div class="gms-master-cleanup__grid">
+                <section class="gms-master-cleanup__section" data-master-cleanup-section="subjects">
+                  <header><span><small>ENTIDADES</small><strong>Personagens</strong></span><b>{{cleanup.subjects.length}}</b></header>
+                  <div class="gms-master-cleanup__list">
+                    {{#if cleanup.subjects.length}}
+                      {{#each cleanup.subjects}}
+                        <article class="gms-master-cleanup__row" data-master-cleanup-row data-cleanup-search-text="{{name}} {{realName}} personagem">
+                          <div class="gms-master-cleanup__identity"><i class="fa-solid fa-user" aria-hidden="true"></i><span><strong>{{name}}</strong><small>{{#if realName}}{{realName}}{{else}}Sem nome real{{/if}}</small></span></div>
+                          <div class="gms-master-cleanup__impact"><span><b>{{relationshipCount}}</b><small>RELAÇÕES</small></span><span><b>{{rosterCount}}</b><small>PERFIS</small></span><span><b>{{historyCount}}</b><small>EVENTOS</small></span></div>
+                          <button type="button" class="gms-master-cleanup__delete" data-master-cleanup-delete="subject" data-cleanup-id="{{id}}" data-cleanup-name="{{name}}" data-cleanup-impact-a="{{relationshipCount}}" data-cleanup-impact-b="{{rosterCount}}" disabled><i class="fa-solid fa-trash-can" aria-hidden="true"></i><span>Apagar</span></button>
+                        </article>
+                      {{/each}}
+                    {{else}}<p class="is-empty">Nenhum personagem cadastrado.</p>{{/if}}
+                  </div>
+                </section>
+
+                <section class="gms-master-cleanup__section" data-master-cleanup-section="profiles">
+                  <header><span><small>MATRIZES</small><strong>Perfis</strong></span><b>{{cleanup.profiles.length}}</b></header>
+                  <div class="gms-master-cleanup__list">
+                    {{#if cleanup.profiles.length}}
+                      {{#each cleanup.profiles}}
+                        <article class="gms-master-cleanup__row" data-master-cleanup-row data-cleanup-search-text="{{name}} {{focalName}} {{groupName}} perfil">
+                          <div class="gms-master-cleanup__identity"><i class="fa-solid fa-address-card" aria-hidden="true"></i><span><strong>{{focalName}}</strong><small>{{name}} // {{groupName}}</small></span></div>
+                          <div class="gms-master-cleanup__impact"><span><b>{{relationshipCount}}</b><small>RELAÇÕES</small></span><span><b>{{rosterCount}}</b><small>ROSTER</small></span><span><b>{{historyCount}}</b><small>EVENTOS</small></span></div>
+                          <button type="button" class="gms-master-cleanup__delete" data-master-cleanup-delete="profile" data-cleanup-id="{{id}}" data-cleanup-name="{{name}}" data-cleanup-impact-a="{{relationshipCount}}" data-cleanup-impact-b="{{rosterCount}}" disabled><i class="fa-solid fa-trash-can" aria-hidden="true"></i><span>Apagar</span></button>
+                        </article>
+                      {{/each}}
+                    {{else}}<p class="is-empty">Nenhum perfil cadastrado.</p>{{/if}}
+                  </div>
+                </section>
+
+                <section class="gms-master-cleanup__section gms-master-cleanup__section--groups" data-master-cleanup-section="groups">
+                  <header><span><small>ORGANIZAÇÃO</small><strong>Grupos</strong></span><b>{{cleanup.groups.length}}</b></header>
+                  <div class="gms-master-cleanup__list">
+                    {{#if cleanup.groups.length}}
+                      {{#each cleanup.groups}}
+                        <article class="gms-master-cleanup__row" data-master-cleanup-row data-cleanup-search-text="{{name}} {{description}} grupo">
+                          <div class="gms-master-cleanup__identity"><i class="fa-solid fa-folder-tree" aria-hidden="true"></i><span><strong>{{name}}</strong><small>{{#if description}}{{description}}{{else}}Grupo de perfis{{/if}}</small></span></div>
+                          <div class="gms-master-cleanup__impact"><span><b>{{profileCount}}</b><small>PERFIS</small></span><span class="gms-master-cleanup__preserve"><i class="fa-solid fa-shield-heart" aria-hidden="true"></i><small>PRESERVADOS</small></span></div>
+                          <button type="button" class="gms-master-cleanup__delete" data-master-cleanup-delete="group" data-cleanup-id="{{id}}" data-cleanup-name="{{name}}" data-cleanup-impact-a="{{profileCount}}" data-cleanup-impact-b="0" disabled><i class="fa-solid fa-trash-can" aria-hidden="true"></i><span>Apagar grupo</span></button>
+                        </article>
+                      {{/each}}
+                    {{else}}<p class="is-empty">Nenhum grupo de perfis cadastrado.</p>{{/if}}
+                  </div>
+                </section>
+              </div>
+              <p class="gms-master-cleanup__footnote"><i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i><span>Se uma exclusão for feita por engano, use <strong>Sistema → Backup e restauração</strong> imediatamente antes de qualquer outra gravação.</span></p>
+            </section>
+          {{else}}
+            <div class="gms-master-cleanup-denied"><i class="fa-solid fa-lock" aria-hidden="true"></i><strong>Somente um Gamemaster completo pode acessar exclusões permanentes.</strong></div>
+          {{/if}}
+        </section>
+
+        <section data-master-section-panel="settings" data-gms-v2-bay="system-config-bay" hidden>
+          <header><small>DIAGNÓSTICO E ACESSO</small><h2>Sistema</h2></header>
+          <dl class="gms-master-panel__settings" data-gms-v2-role="system-readout">
+            <div><dt>Versão do módulo</dt><dd>{{world.moduleVersion}}</dd></div>
+            <div><dt>Schema</dt><dd>{{world.schemaVersion}}</dd></div>
+            <div><dt>Revisão mundial</dt><dd>{{world.revision}}</dd></div>
+            <div><dt>Grupos</dt><dd>{{world.groupCount}}</dd></div>
+            <div><dt>Personagens</dt><dd>{{world.subjectCount}}</dd></div>
+            <div><dt>Perfis</dt><dd>{{world.profileCount}}</dd></div>
+            <div><dt>Eventos históricos</dt><dd>{{world.historyCount}}</dd></div>
+          </dl>
+          <section class="gms-master-panel__save-settings" data-gms-v2-role="save-config" aria-label="Preferências de salvamento do Mestre">
+            <header><small>PERSISTÊNCIA</small><strong>Salvamento</strong></header>
+            <label><span>Modo</span><select data-master-save-mode>{{#each savePreferences.modeOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select></label>
+            <label><span>Pausa do auto-save</span><input type="number" data-master-autosave-delay min="0.75" max="10" step="0.25" value="{{savePreferences.idleDelay}}" {{#if savePreferences.idleMode}}{{else}}disabled{{/if}}><small>segundos sem editar</small></label>
+            <p><strong>Manual:</strong> mantém alterações pendentes até “Salvar mudanças”. <strong>Automático:</strong> agrupa entradas rápidas e grava após a interação. <strong>Após pausa:</strong> grava depois do intervalo configurado.</p>
+          </section>
+          <section class="gms-master-panel__backup-settings" data-gms-v2-role="rollback-config" aria-label="Backup e rollback da Matriz de Reputação">
+            <header><small>SEGURANÇA DE DADOS</small><strong>Backup e restauração</strong></header>
+            <p>Antes de cada gravação mundial, o módulo preserva o estado anterior em um snapshot automático.</p>
+            <dl class="gms-master-panel__settings gms-master-panel__backup-readout">
+              <div><dt>Estado</dt><dd>{{#if world.backup.available}}Disponível{{else}}Vazio{{/if}}</dd></div>
+              {{#if world.backup.available}}<div><dt>Revisão preservada</dt><dd>{{world.backup.revision}}</dd></div>{{/if}}
+              <div><dt>Última referência</dt><dd>{{world.backup.updatedAtText}}</dd></div>
+            </dl>
+            <button type="button" data-master-restore-backup {{#if world.backup.available}}{{#if permissions.canConfigurePermissions}}{{else}}disabled{{/if}}{{else}}disabled{{/if}}><i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i> Restaurar último backup</button>
+            <p><small>A restauração cria primeiro um novo backup do estado atual, permitindo retorno caso o rollback tenha sido feito por engano.</small></p>
+          </section>
+          <section class="gms-master-panel__permission-settings" data-gms-v2-role="permissions-config" aria-label="Permissões da Matriz de Reputação">
+            <header><small>CONTROLE DE ACESSO</small><strong>Permissões do módulo</strong></header>
+            <p>Player comum permanece somente leitura. Assistant e Trusted podem receber capacidades específicas; toda gravação delegada é revalidada por um Gamemaster completo.</p>
+            <div class="gms-master-panel__permission-grid">
+              {{#each permissionRoles}}
+                <fieldset data-permission-role="{{id}}" {{#if ../permissions.canConfigurePermissions}}{{else}}disabled{{/if}}>
+                  <legend>{{label}}</legend>
+                  <label><input type="checkbox" data-master-permission-role="{{id}}" data-master-permission-capability="openMaster" {{#if policy.openMaster}}checked{{/if}}> Abrir painel</label>
+                  <label><input type="checkbox" data-master-permission-role="{{id}}" data-master-permission-capability="relationships" {{#if policy.relationships}}checked{{/if}}> Relações e especiais</label>
+                  <label><input type="checkbox" data-master-permission-role="{{id}}" data-master-permission-capability="subjects" {{#if policy.subjects}}checked{{/if}}> Personagens</label>
+                  <label><input type="checkbox" data-master-permission-role="{{id}}" data-master-permission-capability="portraits" {{#if policy.portraits}}checked{{/if}}> Retratos</label>
+                  <label><input type="checkbox" data-master-permission-role="{{id}}" data-master-permission-capability="focal" {{#if policy.focal}}checked{{/if}}> Apresentação do perfil</label>
+                  <label><input type="checkbox" data-master-permission-role="{{id}}" data-master-permission-capability="bulk" {{#if policy.bulk}}checked{{/if}}> Edição em massa</label>
+                  <label><input type="checkbox" data-master-permission-role="{{id}}" data-master-permission-capability="history" {{#if policy.history}}checked{{/if}}> Undo / Redo</label>
+                </fieldset>
+              {{/each}}
+            </div>
+            <button type="button" data-master-save-permissions {{#if permissions.canConfigurePermissions}}{{else}}disabled{{/if}}><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Salvar permissões</button>
+          </section>
+        </section>
+      </main>
+    </div>
+  {{else}}
+    <div class="gms-master-panel__denied"><i class="fa-solid fa-lock" aria-hidden="true"></i><strong>Acesso não autorizado para esta função.</strong></div>
+  {{/if}}
+</section>

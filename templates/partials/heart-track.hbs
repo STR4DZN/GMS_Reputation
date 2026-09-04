@@ -1,0 +1,18 @@
+<span
+  class="gms-reputation-heart-track gms-reputation-heart-track--{{limit}} is-{{polarity}} is-band-{{bandId}} is-special-{{specialState}}"
+  data-heart-limit="{{limit}}"
+  data-heart-band="{{bandId}}"
+  data-special-state="{{specialState}}"
+  role="img"
+  aria-label="{{accessibleLabel}}"
+>
+  {{#each slots}}
+    <span
+      class="gms-reputation-heart {{#if specialKind}}is-{{specialKind}}{{/if}}"
+      data-heart-state="{{state}}"
+      data-special-slot="{{specialSlot}}"
+      data-heart-ordinal="{{ordinal}}"
+      aria-hidden="true"
+    ><i></i></span>
+  {{/each}}
+</span>

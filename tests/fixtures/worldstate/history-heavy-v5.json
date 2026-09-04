@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 5,
+  "revision": 80,
+  "groups": {},
+  "subjects": {
+    "sub-history": { "id": "sub-history", "realName": "Histórico Real", "alias": "Histórico", "description": "", "portrait": { "src": "", "zoom": 100, "x": 50, "y": 50 }, "active": true, "archived": false, "sortOrder": 1, "metadata": { "legacyNames": [], "tags": [], "createdAt": 1760000020000, "updatedAt": 1760000020000 } }
+  },
+  "profiles": {
+    "pro-history": {
+      "id": "pro-history", "name": "Histórico", "groupId": null,
+      "source": { "journalUuid": null, "pageId": null, "pageUuid": null },
+      "focal": { "name": "Histórico", "portrait": { "src": "", "zoom": 100, "x": 50, "y": 50 }, "description": "" },
+      "relationships": { "sub-history": { "subjectId": "sub-history", "score": 8, "communion": false, "bond": false, "note": "", "revision": 20, "updatedAt": 1760000022000, "updatedBy": "gm-golden" } },
+      "subjectIds": ["sub-history"], "active": true, "archived": false, "sortOrder": 1,
+      "metadata": { "createdAt": 1760000020000, "updatedAt": 1760000022000 }
+    }
+  },
+  "history": [
+    { "id": "hh-01", "timestamp": 1760000020101, "userId": "gm-golden", "profileId": "pro-history", "subjectId": "sub-history", "type": "relationship-update", "before": { "score": 0 }, "after": { "score": 1 }, "reason": "1", "transactionId": "hh-tx-01" },
+    { "id": "hh-02", "timestamp": 1760000020102, "userId": "gm-golden", "profileId": "pro-history", "subjectId": "sub-history", "type": "relationship-update", "before": { "score": 1 }, "after": { "score": 2 }, "reason": "2", "transactionId": "hh-tx-02" },
+    { "id": "hh-03", "timestamp": 1760000020103, "userId": "gm-golden", "profileId": "pro-history", "subjectId": "sub-history", "type": "relationship-update", "before": { "score": 2 }, "after": { "score": 3 }, "reason": "3", "transactionId": "hh-tx-03" },
+    { "id": "hh-04", "timestamp": 1760000020104, "userId": "gm-golden", "profileId": "pro-history", "subjectId": "sub-history", "type": "relationship-update", "before": { "score": 3 }, "after": { "score": 4 }, "reason": "4", "transactionId": "hh-tx-04" },
+    { "id": "hh-05", "timestamp": 1760000020105, "userId": "gm-golden", "profileId": "pro-history", "subjectId": "sub-history", "type": "relationship-update", "before": { "score": 4 }, "after": { "score": 5 }, "reason": "5", "transactionId": "hh-tx-05" },
+    { "id": "hh-06", "timestamp": 1760000020106, "userId": "gm-golden", "profileId": "pro-history", "subjectId": "sub-history", "type": "relationship-update", "before": { "score": 5 }, "after": { "score": 6 }, "reason": "6", "transactionId": "hh-tx-06" },
+    { "id": "hh-07", "timestamp": 1760000020107, "userId": "gm-golden", "profileId": "pro-history", "subjectId": "sub-history", "type": "relationship-update", "before": { "score": 6 }, "after": { "score": 7 }, "reason": "7", "transactionId": "hh-tx-07" },
+    { "id": "hh-08", "timestamp": 1760000020108, "userId": "gm-golden", "profileId": "pro-history", "subjectId": "sub-history", "type": "relationship-update", "before": { "score": 7 }, "after": { "score": 8 }, "reason": "8", "transactionId": "hh-tx-08" },
+    { "id": "hh-09", "timestamp": 1760000020109, "userId": "gm-golden", "profileId": "pro-history", "subjectId": "sub-history", "type": "profile-update", "before": { "name": "H" }, "after": { "name": "Histórico" }, "reason": "9", "transactionId": "hh-tx-09" },
+    { "id": "hh-10", "timestamp": 1760000020110, "userId": "gm-golden", "profileId": "pro-history", "subjectId": null, "type": "focal-update", "before": { "description": "" }, "after": { "description": "ok" }, "reason": "10", "transactionId": "hh-tx-10" },
+    { "id": "hh-11", "timestamp": 1760000020111, "userId": "gm-golden", "profileId": null, "subjectId": "sub-history", "type": "subject-update", "before": { "alias": "H" }, "after": { "alias": "Histórico" }, "reason": "11", "transactionId": "hh-tx-11" },
+    { "id": "hh-12", "timestamp": 1760000020112, "userId": "gm-golden", "profileId": "pro-history", "subjectId": "sub-history", "type": "relationship-update", "before": { "note": "" }, "after": { "note": "fim" }, "reason": "12", "transactionId": "hh-tx-12" }
+  ],
+  "migration": { "legacyMacroImported": false, "sourceUiVersion": null, "importedAt": null, "sourceJournalUuid": null },
+  "metadata": { "moduleVersion": "1.2.0-dev.59.10", "createdAt": 1760000020000, "updatedAt": 1760000022000, "createdBy": "gm-golden", "updatedBy": "gm-golden" }
+}
