@@ -1,3 +1,9 @@
+## 1.2.0-dev.60.3 — Retorno ao Normal
+
+- restauração completa da interface original e funcionalidade normal do módulo;
+- atualização de compatibilidade para sincronização e atualização via Foundry VTT;
+- preservação total do Schema v5 e integridade dos dados existentes.
+
 ## 1.2.0-dev.60.1 — Architecture 60 / Fase A — Compatibility First
 
 - inicia a Architecture 60 sem alterar schema, IDs, dados persistentes, visual ou comportamento funcional da 59.10;

@@ -19,7 +19,7 @@ const { MODULE_ID, SETTINGS, MODULE_VERSION } = await import("../scripts/constan
 const Schema = await import("../scripts/data/schema.js");
 const { registerPersistenceSettings } = await import("../scripts/persistence/settings.js");
 registerPersistenceSettings();
-assert.equal(MODULE_VERSION, "1.2.0-dev.60.1");
+assert.equal(MODULE_VERSION, "1.2.0-dev.60.3");
 
 const state = Schema.createEmptyWorldState({ createdBy: "gm-apps" });
 state.subjects.s1 = Schema.createSubject({

@@ -2,7 +2,7 @@
   "id": "gms-reputation",
   "title": "GMS // Matriz de Reputação",
   "description": "Matriz de reputação social para Foundry VTT com dashboards de Player/GM, migração da macro legada, retratos, estados especiais, histórico, undo/redo, sincronização e permissões.",
-  "version": "1.2.0-dev.60.1",
+  "version": "1.2.0-dev.60.3",
   "authors": [
     {
       "name": "GMS"
@@ -10,7 +10,7 @@
   ],
   "url": "https://github.com/STR4DZN/GMS_Reputation",
   "manifest": "https://raw.githubusercontent.com/STR4DZN/GMS_Reputation/main/module.json",
-  "download": "https://github.com/STR4DZN/GMS_Reputation/releases/download/v1.2.0-dev.60.1/GMS_Reputation_1.2.0-dev.60.1.zip",
+  "download": "https://github.com/STR4DZN/GMS_Reputation/releases/download/v1.2.0-dev.60.3/GMS_Reputation_1.2.0-dev.60.3.zip",
   "compatibility": {
     "minimum": "13.341",
     "verified": "13.351"

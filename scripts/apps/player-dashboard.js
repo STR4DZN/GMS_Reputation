@@ -7,7 +7,6 @@ import { HandlebarsApplicationV2, appElement, destroyListeners, listen, notify, 
 import { subscribeWorldStateChanges } from "../events/world-sync.js";
 import { wireApplicationAccessibility } from "../utils/accessibility.js";
 import { wireMotionSystem } from "../motion/motion-system.js";
-import { canOpenMasterPanel } from "../persistence/permissions.js";
 
 const CARD_TEMPLATE = `modules/${MODULE_ID}/templates/partials/player-card.hbs`;
 const FOCAL_TEMPLATE = `modules/${MODULE_ID}/templates/partials/focal-profile.hbs`;
@@ -130,8 +129,7 @@ export function buildPlayerDashboardContext({ profileId = "", state = loadWorldS
     focal: buildFocalProfileContext(profile),
     cards: Object.freeze(subjects.map(makeCard)),
     totalCount: subjects.length,
-    worldRevision: Number(state.revision) || 0,
-    canOpenMaster: canOpenMasterPanel(globalThis.game?.user)
+    worldRevision: Number(state.revision) || 0
   });
 }
 
@@ -327,14 +325,6 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
     this._wireProfileChoices(root);
     this._wireProfileGroupAccordion(root);
     this._wireCardDetails(root);
-
-    const gmBtn = root.querySelector("[data-player-open-master]");
-    if (gmBtn) {
-      listen(this._listeners, gmBtn, "click", (event) => {
-        event.preventDefault();
-        import("./master-panel.js").then(({ openMasterPanel }) => openMasterPanel()).catch(console.error);
-      });
-    }
   }
 
   async _onClose(options) {

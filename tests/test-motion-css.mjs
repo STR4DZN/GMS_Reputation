@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import * as Motion from "../scripts/motion/motion-system.js";
 
 const manifest = JSON.parse(await readFile(new URL("../module.json", import.meta.url), "utf8"));
-assert.equal(manifest.version, "1.2.0-dev.60.1");
+assert.equal(manifest.version, "1.2.0-dev.60.3");
 assert.deepEqual(manifest.styles, ["styles/gms-reputation-59.10.css"]);
 assert.deepEqual(manifest.esmodules, ["scripts/main.js"]);
 

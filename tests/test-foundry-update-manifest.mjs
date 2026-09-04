@@ -4,12 +4,12 @@ import { readFile } from "node:fs/promises";
 const manifest = JSON.parse(await readFile(new URL("../module.json", import.meta.url), "utf8"));
 
 assert.equal(manifest.id, "gms-reputation");
-assert.equal(manifest.version, "1.2.0-dev.60.1");
+assert.equal(manifest.version, "1.2.0-dev.60.3");
 assert.equal(manifest.url, "https://github.com/STR4DZN/GMS_Reputation");
 assert.equal(manifest.manifest, "https://raw.githubusercontent.com/STR4DZN/GMS_Reputation/main/module.json");
 assert.equal(
   manifest.download,
-  "https://github.com/STR4DZN/GMS_Reputation/releases/download/v1.2.0-dev.60.1/GMS_Reputation_1.2.0-dev.60.1.zip"
+  "https://github.com/STR4DZN/GMS_Reputation/releases/download/v1.2.0-dev.60.3/GMS_Reputation_1.2.0-dev.60.3.zip"
 );
 assert.match(manifest.manifest, /^https:\/\/raw\.githubusercontent\.com\//);
 assert.match(manifest.download, /^https:\/\/github\.com\/STR4DZN\/GMS_Reputation\/releases\/download\//);

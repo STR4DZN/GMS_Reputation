@@ -10,12 +10,6 @@
       <strong>{{#if hasProfile}}{{profileName}}{{else}}SEM PERFIL DISPONÍVEL{{/if}}</strong>
     </div>
     <span class="gms-player-dashboard__live-update" data-player-live-update data-active="false" role="status" aria-live="polite"></span>
-    {{#if canOpenMaster}}
-      <button type="button" class="gms-player-dashboard__gm-btn" data-player-open-master title="Abrir Controle de Reputação (Modo Mestre)">
-        <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
-        <span>MODO MESTRE</span>
-      </button>
-    {{/if}}
   </header>
 
   {{#if hasProfile}}

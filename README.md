@@ -1,6 +1,6 @@
 # GMS // Matriz de Reputação
 
-**Versão:** `1.2.0-dev.60.1`  
+**Versão:** `1.2.0-dev.60.3`  
 **Foundry VTT:** v13 — mínimo `13.341`, verificado para `13.351`.
 
 Módulo de reputação social com interfaces separadas para Player e Mestre, perfis/matrizes, personagens, retratos, reputação em passos de 0,5, Vínculo, Comunhão, Duplo//Sinc derivado, histórico, Undo/Redo, backup, permissões, sincronização e migração da macro legada.
