@@ -2,7 +2,7 @@ export const VISUAL_GENERATION = 3;
 export const VISUAL_AUTHORITY_STYLE = "styles/gms-reputation-59.10.css";
 export const VISUAL_REQUIRED_STYLES = Object.freeze([
   VISUAL_AUTHORITY_STYLE,
-  "styles/gms-reputation-60.6.css"
+  "styles/gms-reputation-60.7.css"
 ]);
 
 export const VISUAL_SURFACES = Object.freeze({
@@ -44,7 +44,7 @@ export const VISUAL_FORBIDDEN_PATTERNS = Object.freeze([
   "performance-motion-veto"
 ]);
 
-/** Contrato 60.6: base visual 59.10 + camada estreita de reparo estrutural 60.6. */
+/** Contrato 60.7: base visual 59.10 + reparo estrutural compatível com o root real do ApplicationV2. */
 export function auditVisualManifest(moduleJson = {}) {
   const styles = Array.isArray(moduleJson.styles) ? moduleJson.styles : [];
   const missingStyles = VISUAL_REQUIRED_STYLES.filter((path) => !styles.includes(path));
