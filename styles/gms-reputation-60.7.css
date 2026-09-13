@@ -1,0 +1,239 @@
+/* ========================================================================== 
+   GMS // MATRIZ DE REPUTAÇÃO — 60.7 LAYOUT REPAIR
+   Camada estreita de correção sobre a autoridade visual 59.10.
+
+   Motivo: regras legadas ainda aplicadas ao .gms-player-dashboard__scroll
+   forçavam grid-row: 2, enquanto o layout 60.5 moveu esse elemento para dentro
+   de um shell de duas colunas. O resultado era o dossiê inteiro comprimido sob
+   a sidebar. Esta revisão corrige também a topologia real do ApplicationV2: com root:true,
+   o elemento da aplicação pode ser o próprio .gms-player-dashboard/.gms-master-panel.
+   Por isso os seletores estruturais não dependem mais de um wrapper intermediário.
+   ========================================================================== */
+
+.application.gms-reputation-player-dashboard-app.gms-player-dashboard[data-gms-layout="60.5"],
+.application.gms-reputation-player-dashboard-app
+.gms-player-dashboard[data-gms-layout="60.5"] {
+  container-type: inline-size !important;
+  container-name: gms-player-dashboard !important;
+}
+
+.application.gms-reputation-player-dashboard-app
+.gms-player-dashboard__shell {
+  min-width: 0 !important;
+  min-height: 0 !important;
+  grid-template-columns: 176px minmax(0, 1fr) !important;
+  grid-template-rows: minmax(0, 1fr) !important;
+  overflow: hidden !important;
+}
+
+.application.gms-reputation-player-dashboard-app
+.gms-player-dashboard__sidebar {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  align-self: stretch !important;
+}
+
+.application.gms-reputation-player-dashboard-app
+.gms-player-dashboard__scroll {
+  position: relative !important;
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  width: auto !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  align-self: stretch !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  scrollbar-gutter: stable !important;
+}
+
+.application.gms-reputation-player-dashboard-app
+.gms-player-dashboard__content {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+/* O componente deve reagir à largura da Application, não ao viewport inteiro. */
+@container gms-player-dashboard (max-width: 680px) {
+  .application.gms-reputation-player-dashboard-app
+  .gms-player-dashboard__header--layout-60 {
+    padding-inline: 92px !important;
+  }
+
+  .application.gms-reputation-player-dashboard-app
+  .gms-player-dashboard__dev-button {
+    min-width: 72px !important;
+  }
+
+  .application.gms-reputation-player-dashboard-app
+  .gms-player-dashboard__dev-button span {
+    display: none !important;
+  }
+
+  .application.gms-reputation-player-dashboard-app
+  .gms-player-dashboard__shell {
+    grid-template-columns: 138px minmax(0, 1fr) !important;
+    grid-template-rows: minmax(0, 1fr) !important;
+  }
+
+  .application.gms-reputation-player-dashboard-app
+  .gms-player-dashboard__records-head {
+    display: none !important;
+  }
+
+  .application.gms-reputation-player-dashboard-app
+  .gms-reputation-player-card--row {
+    grid-template-columns: minmax(105px, 1fr) minmax(92px, .9fr) 58px !important;
+    grid-template-rows: auto auto auto !important;
+    grid-template-areas:
+      "identity relation score"
+      "protocol protocol score"
+      "hearts hearts score" !important;
+  }
+}
+
+@container gms-player-dashboard (max-width: 520px) {
+  .application.gms-reputation-player-dashboard-app
+  .gms-player-dashboard__header--layout-60 {
+    padding-inline: 52px !important;
+  }
+
+  .application.gms-reputation-player-dashboard-app
+  .gms-player-dashboard__title--central small,
+  .application.gms-reputation-player-dashboard-app
+  .gms-player-dashboard__live-update {
+    display: none !important;
+  }
+
+  .application.gms-reputation-player-dashboard-app
+  .gms-player-dashboard__dev-button {
+    right: 6px !important;
+    min-width: 34px !important;
+    width: 34px !important;
+    padding: 0 !important;
+  }
+
+  .application.gms-reputation-player-dashboard-app
+  .gms-player-dashboard__shell {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto minmax(0, 1fr) !important;
+  }
+
+  .application.gms-reputation-player-dashboard-app
+  .gms-player-dashboard__sidebar {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    max-height: 158px !important;
+    border-right: 0 !important;
+    border-bottom: 1px solid rgba(113, 153, 167, .22) !important;
+  }
+
+  .application.gms-reputation-player-dashboard-app
+  .gms-player-dashboard__scroll {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .application.gms-reputation-player-dashboard-app
+  .gms-player-dashboard__sidebar-head {
+    display: none !important;
+  }
+
+  .application.gms-reputation-player-dashboard-app
+  .gms-player-dashboard__sidebar-scroll {
+    display: flex !important;
+    gap: 5px !important;
+    overflow: auto !important;
+  }
+
+  .application.gms-reputation-player-dashboard-app
+  .gms-player-dashboard__group {
+    min-width: 150px !important;
+    margin: 0 !important;
+    align-self: start !important;
+  }
+
+  .application.gms-reputation-player-dashboard-app
+  .gms-player-dashboard__content {
+    padding: 7px !important;
+  }
+
+  .application.gms-reputation-player-dashboard-app
+  .gms-player-dashboard__focal .gms-reputation-focal-profile__visual {
+    height: 180px !important;
+    min-height: 180px !important;
+  }
+
+  .application.gms-reputation-player-dashboard-app
+  .gms-reputation-player-card--row {
+    grid-template-columns: minmax(0, 1fr) 54px !important;
+    grid-template-rows: auto auto auto auto !important;
+    grid-template-areas:
+      "identity score"
+      "relation score"
+      "protocol score"
+      "hearts hearts" !important;
+    padding-left: 7px !important;
+  }
+}
+
+/* Mestre: os breakpoints estruturais também seguem a largura da Application. */
+.application.gms-reputation-master-panel-app.gms-master-panel[data-gms-layout="60.5"],
+.application.gms-reputation-master-panel-app
+.gms-master-panel[data-gms-layout="60.5"] {
+  container-type: inline-size !important;
+  container-name: gms-master-panel !important;
+}
+
+@container gms-master-panel (max-width: 820px) {
+  .application.gms-reputation-master-panel-app .gms-master-panel__tabsbar {
+    grid-template-columns: 1fr !important;
+  }
+
+  .application.gms-reputation-master-panel-app .gms-master-panel__brand {
+    display: none !important;
+  }
+
+  .application.gms-reputation-master-panel-app .gms-master-panel__nav button {
+    min-width: 104px !important;
+  }
+
+  .application.gms-reputation-master-panel-app .gms-master-panel__selection-bus {
+    grid-template-columns: 1fr !important;
+    gap: 6px !important;
+  }
+
+  .application.gms-reputation-master-panel-app .gms-master-panel__selection-copy {
+    display: none !important;
+  }
+
+  .application.gms-reputation-master-panel-app .gms-master-panel__savebar[data-gms-v2-role="save-bus"] {
+    grid-template-columns: 1fr auto !important;
+  }
+}
+
+@container gms-master-panel (max-width: 520px) {
+  .application.gms-reputation-master-panel-app .gms-master-panel__selectors {
+    grid-template-columns: 1fr !important;
+  }
+
+  .application.gms-reputation-master-panel-app .gms-master-panel__save-state small,
+  .application.gms-reputation-master-panel-app .gms-master-panel__history-actions span,
+  .application.gms-reputation-master-panel-app .gms-master-panel__save-actions span {
+    display: none !important;
+  }
+
+  .application.gms-reputation-master-panel-app
+  .gms-master-panel__content[data-gms-v2-role="command-workspace"] {
+    padding: 7px !important;
+  }
+
+  .application.gms-reputation-master-panel-app .gms-master-panel__content > section {
+    padding: 9px !important;
+  }
+}
