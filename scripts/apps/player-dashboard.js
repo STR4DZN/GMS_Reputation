@@ -7,6 +7,8 @@ import { HandlebarsApplicationV2, appElement, destroyListeners, listen, notify, 
 import { subscribeWorldStateChanges } from "../events/world-sync.js";
 import { wireApplicationAccessibility } from "../utils/accessibility.js";
 import { wireMotionSystem } from "../motion/motion-system.js";
+import { isFullGamemaster } from "../persistence/permissions.js";
+import { openMasterPanel } from "./master-panel.js";
 
 const CARD_TEMPLATE = `modules/${MODULE_ID}/templates/partials/player-card.hbs`;
 const FOCAL_TEMPLATE = `modules/${MODULE_ID}/templates/partials/focal-profile.hbs`;
@@ -47,6 +49,9 @@ export function buildPlayerDashboardContext({ profileId = "", state = loadWorldS
       profiles: Object.freeze([]),
       profileGroups: Object.freeze([]),
       profileId: "",
+      centralName: "",
+      matrixName: "",
+      canOpenDevMode: isFullGamemaster(),
       cards: Object.freeze([])
     });
   }
@@ -123,6 +128,9 @@ export function buildPlayerDashboardContext({ profileId = "", state = loadWorldS
       image: String(profile.focal?.portrait?.src || ""),
       groupName: profile.groupId && groupMap.has(profile.groupId) ? String(groupMap.get(profile.groupId).name || "Sem Grupo") : "Sem Grupo"
     }),
+    centralName: String(profile.focal?.name || profile.name || "Perfil"),
+    matrixName: String(profile.name || "Matriz de Reputação"),
+    canOpenDevMode: isFullGamemaster(),
     showProfileLibrary: groups.length > 0 || profiles.length > 1,
     profiles: Object.freeze(profiles.map((entry) => Object.freeze({ id: entry.id, name: entry.name, selected: entry.id === profile.id }))),
     profileGroups: Object.freeze(profileGroups),
@@ -161,7 +169,7 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
       icon: "fa-solid fa-people-arrows-left-right",
       resizable: true
     },
-    position: { width: 940, height: 780 }
+    position: { width: 900, height: 820 }
   };
 
   static PARTS = {
@@ -267,6 +275,12 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
     }
   }
 
+  _wireMasterShortcut(root) {
+    const button = root?.querySelector?.("[data-player-open-master]");
+    if (!button) return;
+    listen(this._listeners, button, "click", () => openMasterPanel({ profileId: this.profileId, activeSection: "profiles" }));
+  }
+
   _wireProfileGroupAccordion(root) {
     const groups = [...(root?.querySelectorAll?.("[data-player-profile-library] details[data-profile-group]") ?? [])];
     for (const group of groups) {
@@ -323,6 +337,7 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
     this._motionBooted = true;
     if (this._pendingMotion) { this._motionController.transition?.(this._pendingMotion, root); this._pendingMotion = ""; }
     this._wireProfileChoices(root);
+    this._wireMasterShortcut(root);
     this._wireProfileGroupAccordion(root);
     this._wireCardDetails(root);
   }

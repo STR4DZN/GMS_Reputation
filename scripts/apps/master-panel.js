@@ -39,12 +39,12 @@ import { wireMotionSystem } from "../motion/motion-system.js";
 import { buildSmartSelectorContext, wireSmartSelector } from "../components/smart-selector.js";
 
 const SECTIONS = Object.freeze([
-  ["profiles", "Perfis", "fa-layer-group", "MATRIZES"],
+  ["profiles", "Perfil", "fa-layer-group", "PERFIL"],
   ["characters", "Personagens", "fa-user-pen", "CADASTRO"],
   ["relationship", "Reputação", "fa-heart-pulse", "RELAÇÕES"],
-  ["history", "Histórico", "fa-clock-rotate-left", "AUDITORIA"],
+  ["settings", "Configuração", "fa-sliders", "SISTEMA"],
   ["cleanup", "Limpeza", "fa-trash-can", "DADOS"],
-  ["settings", "Sistema", "fa-sliders", "CONTROLE"]
+  ["history", "HIS", "fa-clock-rotate-left", "HISTÓRICO"]
 ]);
 
 const WORKSPACE_PANELS = Object.freeze({
@@ -413,7 +413,7 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
     classes: ["gms-reputation-app", "gms-reputation-master-panel-app"],
     tag: "section",
     window: { title: "GMS // Controle de Reputação", icon: "fa-solid fa-shield-halved", resizable: true },
-    position: { width: 1080, height: 820 }
+    position: { width: 1120, height: 840 }
   };
 
   static PARTS = {
@@ -421,7 +421,7 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
       root: true,
       template: `modules/${MODULE_ID}/templates/apps/master-panel.hbs`,
       templates: PARTIALS,
-      scrollable: [".gms-master-panel__nav", ".gms-master-panel__content"]
+      scrollable: [".gms-master-panel__content"]
     }
   };
 

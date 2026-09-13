@@ -1,91 +1,128 @@
 import { MODULE_ID } from "../constants.js";
 import { designatedAuthorityUser, isFullGamemaster } from "./permissions.js";
 
+/**
+ * Kept as part of the frozen Architecture 60 public contract. Delegated writes
+ * now travel through SocketLib instead of trusting identity fields carried by
+ * the native Foundry module socket.
+ */
 export const SOCKET_CHANNEL = `module.${MODULE_ID}`;
-const pending = new Map();
-let initialized = false;
-let writeHandler = null;
+export const SOCKETLIB_WRITE_HANDLER = "writeWorldState";
 
-function randomId() {
-  return globalThis.foundry?.utils?.randomID?.(20) ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+let writeHandler = null;
+let socketlibSocket = null;
+let registered = false;
+let enabled = false;
+
+function socketlibApi() {
+  return globalThis.socketlib ?? null;
+}
+
+function callerUserId(context) {
+  if (typeof context === "string" || typeof context === "number") return String(context);
+  if (context && typeof context === "object") {
+    const value = context.userId ?? context.id ?? context.user?.id;
+    if (value !== undefined && value !== null) return String(value);
+  }
+  return "";
+}
+
+function withTimeout(promise, ms) {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      reject(new Error("A autoridade do mundo não respondeu à solicitação de gravação."));
+    }, ms);
+    Promise.resolve(promise).then(
+      (value) => { clearTimeout(timer); resolve(value); },
+      (error) => { clearTimeout(timer); reject(error); }
+    );
+  });
 }
 
 export function setAuthorityWriteHandler(handler) {
   writeHandler = typeof handler === "function" ? handler : null;
 }
 
-function reply(request, payload) {
-  globalThis.game?.socket?.emit?.(SOCKET_CHANNEL, {
-    type: "write-response",
-    requestId: request.requestId,
-    targetUserId: request.senderId,
-    authorityUserId: globalThis.game?.user?.id ?? null,
-    ...payload
-  });
-}
+/**
+ * SocketLib invokes registered handlers with `this` bound to the id of the
+ * user that initiated the remote execution. That authenticated caller id is
+ * the only requester identity accepted by the broker.
+ */
+async function socketlibWriteRequest(message = {}) {
+  if (!enabled) throw new Error("Authority Broker is disabled.");
+  if (!isFullGamemaster()) throw new Error("Este cliente não é uma autoridade completa do World.");
 
-async function onSocketMessage(message = {}) {
-  if (!message || typeof message !== "object") return;
-  if (message.type === "write-response") {
-    if (String(message.targetUserId || "") !== String(globalThis.game?.user?.id || "")) return;
-    const request = pending.get(String(message.requestId || ""));
-    if (!request) return;
-    pending.delete(String(message.requestId));
-    clearTimeout(request.timer);
-    if (message.ok) request.resolve(message.state);
-    else request.reject(new Error(String(message.error || "A autoridade do mundo recusou a gravação.")));
-    return;
-  }
-
-  if (message.type !== "write-request" || !isFullGamemaster()) return;
   const designated = designatedAuthorityUser();
-  if (designated && String(designated.id) !== String(globalThis.game?.user?.id)) return;
-  if (!writeHandler) return reply(message, { ok: false, error: "Authority write handler is unavailable." });
-  try {
-    const state = await writeHandler(message);
-    reply(message, { ok: true, state });
-  } catch (error) {
-    reply(message, { ok: false, error: error?.message || String(error) });
+  if (designated && String(designated.id) !== String(globalThis.game?.user?.id ?? "")) {
+    throw new Error("Este Gamemaster não é a autoridade designada do World.");
   }
+
+  const requesterId = callerUserId(this);
+  if (!requesterId) throw new Error("SocketLib não informou a identidade do usuário solicitante.");
+  if (!writeHandler) throw new Error("Authority write handler is unavailable.");
+
+  return writeHandler(message, Object.freeze({ requesterId, transport: "socketlib" }));
 }
 
+/**
+ * Register once on every client after `socketlib.ready`.
+ * Safe to call again from Foundry `ready` as a fallback; registration itself
+ * remains idempotent.
+ */
 export function initializeAuthorityBroker({ handler } = {}) {
   if (handler) setAuthorityWriteHandler(handler);
-  if (initialized) return;
-  initialized = true;
-  globalThis.game?.socket?.on?.(SOCKET_CHANNEL, onSocketMessage);
+  enabled = true;
+  if (registered && socketlibSocket) return true;
+
+  const api = socketlibApi();
+  if (!api?.registerModule) {
+    enabled = false;
+    return false;
+  }
+
+  socketlibSocket = api.registerModule(MODULE_ID);
+  if (!socketlibSocket?.register || !socketlibSocket?.executeAsUser) {
+    socketlibSocket = null;
+    enabled = false;
+    throw new Error("SocketLib não expôs a API necessária para o GMS Reputation.");
+  }
+
+  socketlibSocket.register(SOCKETLIB_WRITE_HANDLER, socketlibWriteRequest);
+  registered = true;
+  return true;
 }
 
+/**
+ * SocketLib does not expose an unregister primitive for registered handlers.
+ * Shutdown therefore disables the broker without attempting a duplicate
+ * registration later in the same page session.
+ */
 export function shutdownAuthorityBroker() {
-  if (!initialized) return;
-  globalThis.game?.socket?.off?.(SOCKET_CHANNEL, onSocketMessage);
-  initialized = false;
+  enabled = false;
 }
 
-export function requestAuthorityWrite(candidate, {
+export function isAuthorityBrokerReady() {
+  return Boolean(enabled && registered && socketlibSocket);
+}
+
+export async function requestAuthorityWrite(candidate, {
   expectedRevision,
   createBackup = true,
   timeoutMs = 8000
 } = {}) {
   const authority = designatedAuthorityUser();
-  if (!authority) return Promise.reject(new Error("Nenhum Gamemaster completo está online para autorizar esta gravação."));
-  if (!globalThis.game?.socket?.emit) return Promise.reject(new Error("Canal de sincronização do Foundry indisponível."));
-  const requestId = randomId();
-  const senderId = String(globalThis.game?.user?.id || "");
-  return new Promise((resolve, reject) => {
-    const timer = setTimeout(() => {
-      pending.delete(requestId);
-      reject(new Error("A autoridade do mundo não respondeu à solicitação de gravação."));
-    }, Math.max(1000, Number(timeoutMs) || 8000));
-    pending.set(requestId, { resolve, reject, timer });
-    globalThis.game.socket.emit(SOCKET_CHANNEL, {
-      type: "write-request",
-      requestId,
-      senderId,
-      authorityUserId: authority.id,
-      expectedRevision,
-      createBackup: Boolean(createBackup),
-      candidate
-    });
-  });
+  if (!authority) throw new Error("Nenhum Gamemaster completo está online para autorizar esta gravação.");
+  if (!isAuthorityBrokerReady()) {
+    throw new Error("SocketLib não está pronto. Verifique se o módulo SocketLib está instalado e ativo.");
+  }
+
+  const payload = {
+    expectedRevision,
+    createBackup: Boolean(createBackup),
+    candidate
+  };
+
+  const execution = socketlibSocket.executeAsUser(SOCKETLIB_WRITE_HANDLER, String(authority.id), payload);
+  const ms = Math.max(1000, Number(timeoutMs) || 8000);
+  return withTimeout(execution, ms);
 }

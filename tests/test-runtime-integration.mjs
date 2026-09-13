@@ -21,7 +21,8 @@ globalThis.CONST = {
 
 const gm = { id: 'gm-a', role: 4, isGM: true, active: true, name: 'GM A' };
 const player = { id: 'player-a', role: 1, isGM: false, active: true, name: 'Player A' };
-const userMap = new Map([[gm.id, gm], [player.id, player]]);
+const trusted = { id: 'trusted-a', role: 2, isGM: false, active: true, name: 'Trusted A' };
+const userMap = new Map([[gm.id, gm], [player.id, player], [trusted.id, trusted]]);
 Object.defineProperty(userMap, 'contents', { get: () => [...userMap.values()] });
 
 const registeredSettings = new Map();
@@ -30,6 +31,8 @@ const settingKey = (moduleId, key) => `${moduleId}.${key}`;
 const moduleRecord = {};
 const socketListeners = new Map();
 const socketEmits = [];
+const socketlibHandlers = new Map();
+let socketlibModuleId = null;
 let controlsRenderCount = 0;
 
 globalThis.game = {
@@ -57,6 +60,27 @@ globalThis.game = {
     on(channel, fn) { socketListeners.set(channel, fn); },
     off(channel, fn) { if (socketListeners.get(channel) === fn) socketListeners.delete(channel); },
     emit(channel, payload) { socketEmits.push([channel, payload]); }
+  }
+};
+
+
+globalThis.socketlib = {
+  registerModule(moduleId) {
+    socketlibModuleId = moduleId;
+    return {
+      register(name, fn) { socketlibHandlers.set(name, fn); },
+      async executeAsUser(name, userId, payload) {
+        const fn = socketlibHandlers.get(name);
+        if (!fn) throw new Error(`missing socketlib handler: ${name}`);
+        const callerId = String(game.user?.id ?? '');
+        const executor = userMap.get(String(userId));
+        if (!executor) throw new Error(`missing socketlib target user: ${userId}`);
+        const previous = game.user;
+        game.user = executor;
+        try { return await fn.call(callerId, structuredClone(payload)); }
+        finally { game.user = previous; }
+      }
+    };
   }
 };
 
@@ -104,7 +128,9 @@ assert.deepEqual(
   [...LEGACY_PUBLIC_API_NAMESPACES].sort(),
   'facade da Architecture 60 deve preservar exatamente os namespaces públicos da 59.10'
 );
-assert.ok(socketListeners.has(`module.${MODULE_ID}`), 'Authority Broker deve escutar o socket do módulo');
+assert.equal(socketlibModuleId, MODULE_ID, 'Authority Broker deve registrar o módulo no SocketLib');
+assert.equal(typeof socketlibHandlers.get('writeWorldState'), 'function', 'Authority Broker deve registrar o handler remoto');
+assert.equal(socketListeners.size, 0, 'Authority Broker não deve usar socket nativo para gravações delegadas');
 const initializedState = moduleRecord.api.store.loadWorldState();
 assert.equal(initializedState.schemaVersion, DATA_SCHEMA_VERSION);
 assert.equal(initializedState.revision, 0);
@@ -224,6 +250,7 @@ assert.ok(parseInt(element.style.width, 10) <= 1280);
 assert.ok(parseInt(element.style.height, 10) <= 720);
 
 AuthorityBroker.shutdownAuthorityBroker();
-assert.equal(socketListeners.size, 0, 'shutdown deve soltar listener do socket');
+assert.equal(AuthorityBroker.isAuthorityBrokerReady(), false, 'shutdown deve desabilitar o broker');
+assert.equal(socketListeners.size, 0, 'broker seguro não deve instalar listener no socket nativo');
 
 console.log('OK runtime-integration | lifecycle + SceneControls + FilePicker + accessibility + audit + window recovery');

@@ -1,10 +1,11 @@
-# Instalação — GMS // Matriz de Reputação 1.2.0-dev.60.1
+# Instalação — GMS // Matriz de Reputação 1.2.0-dev.60.5
 
 ## Alvo
 
 - Foundry VTT v13.
 - `minimum: 13.341`.
 - `verified: 13.351`.
+- SocketLib `1.1.3+` obrigatório (recomendado `1.1.4`).
 
 ## Instalação / atualização manual
 
@@ -13,9 +14,10 @@
 3. **Remova a pasta antiga `Data/modules/gms-reputation` inteira. Não mescle builds.**
 4. Extraia a nova pasta `gms-reputation` em `Data/modules/`.
 5. Confirme a existência de `Data/modules/gms-reputation/module.json`.
-6. Abra o Foundry e habilite **GMS // Matriz de Reputação**.
-7. Faça hard refresh no navegador (`Ctrl+F5`).
-8. Entre primeiro com um Gamemaster completo para inicialização/migração do estado mundial.
+6. Confirme que **SocketLib** está instalado e ativo; o manifesto o declara como dependência obrigatória.
+7. Abra o Foundry e habilite **GMS // Matriz de Reputação**.
+8. Faça hard refresh no navegador (`Ctrl+F5`).
+9. Entre primeiro com um Gamemaster completo para inicialização/migração do estado mundial.
 
 ## Como abrir
 

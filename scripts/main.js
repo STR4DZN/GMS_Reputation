@@ -16,6 +16,14 @@ Hooks.once("init", () => {
   console.info(`${MODULE_TITLE} | Inicializando ${MODULE_VERSION} | schema ${DATA_SCHEMA_VERSION}`);
 });
 
+Hooks.once("socketlib.ready", () => {
+  try {
+    AuthorityBroker.initializeAuthorityBroker({ handler: Store.handleDelegatedSaveRequest });
+  } catch (error) {
+    console.error(`${MODULE_TITLE} | Falha ao registrar o Authority Broker no SocketLib.`, error);
+  }
+});
+
 Hooks.once("ready", async () => {
   const module = game.modules.get(MODULE_ID);
   if (!module) return;
@@ -24,7 +32,12 @@ Hooks.once("ready", async () => {
   // reorganizes internals behind this facade.
   module.api = createLegacyPublicApi();
 
-  AuthorityBroker.initializeAuthorityBroker({ handler: Store.handleDelegatedSaveRequest });
+  // Fallback idempotente para hosts onde socketlib.ready ocorreu antes deste
+  // módulo terminar de carregar. O manifest declara SocketLib como dependência.
+  if (!AuthorityBroker.isAuthorityBrokerReady()) {
+    const brokerReady = AuthorityBroker.initializeAuthorityBroker({ handler: Store.handleDelegatedSaveRequest });
+    if (!brokerReady) console.error(`${MODULE_TITLE} | SocketLib não está disponível; gravações delegadas ficarão indisponíveis.`);
+  }
   WorldSync.primeWorldStateSync(Store.loadWorldState());
 
   // Inicialização/migração do world setting exige Gamemaster completo. Com múltiplos GMs,

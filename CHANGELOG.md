@@ -1,3 +1,20 @@
+## 1.2.0-dev.60.5 — Layout estrutural Player / Mestre
+
+- Player reorganizado conforme novo wireframe: nome focal central no topo, atalho **MODO GM** exclusivo para Gamemaster completo, navegação lateral de grupos/perfis em acordeão e área principal dedicada ao dossiê.
+- Imagem/GIF focal passa a ocupar o bloco visual principal; relações ficam em linhas compactas com Nome, Relação, Vínculos/Outros, índice e corações em leitura contínua.
+- Mestre migra da navegação lateral para abas horizontais no topo: **Perfil**, **Personagens**, **Reputação**, **Configuração**, **Limpeza** e **HIS**.
+- Contexto ativo e salvamento foram compactados para não disputar espaço com a área de trabalho.
+- Conteúdo do Mestre recebe grade responsiva por workspace; Perfil e Personagens usam duas colunas quando há espaço e colapsam em uma coluna em janelas menores.
+- Nenhuma alteração no Schema 5, WorldState, regras de reputação, histórico, permissões ou persistência.
+
+## 1.2.0-dev.60.4 — Authority Broker via SocketLib
+
+- Gravações delegadas de Assistant/Trusted deixam de confiar em `senderId` transportado pelo socket nativo.
+- `SocketLib` passa a ser dependência explícita do módulo e executa a gravação no Gamemaster completo designado.
+- A identidade do solicitante vem do contexto autenticado do handler remoto do SocketLib e é passada separadamente ao `WorldStore`.
+- Mantidos Schema 5, settings, hooks, namespaces públicos e `SOCKET_CHANNEL` congelado para compatibilidade Architecture 60.
+- Full GM continua gravando diretamente quando é a autoridade designada; demais clientes usam o broker.
+
 ## 1.2.0-dev.60.3 — Retorno ao Normal
 
 - restauração completa da interface original e funcionalidade normal do módulo;

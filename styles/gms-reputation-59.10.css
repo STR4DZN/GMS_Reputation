@@ -14914,3 +14914,724 @@ grid-column: 1 !important;
   .application.gms-reputation-master-panel-app .gms-master-cleanup__impact{grid-column:1;grid-row:auto;padding-left:0;justify-content:flex-start;flex-wrap:wrap}
   .application.gms-reputation-master-panel-app .gms-master-cleanup__delete{grid-column:1;grid-row:auto;width:100%}
 }
+
+/* ========================================================================== */
+/* LAYOUT 60.5 — Player dossier + Master top tabs                             */
+/* Wireframe authority: 2026-09-12                                            */
+/* ========================================================================== */
+
+/* PLAYER ------------------------------------------------------------------- */
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard[data-gms-layout="60.5"]{
+  display:grid !important;
+  grid-template-rows:auto minmax(0,1fr) !important;
+  overflow:hidden !important;
+  background:
+    radial-gradient(circle at 52% -10%,rgba(39,243,255,.055),transparent 34%),
+    linear-gradient(145deg,rgba(11,15,22,.98),rgba(4,7,11,.99)) !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__header--layout-60{
+  position:relative !important;
+  min-height:58px !important;
+  display:grid !important;
+  place-items:center !important;
+  padding:7px 118px 8px !important;
+  border:0 !important;
+  border-bottom:1px solid rgba(112,180,199,.24) !important;
+  background:linear-gradient(180deg,rgba(14,21,29,.98),rgba(7,11,16,.96)) !important;
+  box-shadow:0 8px 24px rgba(0,0,0,.24) !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__title--central{
+  width:min(100%,520px) !important;
+  display:grid !important;
+  justify-items:center !important;
+  gap:4px !important;
+  text-align:center !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__title--central small{
+  max-width:100% !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  white-space:nowrap !important;
+  color:#697d89 !important;
+  font:800 8px/1 var(--gms-v2-font-data,ui-monospace,monospace) !important;
+  letter-spacing:.18em !important;
+  text-transform:uppercase !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__title--central strong{
+  max-width:100% !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  white-space:nowrap !important;
+  color:#edfaff !important;
+  font:950 clamp(22px,3.3cqi,34px)/.88 var(--gms-v2-font-display,"Bahnschrift Condensed","Arial Narrow",sans-serif) !important;
+  letter-spacing:.055em !important;
+  text-transform:uppercase !important;
+  text-shadow:0 0 18px rgba(39,243,255,.08) !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__dev-button{
+  position:absolute !important;
+  right:10px !important;
+  top:50% !important;
+  translate:0 -50% !important;
+  min-width:94px !important;
+  height:34px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:7px !important;
+  padding:0 10px !important;
+  border:1px solid rgba(39,243,255,.30) !important;
+  background:linear-gradient(180deg,rgba(39,243,255,.075),rgba(39,243,255,.025)) !important;
+  color:#bdeff3 !important;
+  font:900 8px/1 var(--gms-v2-font-data,ui-monospace,monospace) !important;
+  letter-spacing:.10em !important;
+  text-transform:uppercase !important;
+  clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,0 100%) !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__dev-button:hover{
+  border-color:rgba(39,243,255,.62) !important;
+  color:#edfeff !important;
+  background:rgba(39,243,255,.11) !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__live-update{
+  position:absolute !important;
+  left:10px !important;
+  top:50% !important;
+  translate:0 -50% !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__shell{
+  min-width:0 !important;
+  min-height:0 !important;
+  display:grid !important;
+  grid-template-columns:176px minmax(0,1fr) !important;
+  overflow:hidden !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__sidebar{
+  min-width:0 !important;
+  min-height:0 !important;
+  display:grid !important;
+  grid-template-rows:auto minmax(0,1fr) !important;
+  border-right:1px solid rgba(113,153,167,.26) !important;
+  background:linear-gradient(180deg,rgba(9,14,20,.98),rgba(4,8,12,.96)) !important;
+  box-shadow:8px 0 22px rgba(0,0,0,.19) !important;
+  z-index:2 !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__sidebar-head{
+  display:grid !important;
+  gap:3px !important;
+  padding:10px 10px 9px !important;
+  border-bottom:1px solid rgba(112,180,199,.16) !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__sidebar-head small{
+  color:#5f7784 !important;
+  font:800 7px/1 var(--gms-v2-font-data,monospace) !important;
+  letter-spacing:.17em !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__sidebar-head strong{
+  color:#cfe5ec !important;
+  font:900 12px/1 var(--gms-v2-font-ui,"Segoe UI",sans-serif) !important;
+  letter-spacing:.08em !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__sidebar-scroll{
+  min-height:0 !important;
+  overflow:auto !important;
+  padding:7px !important;
+  scrollbar-gutter:stable !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__group{
+  margin:0 0 6px !important;
+  border:1px solid rgba(115,147,160,.14) !important;
+  background:rgba(255,255,255,.012) !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__group>summary{
+  min-height:38px !important;
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) auto 14px !important;
+  gap:7px !important;
+  align-items:center !important;
+  padding:6px 7px 6px 9px !important;
+  cursor:pointer !important;
+  list-style:none !important;
+  border-left:2px solid transparent !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__group>summary::-webkit-details-marker{display:none !important}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__group[data-active="true"]>summary,
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__group[open]>summary{
+  border-left-color:#45e7f3 !important;
+  background:linear-gradient(90deg,rgba(69,231,243,.055),transparent) !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__group-copy{
+  min-width:0 !important;
+  display:grid !important;
+  gap:2px !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__group-copy small{
+  color:#60717c !important;
+  font:800 6px/1 var(--gms-v2-font-data,monospace) !important;
+  letter-spacing:.13em !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__group-copy strong{
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  white-space:nowrap !important;
+  color:#c9d9df !important;
+  font:850 10px/1.05 var(--gms-v2-font-ui,"Segoe UI",sans-serif) !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__group-count{
+  min-width:22px !important;
+  height:20px !important;
+  display:grid !important;
+  place-items:center !important;
+  color:#7da4af !important;
+  border:1px solid rgba(69,231,243,.15) !important;
+  font:900 8px/1 var(--gms-v2-font-data,monospace) !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__group>summary>i{
+  font-size:8px !important;
+  color:#607d87 !important;
+  transition:transform .16s ease !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__group[open]>summary>i{transform:rotate(180deg) !important}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__profiles{
+  display:grid !important;
+  gap:3px !important;
+  padding:4px !important;
+  border-top:1px solid rgba(111,148,163,.10) !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__profile-choice{
+  min-width:0 !important;
+  min-height:42px !important;
+  display:grid !important;
+  grid-template-columns:30px minmax(0,1fr) !important;
+  gap:7px !important;
+  align-items:center !important;
+  padding:5px !important;
+  text-align:left !important;
+  border:1px solid transparent !important;
+  background:transparent !important;
+  color:#aabac1 !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__profile-choice:hover{
+  background:rgba(69,231,243,.035) !important;
+  border-color:rgba(69,231,243,.12) !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__profile-choice[data-selected="true"]{
+  background:linear-gradient(90deg,rgba(69,231,243,.095),rgba(69,231,243,.018)) !important;
+  border-color:rgba(69,231,243,.28) !important;
+  color:#effdff !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__profile-thumb{
+  width:30px !important;
+  height:30px !important;
+  display:grid !important;
+  place-items:center !important;
+  overflow:hidden !important;
+  border:1px solid rgba(111,163,178,.20) !important;
+  background:#060a0e !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__profile-thumb img{
+  width:100% !important;
+  height:100% !important;
+  object-fit:cover !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__profile-choice>span:last-child{
+  min-width:0 !important;
+  display:grid !important;
+  gap:2px !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__profile-choice strong,
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__profile-choice small{
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  white-space:nowrap !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__profile-choice strong{font-size:10px !important}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__profile-choice small{font-size:7px !important;color:#657782 !important}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__scroll{
+  min-width:0 !important;
+  min-height:0 !important;
+  overflow:auto !important;
+  scrollbar-gutter:stable !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__content{
+  width:min(100%,980px) !important;
+  min-width:0 !important;
+  margin:0 auto !important;
+  padding:10px 11px 18px !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__focal{
+  padding:0 !important;
+  margin:0 0 8px !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__focal .gms-reputation-focal-profile{
+  display:block !important;
+  position:relative !important;
+  min-height:0 !important;
+  padding:0 !important;
+  overflow:hidden !important;
+  border:1px solid rgba(113,160,176,.24) !important;
+  background:#030609 !important;
+  clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,0 100%) !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__focal .gms-reputation-focal-profile__visual{
+  width:100% !important;
+  height:clamp(190px,34vh,330px) !important;
+  min-height:190px !important;
+  max-height:330px !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__focal .gms-reputation-portrait--focal{
+  width:100% !important;
+  height:100% !important;
+  max-width:none !important;
+  aspect-ratio:auto !important;
+  border:0 !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__focal .gms-reputation-focal-profile__copy{
+  position:absolute !important;
+  left:0 !important;
+  right:0 !important;
+  bottom:0 !important;
+  display:block !important;
+  padding:32px 12px 10px !important;
+  pointer-events:none !important;
+  background:linear-gradient(180deg,transparent,rgba(2,5,8,.90)) !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__focal .gms-reputation-focal-profile__eyebrow,
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__focal .gms-reputation-focal-profile__copy h2{display:none !important}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__focal .gms-reputation-focal-profile__copy p{
+  margin:0 !important;
+  color:#aebfc6 !important;
+  font-size:10px !important;
+  line-height:1.35 !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__records{
+  display:grid !important;
+  gap:5px !important;
+  min-width:0 !important;
+  padding:0 !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__records-head{
+  min-height:28px !important;
+  display:grid !important;
+  grid-template-columns:minmax(128px,1.18fr) minmax(92px,.78fr) minmax(116px,.92fr) 74px !important;
+  gap:0 !important;
+  align-items:center !important;
+  padding:0 0 0 10px !important;
+  color:#617985 !important;
+  background:rgba(255,255,255,.012) !important;
+  border:1px solid rgba(111,151,166,.12) !important;
+  font:900 7px/1 var(--gms-v2-font-data,monospace) !important;
+  letter-spacing:.12em !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__records-head span{
+  min-width:0 !important;
+  padding:0 8px !important;
+  border-right:1px solid rgba(111,151,166,.10) !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__records-head span:last-child{text-align:center !important;border-right:0 !important}
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card--row{
+  position:relative !important;
+  display:grid !important;
+  grid-template-columns:minmax(128px,1.18fr) minmax(92px,.78fr) minmax(116px,.92fr) 74px !important;
+  grid-template-rows:minmax(42px,auto) auto !important;
+  grid-template-areas:"identity relation protocol score" "hearts hearts hearts score" !important;
+  column-gap:0 !important;
+  row-gap:0 !important;
+  min-height:75px !important;
+  padding:0 0 0 10px !important;
+  overflow:hidden !important;
+  border:1px solid rgba(126,163,176,.16) !important;
+  border-left:2px solid var(--gms596-band,#71818b) !important;
+  background:linear-gradient(135deg,rgba(9,12,20,.88),rgba(4,7,13,.82)) !important;
+  clip-path:none !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card--row:hover{
+  border-color:rgba(119,175,190,.28) !important;
+  border-left-color:var(--gms596-band,#71818b) !important;
+  background:linear-gradient(135deg,rgba(12,17,26,.94),rgba(5,9,15,.90)) !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card--row .gms-reputation-player-card__frame,
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card--row .gms-reputation-player-card__trace,
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card--row .gms-reputation-player-card__vector-mark,
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card--row .gms-reputation-player-card__serial{display:none !important}
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card--row .gms-reputation-player-card__identity{
+  grid-area:identity !important;
+  min-width:0 !important;
+  display:flex !important;
+  align-items:center !important;
+  padding:7px 9px !important;
+  border-right:1px solid rgba(126,163,176,.10) !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card--row .gms-reputation-identity{width:100% !important;min-width:0 !important}
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card--row .gms-reputation-player-card__relation{
+  grid-area:relation !important;
+  min-width:0 !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  padding:7px 9px !important;
+  border:0 !important;
+  border-right:1px solid rgba(126,163,176,.10) !important;
+  background:transparent !important;
+  font-size:10px !important;
+  line-height:1.1 !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card--row .gms-reputation-player-card__protocol{
+  grid-area:protocol !important;
+  min-width:0 !important;
+  display:flex !important;
+  align-items:center !important;
+  padding:6px 8px !important;
+  border-right:1px solid rgba(126,163,176,.10) !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card--row .gms-reputation-player-card__special{
+  position:static !important;
+  width:100% !important;
+  min-width:0 !important;
+  min-height:28px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  gap:6px !important;
+  padding:4px 6px !important;
+  border:1px solid rgba(142,179,191,.13) !important;
+  background:rgba(255,255,255,.015) !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card--row .gms-reputation-player-card__special img{
+  width:20px !important;
+  height:20px !important;
+  object-fit:contain !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card--row .gms-reputation-player-card__special strong{
+  min-width:0 !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  white-space:nowrap !important;
+  font-size:9px !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__protocol-empty{
+  color:#52636c !important;
+  font:800 12px/1 var(--gms-v2-font-data,monospace) !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card--row .gms-reputation-player-card__score{
+  grid-area:score !important;
+  position:static !important;
+  align-self:stretch !important;
+  width:auto !important;
+  min-width:0 !important;
+  display:grid !important;
+  place-content:center !important;
+  justify-items:center !important;
+  gap:2px !important;
+  padding:6px !important;
+  border:0 !important;
+  border-left:1px solid rgba(126,163,176,.13) !important;
+  background:rgba(0,0,0,.22) !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card--row .gms-reputation-player-card__score strong{
+  font-size:21px !important;
+  line-height:.9 !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card--row .gms-reputation-player-card__score small{
+  font-size:9px !important;
+  line-height:1 !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card--row .gms-reputation-player-card__hearts{
+  grid-area:hearts !important;
+  min-width:0 !important;
+  display:flex !important;
+  align-items:center !important;
+  padding:5px 9px 7px !important;
+  border-top:1px solid rgba(126,163,176,.09) !important;
+  background:rgba(0,0,0,.09) !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card--row .gms-reputation-heart-track{
+  width:100% !important;
+  justify-content:start !important;
+  gap:2px !important;
+}
+
+/* MASTER ------------------------------------------------------------------- */
+.application.gms-reputation-master-panel-app .gms-master-panel[data-gms-layout="60.5"]{
+  display:grid !important;
+  grid-template-rows:auto auto auto minmax(0,1fr) !important;
+  overflow:hidden !important;
+  background:linear-gradient(145deg,rgba(8,12,18,.99),rgba(3,6,10,.99)) !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__tabsbar{
+  min-width:0 !important;
+  display:grid !important;
+  grid-template-columns:auto minmax(0,1fr) !important;
+  align-items:stretch !important;
+  border-bottom:1px solid rgba(115,164,180,.25) !important;
+  background:linear-gradient(180deg,rgba(12,18,25,.99),rgba(7,11,16,.98)) !important;
+  box-shadow:0 8px 22px rgba(0,0,0,.22) !important;
+  z-index:4 !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__brand{
+  min-width:148px !important;
+  display:grid !important;
+  align-content:center !important;
+  gap:3px !important;
+  padding:8px 12px !important;
+  border-right:1px solid rgba(115,164,180,.18) !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__brand small{
+  color:#617782 !important;
+  font:800 7px/1 var(--gms-v2-font-data,monospace) !important;
+  letter-spacing:.14em !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__brand strong{
+  color:#d9eef3 !important;
+  font:900 12px/1 var(--gms-v2-font-ui,"Segoe UI",sans-serif) !important;
+  letter-spacing:.07em !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__nav[data-gms-v2-role="command-rail"]{
+  min-width:0 !important;
+  display:flex !important;
+  align-items:stretch !important;
+  gap:0 !important;
+  overflow-x:auto !important;
+  overflow-y:hidden !important;
+  padding:0 !important;
+  border:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  scrollbar-width:thin !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__nav[data-gms-v2-role="command-rail"]::before{display:none !important}
+.application.gms-reputation-master-panel-app .gms-master-panel__nav button{
+  position:relative !important;
+  flex:1 0 max-content !important;
+  min-width:112px !important;
+  min-height:52px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:7px !important;
+  padding:6px 11px !important;
+  border:0 !important;
+  border-right:1px solid rgba(115,164,180,.10) !important;
+  border-bottom:2px solid transparent !important;
+  background:transparent !important;
+  clip-path:none !important;
+  color:#82949d !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__nav button i{
+  width:auto !important;
+  height:auto !important;
+  display:block !important;
+  color:#6f8994 !important;
+  background:transparent !important;
+  border:0 !important;
+  font-size:11px !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__nav-copy{
+  display:grid !important;
+  justify-items:start !important;
+  gap:2px !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__nav-copy strong{
+  color:inherit !important;
+  font:850 10px/1 var(--gms-v2-font-ui,"Segoe UI",sans-serif) !important;
+  letter-spacing:.035em !important;
+  text-transform:uppercase !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__nav-copy small{
+  color:#52656e !important;
+  font:800 6px/1 var(--gms-v2-font-data,monospace) !important;
+  letter-spacing:.11em !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__nav button:hover{
+  color:#c8e8ee !important;
+  background:rgba(69,231,243,.035) !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__nav button[data-active="true"]{
+  color:#f0fdff !important;
+  border-bottom-color:#45e7f3 !important;
+  background:linear-gradient(180deg,rgba(69,231,243,.075),rgba(69,231,243,.018)) !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__nav button[data-active="true"]::after{
+  content:"" !important;
+  position:absolute !important;
+  left:22% !important;
+  right:22% !important;
+  bottom:0 !important;
+  top:auto !important;
+  width:auto !important;
+  height:1px !important;
+  background:#a6f8ff !important;
+  box-shadow:0 0 10px rgba(69,231,243,.55) !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__selection-bus{
+  min-width:0 !important;
+  min-height:54px !important;
+  display:grid !important;
+  grid-template-columns:minmax(180px,.55fr) minmax(0,1.45fr) !important;
+  gap:12px !important;
+  align-items:center !important;
+  padding:6px 10px !important;
+  border:0 !important;
+  border-bottom:1px solid rgba(113,153,167,.13) !important;
+  background:rgba(8,13,18,.92) !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__selection-copy{
+  display:grid !important;
+  gap:2px !important;
+  min-width:0 !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__selection-copy small{
+  color:#5f7681 !important;
+  font:800 7px/1 var(--gms-v2-font-data,monospace) !important;
+  letter-spacing:.13em !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__selection-copy strong{
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  white-space:nowrap !important;
+  color:#9fb3bc !important;
+  font-size:9px !important;
+  font-weight:700 !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__selectors{
+  display:grid !important;
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:8px !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__selectors label{
+  min-height:38px !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__savebar[data-gms-v2-role="save-bus"]{
+  min-width:0 !important;
+  min-height:42px !important;
+  display:grid !important;
+  grid-template-columns:minmax(150px,1fr) auto auto !important;
+  gap:8px !important;
+  align-items:center !important;
+  padding:5px 10px !important;
+  border:0 !important;
+  border-bottom:1px solid rgba(113,153,167,.13) !important;
+  background:rgba(5,9,13,.94) !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__save-state>i{
+  width:25px !important;
+  height:25px !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__savebar button{
+  min-height:29px !important;
+  padding:0 9px !important;
+  font-size:8px !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__layout{
+  min-width:0 !important;
+  min-height:0 !important;
+  display:block !important;
+  overflow:hidden !important;
+  background:transparent !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__content[data-gms-v2-role="command-workspace"]{
+  width:100% !important;
+  height:100% !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  display:grid !important;
+  align-content:start !important;
+  gap:12px !important;
+  overflow:auto !important;
+  padding:12px !important;
+  background:radial-gradient(circle at 50% 0,rgba(69,231,243,.018),transparent 28%),rgba(4,7,11,.75) !important;
+  scrollbar-gutter:stable !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__content>section{
+  min-width:0 !important;
+  min-height:0 !important;
+  height:auto !important;
+  padding:13px !important;
+  border:1px solid rgba(117,157,170,.14) !important;
+  background:linear-gradient(180deg,rgba(11,16,22,.90),rgba(6,10,15,.90)) !important;
+  clip-path:none !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__content>section>header{
+  margin:0 0 12px !important;
+  padding:0 0 9px 11px !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__content h2{
+  margin:4px 0 0 !important;
+  font-size:clamp(21px,2.5cqi,30px) !important;
+  line-height:.95 !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel[data-master-active-section="profiles"] .gms-master-panel__content,
+.application.gms-reputation-master-panel-app .gms-master-panel[data-master-active-section="characters"] .gms-master-panel__content{
+  grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr) !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel[data-master-active-section="profiles"] [data-master-section-panel="subjects"]{
+  grid-column:1/-1 !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel[data-master-active-section="characters"] [data-master-section-panel="characters"]{
+  grid-column:1/2 !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel[data-master-active-section="characters"] [data-master-section-panel="portrait"]{
+  grid-column:2/3 !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel[data-master-active-section="relationship"] .gms-master-panel__content,
+.application.gms-reputation-master-panel-app .gms-master-panel[data-master-active-section="history"] .gms-master-panel__content,
+.application.gms-reputation-master-panel-app .gms-master-panel[data-master-active-section="cleanup"] .gms-master-panel__content,
+.application.gms-reputation-master-panel-app .gms-master-panel[data-master-active-section="settings"] .gms-master-panel__content{
+  grid-template-columns:minmax(0,1fr) !important;
+}
+
+/* RESPONSIVE --------------------------------------------------------------- */
+@media(max-width:820px){
+  .application.gms-reputation-master-panel-app .gms-master-panel__tabsbar{grid-template-columns:1fr !important}
+  .application.gms-reputation-master-panel-app .gms-master-panel__brand{display:none !important}
+  .application.gms-reputation-master-panel-app .gms-master-panel__nav button{min-width:104px !important}
+  .application.gms-reputation-master-panel-app .gms-master-panel__selection-bus{grid-template-columns:1fr !important;gap:6px !important}
+  .application.gms-reputation-master-panel-app .gms-master-panel__selection-copy{display:none !important}
+  .application.gms-reputation-master-panel-app .gms-master-panel__savebar[data-gms-v2-role="save-bus"]{grid-template-columns:1fr auto !important}
+  .application.gms-reputation-master-panel-app .gms-master-panel__save-actions{grid-column:1/-1 !important;justify-content:flex-end !important}
+  .application.gms-reputation-master-panel-app .gms-master-panel[data-master-active-section="profiles"] .gms-master-panel__content,
+  .application.gms-reputation-master-panel-app .gms-master-panel[data-master-active-section="characters"] .gms-master-panel__content{grid-template-columns:1fr !important}
+  .application.gms-reputation-master-panel-app .gms-master-panel[data-master-active-section="characters"] [data-master-section-panel="characters"],
+  .application.gms-reputation-master-panel-app .gms-master-panel[data-master-active-section="characters"] [data-master-section-panel="portrait"]{grid-column:1 !important}
+}
+@media(max-width:680px){
+  .application.gms-reputation-player-dashboard-app .gms-player-dashboard__header--layout-60{padding-inline:92px !important}
+  .application.gms-reputation-player-dashboard-app .gms-player-dashboard__dev-button{min-width:72px !important}
+  .application.gms-reputation-player-dashboard-app .gms-player-dashboard__dev-button span{display:none !important}
+  .application.gms-reputation-player-dashboard-app .gms-player-dashboard__shell{grid-template-columns:138px minmax(0,1fr) !important}
+  .application.gms-reputation-player-dashboard-app .gms-player-dashboard__records-head{display:none !important}
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card--row{
+    grid-template-columns:minmax(105px,1fr) minmax(92px,.9fr) 58px !important;
+    grid-template-rows:auto auto auto !important;
+    grid-template-areas:"identity relation score" "protocol protocol score" "hearts hearts score" !important;
+  }
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card--row .gms-reputation-player-card__protocol{border-top:1px solid rgba(126,163,176,.08) !important}
+}
+@media(max-width:520px){
+  .application.gms-reputation-player-dashboard-app .gms-player-dashboard__header--layout-60{padding-inline:52px !important}
+  .application.gms-reputation-player-dashboard-app .gms-player-dashboard__title--central small{display:none !important}
+  .application.gms-reputation-player-dashboard-app .gms-player-dashboard__dev-button{right:6px !important;min-width:34px !important;width:34px !important;padding:0 !important}
+  .application.gms-reputation-player-dashboard-app .gms-player-dashboard__live-update{display:none !important}
+  .application.gms-reputation-player-dashboard-app .gms-player-dashboard__shell{grid-template-columns:1fr !important;grid-template-rows:auto minmax(0,1fr) !important}
+  .application.gms-reputation-player-dashboard-app .gms-player-dashboard__sidebar{max-height:158px !important;border-right:0 !important;border-bottom:1px solid rgba(113,153,167,.22) !important}
+  .application.gms-reputation-player-dashboard-app .gms-player-dashboard__sidebar-head{display:none !important}
+  .application.gms-reputation-player-dashboard-app .gms-player-dashboard__sidebar-scroll{display:flex !important;gap:5px !important;overflow:auto !important}
+  .application.gms-reputation-player-dashboard-app .gms-player-dashboard__group{min-width:150px !important;margin:0 !important;align-self:start !important}
+  .application.gms-reputation-player-dashboard-app .gms-player-dashboard__content{padding:7px !important}
+  .application.gms-reputation-player-dashboard-app .gms-player-dashboard__focal .gms-reputation-focal-profile__visual{height:180px !important;min-height:180px !important}
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card--row{
+    grid-template-columns:minmax(0,1fr) 54px !important;
+    grid-template-rows:auto auto auto auto !important;
+    grid-template-areas:"identity score" "relation score" "protocol score" "hearts hearts" !important;
+    padding-left:7px !important;
+  }
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card--row .gms-reputation-player-card__identity,
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card--row .gms-reputation-player-card__relation,
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card--row .gms-reputation-player-card__protocol{border-right:0 !important;border-bottom:1px solid rgba(126,163,176,.08) !important}
+  .application.gms-reputation-master-panel-app .gms-master-panel__selectors{grid-template-columns:1fr !important}
+  .application.gms-reputation-master-panel-app .gms-master-panel__save-state small,
+  .application.gms-reputation-master-panel-app .gms-master-panel__history-actions span,
+  .application.gms-reputation-master-panel-app .gms-master-panel__save-actions span{display:none !important}
+  .application.gms-reputation-master-panel-app .gms-master-panel__content[data-gms-v2-role="command-workspace"]{padding:7px !important}
+  .application.gms-reputation-master-panel-app .gms-master-panel__content>section{padding:9px !important}
+}
