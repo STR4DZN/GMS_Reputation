@@ -1,27 +1,12 @@
-<section class="gms-player-dashboard gms-v2-tech-texture" data-gms-visual-generation="3" data-gms-build="59.10" data-gms-layout="60.5" data-player-matrix-surface data-profile-id="{{profileId}}" data-world-revision="{{worldRevision}}">
+<section class="gms-player-dashboard gms-v2-tech-texture" data-gms-visual-generation="3" data-gms-build="59.10" data-gms-layout="60.5" data-has-profile="{{hasProfile}}" data-player-matrix-surface data-profile-id="{{profileId}}" data-world-revision="{{worldRevision}}">
   {{> "modules/gms-reputation/templates/partials/background-art.hbs"}}
 
-  <header class="gms-player-dashboard__header gms-player-dashboard__header--layout-60">
-    <span class="gms-player-dashboard__vector-field" aria-hidden="true"></span>
-    <span class="gms-player-dashboard__header-notch" aria-hidden="true"></span>
-    <div class="gms-player-dashboard__title gms-player-dashboard__title--central" data-gms-v2-role="masthead">
-      <small>{{#if hasProfile}}{{matrixName}}{{else}}GMS // MATRIZ DE REPUTAÇÃO{{/if}}</small>
-      <strong>{{#if hasProfile}}{{centralName}}{{else}}SEM PERFIL DISPONÍVEL{{/if}}</strong>
-    </div>
-    <span class="gms-player-dashboard__live-update" data-player-live-update data-active="false" role="status" aria-live="polite"></span>
-    {{#if canOpenDevMode}}
-      <button type="button" class="gms-player-dashboard__dev-button" data-player-open-master title="Abrir modo do Mestre" aria-label="Abrir modo do Mestre">
-        <i class="fa-solid fa-sliders" aria-hidden="true"></i><span>MODO GM</span>
-      </button>
-    {{/if}}
-  </header>
-
-  {{#if hasProfile}}
-    <div class="gms-player-dashboard__shell">
+  <div class="gms-player-dashboard__shell">
+    {{#if hasProfile}}
       <aside class="gms-player-dashboard__sidebar" aria-label="Perfis e grupos">
         <header class="gms-player-dashboard__sidebar-head">
           <small>NAVEGAÇÃO</small>
-          <strong>INDIVÍDUOS</strong>
+          <strong>GRUPOS</strong>
         </header>
         <div class="gms-player-dashboard__sidebar-scroll" data-player-profile-library>
           {{#each profileGroups}}
@@ -43,29 +28,48 @@
           {{/each}}
         </div>
       </aside>
+    {{/if}}
 
-      <div class="gms-player-dashboard__scroll" data-gms-v2-role="dossier-scroll">
-        <div class="gms-player-dashboard__content" data-player-matrix-content>
-          <section class="gms-player-dashboard__focal" aria-label="Perfil focal" data-gms-v2-role="focal-dossier">
-            {{> "modules/gms-reputation/templates/partials/focal-profile.hbs" focal}}
-          </section>
-
-          <section class="gms-player-dashboard__records" aria-label="Relações do perfil" data-gms-v2-role="relationship-grid">
-            <header class="gms-player-dashboard__records-head" aria-hidden="true">
-              <span>NOME</span><span>RELAÇÃO</span><span>VÍNCULOS / OUTROS</span><span>ÍNDICE</span>
-            </header>
-            {{#each cards}}
-              {{> "modules/gms-reputation/templates/partials/player-card.hbs" this}}
-            {{/each}}
-          </section>
+    <div class="gms-player-dashboard__stage">
+      <header class="gms-player-dashboard__header gms-player-dashboard__header--layout-60">
+        <span class="gms-player-dashboard__vector-field" aria-hidden="true"></span>
+        <span class="gms-player-dashboard__header-notch" aria-hidden="true"></span>
+        <div class="gms-player-dashboard__title gms-player-dashboard__title--central" data-gms-v2-role="masthead">
+          <small>{{#if hasProfile}}{{matrixName}}{{else}}GMS // MATRIZ DE REPUTAÇÃO{{/if}}</small>
+          <strong>{{#if hasProfile}}{{centralName}}{{else}}SEM PERFIL DISPONÍVEL{{/if}}</strong>
         </div>
-      </div>
+        <span class="gms-player-dashboard__live-update" data-player-live-update data-active="false" role="status" aria-live="polite"></span>
+        {{#if canOpenDevMode}}
+          <button type="button" class="gms-player-dashboard__dev-button" data-player-open-master title="Abrir modo do Mestre" aria-label="Abrir modo do Mestre">
+            <i class="fa-solid fa-sliders" aria-hidden="true"></i><span>MODO GM</span>
+          </button>
+        {{/if}}
+      </header>
+
+      {{#if hasProfile}}
+        <div class="gms-player-dashboard__scroll" data-gms-v2-role="dossier-scroll">
+          <div class="gms-player-dashboard__content" data-player-matrix-content>
+            <section class="gms-player-dashboard__focal" aria-label="Perfil focal" data-gms-v2-role="focal-dossier">
+              {{> "modules/gms-reputation/templates/partials/focal-profile.hbs" focal}}
+            </section>
+
+            <section class="gms-player-dashboard__records" aria-label="Relações do perfil" data-gms-v2-role="relationship-grid">
+              <header class="gms-player-dashboard__records-head" aria-hidden="true">
+                <span>NOME</span><span>RELAÇÃO</span><span>VÍNCULOS / OUTROS</span><span>ÍNDICE</span>
+              </header>
+              {{#each cards}}
+                {{> "modules/gms-reputation/templates/partials/player-card.hbs" this}}
+              {{/each}}
+            </section>
+          </div>
+        </div>
+      {{else}}
+        <div class="gms-player-dashboard__empty">
+          <i class="fa-solid fa-folder-open" aria-hidden="true"></i>
+          <strong>Nenhum perfil social ativo.</strong>
+          <p>O Mestre ainda não disponibilizou um perfil de reputação neste mundo.</p>
+        </div>
+      {{/if}}
     </div>
-  {{else}}
-    <div class="gms-player-dashboard__empty">
-      <i class="fa-solid fa-folder-open" aria-hidden="true"></i>
-      <strong>Nenhum perfil social ativo.</strong>
-      <p>O Mestre ainda não disponibilizou um perfil de reputação neste mundo.</p>
-    </div>
-  {{/if}}
+  </div>
 </section>
