@@ -1,20 +1,24 @@
 # GMS // Matriz de Reputação
 
-**Versão:** `1.2.0-dev.60.6`  
-**Foundry VTT:** v13 — mínimo `13.341`, verificado para `13.351`.
+**Versão:** `1.2.0-dev.60.8`  
+**Foundry VTT:** v13 — mínimo `13.341`, verificado para `13.351`.  
 **Dependência:** SocketLib `1.1.3+` (recomendado `1.1.4`).
 
 Módulo de reputação social com interfaces separadas para Player e Mestre, perfis/matrizes, personagens, retratos, reputação em passos de 0,5, Vínculo, Comunhão, Duplo//Sinc derivado, histórico, Undo/Redo, backup, permissões, sincronização e migração da macro legada.
 
-## 60.6 — correção estrutural de layout
+## 60.8 — Player e Mestre alinhados aos wireframes
 
-A 60.6 corrige a regressão introduzida na 60.5 em que regras legadas de grid empurravam o dossiê do Player para baixo da sidebar, comprimindo cards e deixando grande área vazia. O novo reparo fixa explicitamente sidebar e conteúdo nas colunas corretas e move os breakpoints estruturais para `@container`, fazendo Player e Mestre responderem à largura real da janela do Foundry em vez do viewport inteiro.
+A 60.8 consolida a correção da 60.7 e reorganiza a geometria das duas interfaces conforme os desenhos aprovados.
+
+No **Player**, a navegação de grupos/perfis passa a ocupar um rail lateral permanente. O cabeçalho com o nome central e o botão de acesso ao modo do Mestre fica somente sobre o stage principal; abaixo dele vêm a imagem/GIF focal e a lista de relações. Cada relação mantém `Nome`, `Relação`, `Vínculos / Outros`, corações e o índice à direita. Em janelas estreitas o rail continua lateral e apenas reduz sua largura.
+
+No **Mestre**, as seis áreas ficam em abas horizontais no topo: **Perfil**, **Personagens**, **Reputação**, **Configuração**, **Limpeza** e **HIS**. Seletores e ações de salvamento ficam em uma faixa compacta logo abaixo e o workspace usa todo o restante da Application, reagindo à largura real da janela com `@container`.
 
 O Schema permanece em **5** e não há migração de WorldState.
 
 ## Architecture 60 — Fase A
 
-A versão `1.2.0-dev.60.1` inicia uma refatoração **compatibility-first**. O schema persistente continua em **5**, o `MODULE_ID` continua `gms-reputation`, as chaves do WorldState permanecem iguais e nenhuma migração de dados é necessária. A nova arquitetura nasce em paralelo através de Contracts, Compatibility Facade, Repository, Commands, Queries e Golden WorldStates. Consulte `docs/ARCHITECTURE_60.md`.
+A versão `1.2.0-dev.60.1` iniciou uma refatoração **compatibility-first**. O schema persistente continua em **5**, o `MODULE_ID` continua `gms-reputation`, as chaves do WorldState permanecem iguais e nenhuma migração de dados é necessária. A arquitetura utiliza Contracts, Compatibility Facade, Repository, Commands, Queries e Golden WorldStates. Consulte `docs/ARCHITECTURE_60.md`.
 
 ## Atualização pelo Foundry
 
@@ -22,13 +26,13 @@ O módulo publica os campos oficiais `url`, `manifest` e `download`. O Foundry p
 
 Manifesto público: `https://raw.githubusercontent.com/STR4DZN/GMS_Reputation/main/module.json`
 
-## Arquitetura 59.0
+## Runtime visual
 
-A versão 59.0 é uma consolidação estrutural. O módulo carrega:
+O módulo carrega:
 
 - `scripts/main.js` como entrypoint;
 - `styles/gms-reputation-59.10.css` como autoridade visual base;
-- `styles/gms-reputation-60.6.css` como camada estreita de correção estrutural;
+- `styles/gms-reputation-60.8.css` como autoridade estrutural atual para Player/Mestre;
 - templates canônicos em `templates/apps` e `templates/partials`;
 - um único Motion System em `scripts/motion/motion-system.js`.
 
@@ -40,7 +44,7 @@ A Matriz do Player é somente leitura e oferece troca de perfil/matriz, perfil f
 
 ## Mestre
 
-O Command Deck possui seis áreas principais: **Perfil**, **Personagens**, **Reputação**, **Configuração**, **Limpeza** e **HIS**. A 60.6 preserva essa estrutura e corrige apenas comportamento responsivo e geometria de layout.
+O Command Deck possui seis áreas principais: **Perfil**, **Personagens**, **Reputação**, **Configuração**, **Limpeza** e **HIS**. As abas permanecem no topo e cada página usa o workspace central responsivo.
 
 ## Gerenciador de Limpeza
 
