@@ -19,7 +19,7 @@ const { MODULE_ID, SETTINGS, MODULE_VERSION } = await import("../scripts/constan
 const Schema = await import("../scripts/data/schema.js");
 const { registerPersistenceSettings } = await import("../scripts/persistence/settings.js");
 registerPersistenceSettings();
-assert.equal(MODULE_VERSION, "1.2.0-dev.60.5");
+assert.equal(MODULE_VERSION, "1.2.0-dev.60.6");
 
 const state = Schema.createEmptyWorldState({ createdBy: "gm-apps" });
 state.subjects.s1 = Schema.createSubject({
@@ -86,6 +86,7 @@ assert.equal(Master.openMasterPanel(), null);
 const detailTemplate = await readFile(new URL("../templates/apps/subject-detail.hbs", import.meta.url), "utf8");
 const playerTemplate = await readFile(new URL("../templates/apps/player-dashboard.hbs", import.meta.url), "utf8");
 const masterTemplate = await readFile(new URL("../templates/apps/master-panel.hbs", import.meta.url), "utf8");
+const layoutRepairCss = await readFile(new URL("../styles/gms-reputation-60.6.css", import.meta.url), "utf8");
 for (const source of [detailTemplate, playerTemplate]) {
   assert.doesNotMatch(source, /data-delta|name="score"|data-edit-portrait|data-toggle-bond|data-toggle-communion/i);
 }
@@ -104,5 +105,10 @@ assert.match(masterTemplate, /data-master-section-panel="subjects"/);
 assert.match(masterTemplate, /data-master-section-panel="settings"/);
 assert.match(masterTemplate, /data-master-score-delta="-1"/);
 assert.match(detailTemplate, /data-gms-visual-generation="3"/);
+
+assert.match(layoutRepairCss, /\.gms-player-dashboard__sidebar\s*\{[\s\S]*?grid-column:\s*1\s*!important;[\s\S]*?grid-row:\s*1\s*!important;/);
+assert.match(layoutRepairCss, /\.gms-player-dashboard__scroll\s*\{[\s\S]*?grid-column:\s*2\s*!important;[\s\S]*?grid-row:\s*1\s*!important;/);
+assert.match(layoutRepairCss, /@container\s+gms-player-dashboard\s*\(max-width:\s*680px\)/);
+assert.match(layoutRepairCss, /@container\s+gms-master-panel\s*\(max-width:\s*820px\)/);
 
 console.log("applications: OK");
