@@ -3,12 +3,12 @@ import { readFile } from "node:fs/promises";
 import * as Motion from "../scripts/motion/motion-system.js";
 
 const manifest = JSON.parse(await readFile(new URL("../module.json", import.meta.url), "utf8"));
-assert.equal(manifest.version, "1.2.0-dev.60.6");
-assert.deepEqual(manifest.styles, ["styles/gms-reputation-59.10.css", "styles/gms-reputation-60.6.css"]);
+assert.equal(manifest.version, "1.2.0-dev.60.7");
+assert.deepEqual(manifest.styles, ["styles/gms-reputation-59.10.css", "styles/gms-reputation-60.7.css"]);
 assert.deepEqual(manifest.esmodules, ["scripts/main.js"]);
 
 const css = await readFile(new URL("../styles/gms-reputation-59.10.css", import.meta.url), "utf8");
-const repairCss = await readFile(new URL("../styles/gms-reputation-60.6.css", import.meta.url), "utf8");
+const repairCss = await readFile(new URL("../styles/gms-reputation-60.7.css", import.meta.url), "utf8");
 assert.doesNotMatch(css, /prefers-reduced-motion|data-gms-performance|performance-mode|figma/i);
 assert.doesNotMatch(css, /player-favorite|is-favorite|gms-player-density|density-mode/i);
 assert.match(css, /\.gms-motion-scanner/);
@@ -16,9 +16,11 @@ assert.match(css, /@keyframes\s+gms57-console-sweep/);
 assert.match(css, /data-gms-motion-system="59"/);
 assert.match(css, /\.gms-subject-detail\[data-gms-visual-generation="3"\]/);
 assert.equal((css.match(/\{/g) ?? []).length, (css.match(/\}/g) ?? []).length, "CSS base com chaves desbalanceadas");
-assert.equal((repairCss.match(/\{/g) ?? []).length, (repairCss.match(/\}/g) ?? []).length, "CSS 60.6 com chaves desbalanceadas");
-assert.match(repairCss, /gms-player-dashboard__shell/);
+assert.equal((repairCss.match(/\{/g) ?? []).length, (repairCss.match(/\}/g) ?? []).length, "CSS 60.7 com chaves desbalanceadas");
+assert.match(repairCss, /\.application\.gms-reputation-player-dashboard-app\.gms-player-dashboard\[data-gms-layout="60\.5"\]/, "reparo deve reconhecer o Player quando o root:true funde as classes no root da ApplicationV2");
+assert.match(repairCss, /\.application\.gms-reputation-player-dashboard-app\s+\.gms-player-dashboard__scroll\s*\{[^}]*grid-column:\s*2\s*!important;[^}]*grid-row:\s*1\s*!important;/s, "scroll principal deve ocupar coluna 2 / linha 1 sem depender de wrapper intermediário");
 assert.match(repairCss, /@container\s+gms-player-dashboard/);
+assert.match(repairCss, /\.application\.gms-reputation-master-panel-app\.gms-master-panel\[data-gms-layout="60\.5"\]/, "reparo deve reconhecer o Master quando o root:true funde as classes no root da ApplicationV2");
 assert.equal(Motion.shouldRunMotion({ dataset: { gmsPerformance: "performance" } }), true);
 
 const classes = new Set();
