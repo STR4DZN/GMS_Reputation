@@ -19,7 +19,7 @@ const { MODULE_ID, SETTINGS, MODULE_VERSION } = await import("../scripts/constan
 const Schema = await import("../scripts/data/schema.js");
 const { registerPersistenceSettings } = await import("../scripts/persistence/settings.js");
 registerPersistenceSettings();
-assert.equal(MODULE_VERSION, "1.2.0-dev.60.8");
+assert.equal(MODULE_VERSION, "1.2.0-dev.70");
 
 const state = Schema.createEmptyWorldState({ createdBy: "gm-apps" });
 state.subjects.s1 = Schema.createSubject({
@@ -72,7 +72,7 @@ assert.deepEqual(storage.get(`${MODULE_ID}.${SETTINGS.WORLD_STATE}`), worldBefor
 const master = Master.buildMasterPanelContext({ profileId: "p1", subjectId: "s1", activeSection: "relationship" });
 assert.equal(master.authorized, true);
 assert.equal(master.sections.length, 6);
-assert.deepEqual(master.sections.map((entry) => entry.id), ["profiles", "characters", "relationship", "settings", "cleanup", "history"]);
+assert.deepEqual(master.sections.map((entry) => entry.id), ["profiles", "characters", "relationship", "history", "cleanup", "settings"]);
 assert.equal(master.selection.score, 8.5);
 assert.equal(master.selection.special.label, "VÍNCULO");
 assert.equal(master.selection.special.dualSyncActive, false);
@@ -86,37 +86,17 @@ assert.equal(Master.openMasterPanel(), null);
 const detailTemplate = await readFile(new URL("../templates/apps/subject-detail.hbs", import.meta.url), "utf8");
 const playerTemplate = await readFile(new URL("../templates/apps/player-dashboard.hbs", import.meta.url), "utf8");
 const masterTemplate = await readFile(new URL("../templates/apps/master-panel.hbs", import.meta.url), "utf8");
-const layoutCss = await readFile(new URL("../styles/gms-reputation-60.8.css", import.meta.url), "utf8");
 for (const source of [detailTemplate, playerTemplate]) {
   assert.doesNotMatch(source, /data-delta|name="score"|data-edit-portrait|data-toggle-bond|data-toggle-communion/i);
 }
 assert.doesNotMatch(playerTemplate, /player-toolbar|data-player-search|data-player-empty-result/i);
 assert.match(playerTemplate, /gms-player-dashboard__content/);
-assert.match(playerTemplate, /data-gms-layout="60\.5"/);
-assert.match(playerTemplate, /data-has-profile="\{\{hasProfile\}\}"/);
-assert.match(playerTemplate, /gms-player-dashboard__sidebar/);
-assert.match(playerTemplate, /gms-player-dashboard__stage/);
-assert.match(playerTemplate, /data-player-open-master/);
-assert.match(playerTemplate, /VÍNCULOS \/ OUTROS/);
 assert.match(playerTemplate, /templates\/partials\/player-card\.hbs/);
 assert.match(playerTemplate, /templates\/partials\/focal-profile\.hbs/);
-assert.ok(playerTemplate.indexOf("gms-player-dashboard__sidebar") < playerTemplate.indexOf("gms-player-dashboard__stage"), "rail lateral deve vir antes do stage principal");
-assert.ok(playerTemplate.indexOf("gms-player-dashboard__stage") < playerTemplate.indexOf("gms-player-dashboard__header--layout-60"), "cabeçalho central deve viver dentro do stage principal");
 assert.match(masterTemplate, /data-master-section-choice="\{\{id\}\}"/);
-assert.match(masterTemplate, /data-gms-layout="60\.5"/);
-assert.match(masterTemplate, /gms-master-panel__tabsbar/);
 assert.match(masterTemplate, /data-master-section-panel="subjects"/);
 assert.match(masterTemplate, /data-master-section-panel="settings"/);
 assert.match(masterTemplate, /data-master-score-delta="-1"/);
 assert.match(detailTemplate, /data-gms-visual-generation="3"/);
-
-assert.match(layoutCss, /\.application\.gms-reputation-player-dashboard-app\.gms-player-dashboard\[data-gms-layout="60\.5"\]/, "layout deve casar com root:true");
-assert.match(layoutCss, /\.gms-player-dashboard__stage\s*\{[\s\S]*?grid-column:\s*2\s*!important;[\s\S]*?grid-row:\s*1\s*!important;/);
-assert.match(layoutCss, /\.gms-player-dashboard__scroll\s*\{[\s\S]*?grid-column:\s*1\s*!important;[\s\S]*?grid-row:\s*2\s*!important;/);
-assert.match(layoutCss, /grid-template-areas:\s*\n\s*"identity relation protocol score"\s*\n\s*"hearts hearts hearts score"/);
-assert.match(layoutCss, /@container\s+gms-player-dashboard\s*\(max-width:\s*680px\)/);
-assert.match(layoutCss, /\.application\.gms-reputation-master-panel-app\.gms-master-panel\[data-gms-layout="60\.5"\]/);
-assert.match(layoutCss, /grid-template-columns:\s*repeat\(6,\s*minmax\(92px,\s*1fr\)\)\s*!important;/);
-assert.match(layoutCss, /@container\s+gms-master-panel\s*\(max-width:\s*820px\)/);
 
 console.log("applications: OK");

@@ -5,13 +5,14 @@ import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const manifest = JSON.parse(await readFile(path.join(root, "module.json"), "utf8"));
 assert.deepEqual(manifest.esmodules, ["scripts/main.js"]);
-assert.deepEqual(manifest.styles, ["styles/gms-reputation-59.10.css", "styles/gms-reputation-60.8.css"]);
+assert.deepEqual(manifest.styles, ["styles/gms-reputation-59.10.css"]);
 const Visual = await import("../scripts/audit/visual-contract.js");
 const visualAudit = Visual.auditVisualManifest(manifest);
 assert.equal(Visual.VISUAL_GENERATION, 3);
 assert.equal(visualAudit.ok, true);
 assert.equal(visualAudit.authorityStyle, "styles/gms-reputation-59.10.css");
 assert.deepEqual([...visualAudit.unexpectedStyles], []);
+
 
 const forbidden = /(?:main-5\d|templates\/v5\d|\?build=|performance-mode|player-preferences|player-favorites|player-toolbar|player-directory)/i;
 const visit = async (dir) => {

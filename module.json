@@ -2,7 +2,7 @@
   "id": "gms-reputation",
   "title": "GMS // Matriz de Reputação",
   "description": "Matriz de reputação social para Foundry VTT com dashboards de Player/GM, migração da macro legada, retratos, estados especiais, histórico, undo/redo, sincronização e permissões.",
-  "version": "1.2.0-dev.60.8",
+  "version": "1.2.0-dev.70",
   "authors": [
     {
       "name": "GMS"
@@ -10,7 +10,7 @@
   ],
   "url": "https://github.com/STR4DZN/GMS_Reputation",
   "manifest": "https://raw.githubusercontent.com/STR4DZN/GMS_Reputation/main/module.json",
-  "download": "https://github.com/STR4DZN/GMS_Reputation/releases/download/v1.2.0-dev.60.8/GMS_Reputation_1.2.0-dev.60.8.zip",
+  "download": "https://github.com/STR4DZN/GMS_Reputation/releases/download/v1.2.0-dev.70/GMS_Reputation_1.2.0-dev.70.zip",
   "compatibility": {
     "minimum": "13.341",
     "verified": "13.351"
@@ -19,17 +19,7 @@
     "scripts/main.js"
   ],
   "styles": [
-    "styles/gms-reputation-59.10.css",
-    "styles/gms-reputation-60.8.css"
+    "styles/gms-reputation-59.10.css"
   ],
-  "socket": true,
-  "relationships": {
-    "requires": [
-      {
-        "id": "socketlib",
-        "type": "module",
-        "manifest": "https://github.com/farling42/foundryvtt-socketlib/releases/latest/download/module.json"
-      }
-    ]
-  }
+  "socket": true
 }

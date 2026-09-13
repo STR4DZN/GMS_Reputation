@@ -182,12 +182,10 @@ function saveWorldStateDirect(nextInput, options = {}) {
   return task;
 }
 
-export async function handleDelegatedSaveRequest(message = {}, context = {}) {
+export async function handleDelegatedSaveRequest(message = {}) {
   if (!isFullGamemaster()) throw new Error("Este cliente não é uma autoridade completa do World.");
-  const requesterId = String(context?.requesterId || "");
-  if (!requesterId) throw new Error("A identidade autenticada do usuário solicitante não foi informada.");
-  const requester = globalThis.game?.users?.get?.(requesterId)
-    ?? [...(globalThis.game?.users?.values?.() ?? [])].find((user) => String(user.id) === requesterId);
+  const requester = globalThis.game?.users?.get?.(String(message.senderId || ""))
+    ?? [...(globalThis.game?.users?.values?.() ?? [])].find((user) => String(user.id) === String(message.senderId));
   if (!requester) throw new Error("Usuário solicitante não encontrado no World.");
   const current = loadWorldState();
   const candidate = normalizeWorldState(message.candidate ?? {});

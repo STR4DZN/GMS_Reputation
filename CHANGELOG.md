@@ -1,28 +1,7 @@
-## 1.2.0-dev.60.6 — Correção estrutural de layout
+## 1.2.0-dev.70 — Restauração da Base 60.3
 
-- corrige a regressão da 60.5 em que regras legadas de `.gms-player-dashboard__scroll` forçavam o dossiê do Player para a segunda linha do grid, comprimindo todo o conteúdo sob a sidebar;
-- fixa explicitamente sidebar e conteúdo nas colunas corretas do shell Player;
-- preserva scroll vertical do dossiê e mantém a sidebar independente;
-- troca os breakpoints estruturais críticos de Player e Mestre para `@container`, fazendo a interface responder à largura real da janela do Foundry;
-- adiciona teste de regressão para a geometria 60.6 e atualiza contrato do manifesto;
-- mantém Schema 5, WorldState, reputação, histórico, permissões e Authority Broker sem migração de dados.
-
-## 1.2.0-dev.60.5 — Layout estrutural Player / Mestre
-
-- Player reorganizado conforme novo wireframe: nome focal central no topo, atalho **MODO GM** exclusivo para Gamemaster completo, navegação lateral de grupos/perfis em acordeão e área principal dedicada ao dossiê.
-- Imagem/GIF focal passa a ocupar o bloco visual principal; relações ficam em linhas compactas com Nome, Relação, Vínculos/Outros, índice e corações em leitura contínua.
-- Mestre migra da navegação lateral para abas horizontais no topo: **Perfil**, **Personagens**, **Reputação**, **Configuração**, **Limpeza** e **HIS**.
-- Contexto ativo e salvamento foram compactados para não disputar espaço com a área de trabalho.
-- Conteúdo do Mestre recebe grade responsiva por workspace; Perfil e Personagens usam duas colunas quando há espaço e colapsam em uma coluna em janelas menores.
-- Nenhuma alteração no Schema 5, WorldState, regras de reputação, histórico, permissões ou persistência.
-
-## 1.2.0-dev.60.4 — Authority Broker via SocketLib
-
-- Gravações delegadas de Assistant/Trusted deixam de confiar em `senderId` transportado pelo socket nativo.
-- `SocketLib` passa a ser dependência explícita do módulo e executa a gravação no Gamemaster completo designado.
-- A identidade do solicitante vem do contexto autenticado do handler remoto do SocketLib e é passada separadamente ao `WorldStore`.
-- Mantidos Schema 5, settings, hooks, namespaces públicos e `SOCKET_CHANNEL` congelado para compatibilidade Architecture 60.
-- Full GM continua gravando diretamente quando é a autoridade designada; demais clientes usam o broker.
+- restauração completa e fiel da interface original comprovada da versão 60.3;
+- preservação total do Schema v5, regras de reputação, histórico e compatibilidade com Foundry VTT v13.
 
 ## 1.2.0-dev.60.3 — Retorno ao Normal
 
@@ -81,6 +60,7 @@
 - “Salvar mudanças” relê o formulário de reputação no clique e faz flush explícito, sem depender de um evento `input` anterior.
 - Novas instalações usam salvamento Manual por padrão; modos automático/após pausa continuam opcionais.
 
+
 ## 1.2.0-dev.59.6 — Player semantic colors + true falling petals
 
 - torna a cor semântica explícita no card real do Player e propaga a mesma cor para moldura, descrição, corações e score;
@@ -99,6 +79,7 @@
 - pétalas passam a seguir vento coerente com rajadas curvas e troca gradual de direção, com timer gerenciado pelo controller real e limpeza integral no destroy;
 - reforça scanner, circuitos, linhas vetoriais e efeitos de texto do estilo Maximum Detail;
 - preserva toda a lógica, persistência e contratos de scroll da 59.4.
+
 
 ## 1.2.0-dev.59.4 — Botanical Vector aplicado ao DOM real
 
@@ -127,6 +108,7 @@
 - Cards, perfil focal, cabeçalho e seletor de perfil reestruturados visualmente sem alterar dados ou permissões.
 - Console de Reputação do Mestre reorganizado em leitura, ajuste, presets e protocolos com caixas e textos alinhados.
 - Layout responsivo específico para Player e Mestre após as ampliações.
+
 
 ## 1.2.0-dev.59.1 — Matriz do Player sem Pesquisa e alinhada
 

@@ -1,21 +1,15 @@
-<section class="gms-master-panel gms-v2-tech-texture" data-master-panel-root data-gms-visual-generation="3" data-gms-build="59.10" data-gms-layout="60.5" data-gms-v2-surface="command-deck" data-master-active-section="{{activeSection}}">
+<section class="gms-master-panel gms-v2-tech-texture" data-master-panel-root data-gms-visual-generation="3" data-gms-build="59.10" data-gms-v2-surface="command-deck" data-master-active-section="{{activeSection}}">
   {{> "modules/gms-reputation/templates/partials/background-art.hbs"}}
   {{#if authorized}}
-    <header class="gms-master-panel__tabsbar" aria-label="Modo do Mestre">
-      <div class="gms-master-panel__brand"><small>GMS // MATRIZ SOCIAL</small><strong>MODO DO MESTRE</strong></div>
-      <nav class="gms-master-panel__nav" data-gms-v2-role="command-rail" role="tablist" aria-label="Áreas do controle de reputação">
-        {{#each sections}}
-          <button type="button" role="tab" data-master-section-choice="{{id}}" data-active="{{active}}" aria-selected="{{active}}">
-            <i class="fa-solid {{icon}}" aria-hidden="true"></i><span class="gms-master-panel__nav-copy"><strong>{{label}}</strong><small>{{kicker}}</small></span>
-          </button>
-        {{/each}}
-      </nav>
+    <header class="gms-master-panel__header" data-gms-v2-role="command-masthead">
+      <span class="gms-master-panel__header-mark" aria-hidden="true"></span>
+      <div><small>GMS // CONTROLE DE REPUTAÇÃO</small><strong>MATRIZ SOCIAL</strong><span>Perfis, personagens e relações em um fluxo único de comando.</span></div>
     </header>
 
     <section class="gms-master-panel__selection-bus" aria-label="Seleção ativa">
       <div class="gms-master-panel__selection-copy">
-        <small>CONTEXTO ATIVO</small>
-        <strong>Escolha o perfil e o personagem que deseja editar.</strong>
+        <small>CONTEXTO GLOBAL</small>
+        <strong>Defina a matriz e o personagem usados em todas as áreas.</strong>
       </div>
       <div class="gms-master-panel__selectors">
         {{> "modules/gms-reputation/templates/partials/smart-selector.hbs" profileSelector}}
@@ -39,6 +33,14 @@
     </section>
 
     <div class="gms-master-panel__layout">
+      <nav class="gms-master-panel__nav" data-gms-v2-role="command-rail" role="tablist" aria-label="Áreas do controle de reputação">
+        {{#each sections}}
+          <button type="button" role="tab" data-master-section-choice="{{id}}" data-active="{{active}}" aria-selected="{{active}}">
+            <i class="fa-solid {{icon}}" aria-hidden="true"></i><span class="gms-master-panel__nav-copy"><small>{{kicker}}</small><strong>{{label}}</strong></span>
+          </button>
+        {{/each}}
+      </nav>
+
       <main class="gms-master-panel__content" data-gms-v2-role="command-workspace">
         <section data-master-section-panel="subjects" data-gms-v2-bay="subject-registry-bay">
           <header><small>ORGANIZAÇÃO CENTRAL</small><h2>Matrizes, perfis e grupos</h2></header>
