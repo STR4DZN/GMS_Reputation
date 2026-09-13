@@ -1,3 +1,12 @@
+## 1.2.0-dev.60.6 — Correção estrutural de layout
+
+- corrige a regressão da 60.5 em que regras legadas de `.gms-player-dashboard__scroll` forçavam o dossiê do Player para a segunda linha do grid, comprimindo todo o conteúdo sob a sidebar;
+- fixa explicitamente sidebar e conteúdo nas colunas corretas do shell Player;
+- preserva scroll vertical do dossiê e mantém a sidebar independente;
+- troca os breakpoints estruturais críticos de Player e Mestre para `@container`, fazendo a interface responder à largura real da janela do Foundry;
+- adiciona teste de regressão para a geometria 60.6 e atualiza contrato do manifesto;
+- mantém Schema 5, WorldState, reputação, histórico, permissões e Authority Broker sem migração de dados.
+
 ## 1.2.0-dev.60.5 — Layout estrutural Player / Mestre
 
 - Player reorganizado conforme novo wireframe: nome focal central no topo, atalho **MODO GM** exclusivo para Gamemaster completo, navegação lateral de grupos/perfis em acordeão e área principal dedicada ao dossiê.
@@ -72,7 +81,6 @@
 - “Salvar mudanças” relê o formulário de reputação no clique e faz flush explícito, sem depender de um evento `input` anterior.
 - Novas instalações usam salvamento Manual por padrão; modos automático/após pausa continuam opcionais.
 
-
 ## 1.2.0-dev.59.6 — Player semantic colors + true falling petals
 
 - torna a cor semântica explícita no card real do Player e propaga a mesma cor para moldura, descrição, corações e score;
@@ -91,7 +99,6 @@
 - pétalas passam a seguir vento coerente com rajadas curvas e troca gradual de direção, com timer gerenciado pelo controller real e limpeza integral no destroy;
 - reforça scanner, circuitos, linhas vetoriais e efeitos de texto do estilo Maximum Detail;
 - preserva toda a lógica, persistência e contratos de scroll da 59.4.
-
 
 ## 1.2.0-dev.59.4 — Botanical Vector aplicado ao DOM real
 
@@ -120,7 +127,6 @@
 - Cards, perfil focal, cabeçalho e seletor de perfil reestruturados visualmente sem alterar dados ou permissões.
 - Console de Reputação do Mestre reorganizado em leitura, ajuste, presets e protocolos com caixas e textos alinhados.
 - Layout responsivo específico para Player e Mestre após as ampliações.
-
 
 ## 1.2.0-dev.59.1 — Matriz do Player sem Pesquisa e alinhada
 
