@@ -9,14 +9,40 @@ function nextOrder(record = {}) {
 }
 
 function resolveHostControl(controls = {}) {
-  if (controls.tokens?.tools) return controls.tokens;
-  return Object.values(controls).find((control) => control?.tools && control.visible !== false) ?? null;
+  if (Array.isArray(controls)) {
+    return controls.find((c) => c?.name === "token" || c?.name === "tokens") ?? controls[0] ?? null;
+  }
+  if (controls?.tokens?.tools) return controls.tokens;
+  if (controls?.token?.tools) return controls.token;
+  return Object.values(controls ?? {}).find((control) => control?.tools && control.visible !== false) ?? null;
 }
 
 function installTool(tools, key, tool) {
-  if (!tools || typeof tools !== "object") return false;
-  tools[key] = tool;
-  return true;
+  if (!tools) return false;
+  if (Array.isArray(tools)) {
+    const existingIndex = tools.findIndex((t) => t?.name === tool.name);
+    if (existingIndex >= 0) {
+      tools[existingIndex] = tool;
+    } else {
+      tools.push(tool);
+    }
+    return true;
+  }
+  if (typeof tools === "object") {
+    tools[key] = tool;
+    return true;
+  }
+  return false;
+}
+
+function removeTool(tools, name) {
+  if (!tools) return;
+  if (Array.isArray(tools)) {
+    const idx = tools.findIndex((t) => t?.name === name);
+    if (idx >= 0) tools.splice(idx, 1);
+  } else if (typeof tools === "object") {
+    delete tools[name];
+  }
 }
 
 export function registerSceneControls() {
@@ -41,6 +67,13 @@ export function registerSceneControls() {
       order: nextOrder(host.tools),
       button: true,
       visible: true,
+      onClick: () => {
+        try {
+          api.openPlayerDashboard();
+        } catch (error) {
+          console.error("GMS Reputation | Falha ao abrir Dashboard do Jogador.", error);
+        }
+      },
       onChange: () => {
         try {
           api.openPlayerDashboard();
@@ -59,6 +92,13 @@ export function registerSceneControls() {
         order: nextOrder(host.tools),
         button: true,
         visible: true,
+        onClick: () => {
+          try {
+            api.openMasterShell();
+          } catch (error) {
+            console.error("GMS Reputation | Falha ao abrir Painel do Mestre.", error);
+          }
+        },
         onChange: () => {
           try {
             api.openMasterShell();
@@ -68,7 +108,7 @@ export function registerSceneControls() {
         }
       });
     } else {
-      delete host.tools.gmsReputationMaster;
+      removeTool(host.tools, "gmsReputationMaster");
     }
   });
 
@@ -80,6 +120,7 @@ export function registerSceneControls() {
 
   return true;
 }
+
 
 export function resetSceneControlsForTests() {
   registered = false;

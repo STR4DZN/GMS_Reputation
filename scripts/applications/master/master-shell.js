@@ -11,22 +11,9 @@ import { RelationshipController } from "./controllers/relationship-controller.js
 import { HistoryController } from "./controllers/history-controller.js";
 import { CleanupController } from "./controllers/cleanup-controller.js";
 import { SystemController } from "./controllers/system-controller.js";
+import { getApplicationV2Base } from "../base-application.js";
 
-const ApplicationV2Class = globalThis.foundry?.applications?.api?.HandlebarsApplicationV2
-  ?? class StandaloneApplication {
-    constructor(options = {}) {
-      this.options = options;
-      this.rendered = false;
-    }
-    async render(force = false) {
-      this.rendered = true;
-      return this;
-    }
-    async close() {
-      this.rendered = false;
-      return this;
-    }
-  };
+const ApplicationV2Class = getApplicationV2Base();
 
 const WORKSPACES = Object.freeze([
   { id: "profiles", label: "Perfis", eyebrow: "MATRIZES", icon: "fa-layer-group" },
@@ -260,6 +247,11 @@ export class MasterShellApplication extends ApplicationV2Class {
     }
   }
 
+  async render(options = {}) {
+    const opts = typeof options === "boolean" ? { force: options } : (options ?? {});
+    return super.render(opts);
+  }
+
   async close(options) {
     if (this._activeController?.unmount) {
       this._activeController.unmount();
@@ -277,6 +269,7 @@ let activeMasterShell = null;
 export function openMasterShell(options = {}) {
   activeMasterShell?.close?.();
   activeMasterShell = new MasterShellApplication(options);
-  activeMasterShell.render(true);
+  activeMasterShell.render({ force: true });
   return activeMasterShell;
 }
+

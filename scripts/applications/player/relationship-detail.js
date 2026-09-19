@@ -3,22 +3,9 @@ import { WorldStateRepository } from "../../state/repository.js";
 import { subscribeWorldStateChanges } from "../../state/sync.js";
 import { buildSubjectDetailReadModel } from "../../read-models/player-dashboard.js";
 import { motionEngine } from "../../motion/motion-engine.js";
+import { getApplicationV2Base } from "../base-application.js";
 
-const ApplicationV2Class = globalThis.foundry?.applications?.api?.HandlebarsApplicationV2
-  ?? class StandaloneApplication {
-    constructor(options = {}) {
-      this.options = options;
-      this.rendered = false;
-    }
-    async render(force = false) {
-      this.rendered = true;
-      return this;
-    }
-    async close() {
-      this.rendered = false;
-      return this;
-    }
-  };
+const ApplicationV2Class = getApplicationV2Base();
 
 export class ReputationRelationshipDetailApplication extends ApplicationV2Class {
   static DEFAULT_OPTIONS = {
@@ -96,6 +83,11 @@ export class ReputationRelationshipDetailApplication extends ApplicationV2Class 
     }
   }
 
+  async render(options = {}) {
+    const opts = typeof options === "boolean" ? { force: options } : (options ?? {});
+    return super.render(opts);
+  }
+
   async close(options) {
     this._syncUnsubscribe?.();
     this._syncUnsubscribe = null;
@@ -109,6 +101,7 @@ export function openRelationshipDetail({ profileId = "", subjectId = "" } = {}) 
   if (!profileId || !subjectId) return null;
   activeDetailApp?.close?.();
   activeDetailApp = new ReputationRelationshipDetailApplication({ profileId, subjectId });
-  activeDetailApp.render(true);
+  activeDetailApp.render({ force: true });
   return activeDetailApp;
 }
+

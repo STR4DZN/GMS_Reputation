@@ -44,7 +44,7 @@ export function createPublicApi() {
         return _activePlayerDashboard;
       }
       _activePlayerDashboard = new ReputationPlayerDashboardApplication({ profileId });
-      _activePlayerDashboard.render(true);
+      _activePlayerDashboard.render({ force: true });
       return _activePlayerDashboard;
     },
 
@@ -67,7 +67,7 @@ export function createPublicApi() {
         profileId,
         subjectId
       });
-      _activeMasterShell.render(true);
+      _activeMasterShell.render({ force: true });
       return _activeMasterShell;
     },
 
@@ -81,7 +81,7 @@ export function createPublicApi() {
       }
       const app = new ReputationRelationshipDetailApplication({ profileId, subjectId });
       _activeDetails.set(key, app);
-      app.render(true);
+      app.render({ force: true });
       return app;
     },
 

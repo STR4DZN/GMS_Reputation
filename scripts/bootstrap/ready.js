@@ -27,6 +27,7 @@ export async function onReady() {
 
   // 1. Expor a API Pública canônica
   module.api = createPublicApi();
+  globalThis.GMS_REPUTATION = module.api;
 
   // 2. Inicializar o Authority Broker para comunicação multiplayer via Socket
   initializeAuthorityBroker({ handler: handleDelegatedSaveRequest });

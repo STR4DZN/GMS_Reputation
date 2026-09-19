@@ -5,22 +5,9 @@ import { buildPlayerDashboardReadModel, buildPlayerCardReadModel } from "../../r
 import { renderQueue } from "../../runtime/render-queue.js";
 import { motionEngine } from "../../motion/motion-engine.js";
 import { openRelationshipDetail } from "./relationship-detail.js";
+import { getApplicationV2Base } from "../base-application.js";
 
-const ApplicationV2Class = globalThis.foundry?.applications?.api?.HandlebarsApplicationV2
-  ?? class StandaloneApplication {
-    constructor(options = {}) {
-      this.options = options;
-      this.rendered = false;
-    }
-    async render(force = false) {
-      this.rendered = true;
-      return this;
-    }
-    async close() {
-      this.rendered = false;
-      return this;
-    }
-  };
+const ApplicationV2Class = getApplicationV2Base();
 
 const CARD_TEMPLATE = `modules/${MODULE_ID}/templates/player/card.hbs`;
 
@@ -288,6 +275,11 @@ export class ReputationPlayerDashboardApplication extends ApplicationV2Class {
     }
   }
 
+  async render(options = {}) {
+    const opts = typeof options === "boolean" ? { force: options } : (options ?? {});
+    return super.render(opts);
+  }
+
   async close(options) {
     this._syncUnsubscribe?.();
     this._syncUnsubscribe = null;
@@ -304,6 +296,7 @@ let activePlayerApp = null;
 export function openPlayerDashboard({ profileId = "" } = {}) {
   activePlayerApp?.close?.();
   activePlayerApp = new ReputationPlayerDashboardApplication({ profileId });
-  activePlayerApp.render(true);
+  activePlayerApp.render({ force: true });
   return activePlayerApp;
 }
+
