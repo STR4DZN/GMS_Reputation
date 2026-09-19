@@ -1,0 +1,91 @@
+/**
+ * Portrait Frame & Editor Styles
+ */
+.gms-reputation-portrait {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  background: var(--gms-bg-void);
+  border: 1px solid var(--gms-border-hairline);
+  border-radius: var(--gms-radius-md);
+  user-select: none;
+}
+
+.gms-reputation-portrait--subject {
+  width: 64px;
+  height: 64px;
+  aspect-ratio: 1 / 1;
+}
+
+.gms-reputation-portrait--focal {
+  width: 100%;
+  max-width: 480px;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--gms-radius-lg);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.gms-reputation-portrait__image {
+  position: absolute;
+  top: var(--gms-portrait-y, 50%);
+  left: var(--gms-portrait-x, 50%);
+  transform: translate(-50%, -50%) scale(var(--gms-portrait-zoom, 1));
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  transition: transform 50ms linear;
+}
+
+.gms-reputation-portrait__placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--gms-bg-carbon);
+  color: var(--gms-text-muted);
+  font-size: var(--gms-font-micro);
+  font-family: var(--gms-font-family-mono);
+}
+
+/* Portrait Editor Layout */
+.gms-portrait-editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gms-space-4);
+}
+
+.gms-portrait-editor__stage {
+  display: flex;
+  justify-content: center;
+  padding: var(--gms-space-4);
+  background: var(--gms-bg-void);
+  border: 1px dashed var(--gms-border-subtle);
+  border-radius: var(--gms-radius-md);
+  cursor: grab;
+}
+
+.gms-portrait-editor__stage:active {
+  cursor: grabbing;
+}
+
+.gms-portrait-editor__controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gms-space-3);
+}
+
+.gms-portrait-editor__sliders {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gms-space-3);
+}
+
+.gms-portrait-editor__slider span {
+  display: block;
+  font-size: var(--gms-font-label);
+  color: var(--gms-text-muted);
+  margin-bottom: 4px;
+}

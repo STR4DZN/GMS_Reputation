@@ -1,0 +1,25 @@
+<div class="gms-portrait-editor" data-portrait-editor>
+  <div class="gms-portrait-editor__stage">
+    {{> "modules/gms-reputation/templates/components/portrait-frame.hbs" this}}
+  </div>
+  <div class="gms-portrait-editor__controls">
+    <label class="gms-portrait-editor__control">
+      <span>Caminho / URL da Imagem</span>
+      <input type="text" name="portraitSrc" value="{{portrait.src}}" placeholder="ex: ui/characters/avatar.png">
+    </label>
+    <div class="gms-portrait-editor__sliders">
+      <label class="gms-portrait-editor__slider">
+        <span>Zoom (<output data-portrait-zoom-output>{{portrait.zoom}}%</output>)</span>
+        <input type="range" name="portraitZoom" min="50" max="300" step="1" value="{{portrait.zoom}}">
+      </label>
+      <label class="gms-portrait-editor__slider">
+        <span>Eixo X</span>
+        <input type="range" name="portraitX" min="0" max="100" step="1" value="{{portrait.x}}">
+      </label>
+      <label class="gms-portrait-editor__slider">
+        <span>Eixo Y</span>
+        <input type="range" name="portraitY" min="0" max="100" step="1" value="{{portrait.y}}">
+      </label>
+    </div>
+  </div>
+</div>

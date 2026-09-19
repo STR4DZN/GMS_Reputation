@@ -1,0 +1,86 @@
+<section
+  class="gms-master-shell gms-shell gms-layer-shell"
+  data-master-shell
+  data-active-workspace="{{activeWorkspace}}"
+  data-world-revision="{{worldRevision}}"
+>
+  {{> "modules/gms-reputation/templates/components/background-art.hbs"}}
+
+  <header class="gms-master-shell__header">
+    <div class="gms-master-shell__masthead">
+      <span class="gms-master-shell__tag">GMS // MATRIZ SOCIAL</span>
+      <h1 class="gms-master-shell__title">PAINEL DO MESTRE</h1>
+    </div>
+
+    <!-- Navigation Deck -->
+    <nav class="gms-master-shell__nav" aria-label="Workspaces de Gestão" role="tablist">
+      {{#each workspaces}}
+        <button
+          type="button"
+          class="gms-master-nav-btn {{#if active}}is-active{{/if}}"
+          data-action="switch-workspace"
+          data-workspace="{{id}}"
+          role="tab"
+          aria-selected="{{#if active}}true{{else}}false{{/if}}"
+          aria-controls="gms-workspace-view"
+        >
+          <i class="fa-solid {{icon}}" aria-hidden="true"></i>
+          <div class="gms-master-nav-btn__copy">
+            <small>{{eyebrow}}</small>
+            <strong>{{label}}</strong>
+          </div>
+        </button>
+      {{/each}}
+    </nav>
+
+    <!-- Global Actions Deck -->
+    <div class="gms-master-shell__actions">
+      <!-- Save Indicator -->
+      <div class="gms-save-indicator is-{{save.status}}" data-master-save-status="{{save.status}}">
+        <span class="gms-save-indicator__dot" aria-hidden="true"></span>
+        <span class="gms-save-indicator__label">{{save.label}}</span>
+        {{#if save.hasPending}}
+          <button type="button" class="gms-btn gms-btn--xs gms-btn--accent" data-action="manual-save">Salvar</button>
+        {{/if}}
+      </div>
+
+      <!-- Undo / Redo -->
+      <div class="gms-undo-redo-deck">
+        <button
+          type="button"
+          class="gms-btn gms-btn--icon"
+          data-action="undo"
+          title="Desfazer última alteração"
+          aria-label="Desfazer"
+          {{#unless undoRedo.canUndo}}disabled{{/unless}}
+        >
+          <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
+        </button>
+        <button
+          type="button"
+          class="gms-btn gms-btn--icon"
+          data-action="redo"
+          title="Refazer alteração"
+          aria-label="Refazer"
+          {{#unless undoRedo.canRedo}}disabled{{/unless}}
+        >
+          <i class="fa-solid fa-rotate-right" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Dynamic Workspace Container -->
+  <main
+    id="gms-workspace-view"
+    class="gms-master-shell__workspace"
+    data-master-workspace-container
+    role="tabpanel"
+    aria-label="Área de Trabalho Ativa"
+  >
+    <!-- Mounted by active controller -->
+    <div class="gms-workspace-loading">
+      Carregando workspace...
+    </div>
+  </main>
+</section>

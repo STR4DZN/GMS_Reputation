@@ -57,138 +57,138 @@ export function buildSmartSelectorContext({
   });
 }
 
-export function wireSmartSelector(root, {
-  onSelect = null,
-  closeOnSelect = true
-} = {}) {
-  if (!root?.querySelector) return Object.freeze({ open() {}, close() {}, destroy() {} });
+/**
+ * Controller interativo para o Smart Selector 2 com navegação por teclado e busca rápida.
+ */
+export function wireSmartSelector(root, { onSelect = null } = {}) {
+  if (!root?.querySelector) return { destroy() {} };
 
-  const toggle = root.querySelector("[data-smart-selector-toggle]");
+  const trigger = root.querySelector("[data-smart-selector-toggle]");
   const popover = root.querySelector("[data-smart-selector-popover]");
-  const search = root.querySelector("[data-smart-selector-search]");
-  const empty = root.querySelector("[data-smart-selector-empty]");
-  const options = [...root.querySelectorAll("[data-smart-selector-option]")];
-  const currentPrimary = root.querySelector("[data-smart-selector-current-primary]");
-  const currentSecondary = root.querySelector("[data-smart-selector-current-secondary]");
-  const currentBadge = root.querySelector("[data-smart-selector-current-badge]");
-  const currentImage = root.querySelector("[data-smart-selector-current-image]");
-  const listeners = [];
-  let opened = false;
+  const searchInput = root.querySelector("[data-smart-selector-search]");
+  const optionsList = root.querySelector(".gms-smart-selector__options");
+  const emptyMessage = root.querySelector("[data-smart-selector-empty]");
+  const options = [...(root.querySelectorAll("[data-smart-selector-option]") ?? [])];
 
-  const listen = (target, eventName, handler, optionsValue) => {
-    if (!target?.addEventListener) return;
-    target.addEventListener(eventName, handler, optionsValue);
-    listeners.push(() => target.removeEventListener(eventName, handler, optionsValue));
-  };
+  let isOpen = false;
 
-  const visibleOptions = () => options.filter((option) => !option.hidden && option.getAttribute("aria-disabled") !== "true");
+  function setOpen(open) {
+    isOpen = Boolean(open);
+    root.dataset.open = String(isOpen);
+    trigger?.setAttribute("aria-expanded", String(isOpen));
+    if (popover) popover.hidden = !isOpen;
 
-  const setOpen = (next, { focusSearch = true } = {}) => {
-    opened = Boolean(next);
-    root.dataset.open = String(opened);
-    toggle?.setAttribute?.("aria-expanded", String(opened));
-    if (popover) popover.hidden = !opened;
-    if (opened && focusSearch && search) queueMicrotask(() => search.focus?.());
-  };
-
-  const applyFilter = () => {
-    const query = normalizeSearch(search?.value);
-    let visible = 0;
-    for (const option of options) {
-      const haystack = normalizeSearch(option.dataset.smartSelectorSearch || option.textContent || "");
-      option.hidden = Boolean(query) && !haystack.includes(query);
-      if (!option.hidden) visible += 1;
-    }
-    if (empty) empty.hidden = visible > 0;
-  };
-
-  const focusRelative = (direction) => {
-    const visible = visibleOptions();
-    if (!visible.length) return;
-    const active = globalThis.document?.activeElement;
-    let index = visible.indexOf(active);
-    if (direction === "home") index = 0;
-    else if (direction === "end") index = visible.length - 1;
-    else index = (index + Number(direction) + visible.length) % visible.length;
-    visible[index]?.focus?.();
-  };
-
-  const selectOption = async (option) => {
-    if (!option || option.getAttribute("aria-disabled") === "true") return;
-    const value = String(option.dataset.smartSelectorOption ?? "");
-    const previous = String(root.dataset.value ?? "");
-    if (!value) return;
-
-    for (const item of options) {
-      const selected = item === option;
-      item.dataset.selected = String(selected);
-      item.setAttribute("aria-selected", String(selected));
-    }
-    root.dataset.value = value;
-
-    const primary = option.querySelector("[data-smart-selector-option-primary]")?.textContent?.trim() ?? "";
-    const secondary = option.querySelector("[data-smart-selector-option-secondary]")?.textContent?.trim() ?? "";
-    const badge = option.querySelector("[data-smart-selector-option-badge]")?.textContent?.trim() ?? "";
-    const image = option.querySelector("img")?.getAttribute?.("src") ?? "";
-    if (currentPrimary) currentPrimary.textContent = primary;
-    if (currentSecondary) { currentSecondary.textContent = secondary; currentSecondary.hidden = !secondary; }
-    if (currentBadge) { currentBadge.textContent = badge; currentBadge.hidden = !badge; }
-    if (currentImage) {
-      if (image) { currentImage.setAttribute("src", image); currentImage.hidden = false; }
-      else currentImage.hidden = true;
-    }
-
-    if (closeOnSelect) setOpen(false, { focusSearch: false });
-    toggle?.focus?.();
-    if (value !== previous && typeof onSelect === "function") await onSelect(value, option);
-  };
-
-  listen(toggle, "click", () => setOpen(!opened));
-  listen(toggle, "keydown", (event) => {
-    if (event.key === "Escape") { setOpen(false, { focusSearch: false }); return; }
-    if (["ArrowDown", "ArrowUp"].includes(event.key)) {
-      event.preventDefault();
-      if (!opened) setOpen(true, { focusSearch: false });
-      queueMicrotask(() => {
-        const selected = options.find((option) => option.dataset.selected === "true" && !option.hidden);
-        (selected ?? visibleOptions()[0])?.focus?.();
-      });
-    }
-  });
-
-  listen(search, "input", applyFilter);
-  listen(search, "keydown", (event) => {
-    if (event.key === "Escape") { event.preventDefault(); setOpen(false, { focusSearch: false }); toggle?.focus?.(); }
-    if (event.key === "ArrowDown") { event.preventDefault(); visibleOptions()[0]?.focus?.(); }
-  });
-
-  for (const option of options) {
-    listen(option, "click", () => selectOption(option));
-    listen(option, "keydown", (event) => {
-      if (event.key === "Escape") { event.preventDefault(); setOpen(false, { focusSearch: false }); toggle?.focus?.(); return; }
-      if (event.key === "ArrowDown") { event.preventDefault(); focusRelative(1); }
-      if (event.key === "ArrowUp") { event.preventDefault(); focusRelative(-1); }
-      if (event.key === "Home") { event.preventDefault(); focusRelative("home"); }
-      if (event.key === "End") { event.preventDefault(); focusRelative("end"); }
-    });
-  }
-
-  const outsidePointer = (event) => {
-    if (!opened || root.contains?.(event.target)) return;
-    setOpen(false, { focusSearch: false });
-  };
-  listen(globalThis.document, "pointerdown", outsidePointer, true);
-
-  applyFilter();
-  setOpen(false, { focusSearch: false });
-
-  return Object.freeze({
-    open: () => setOpen(true),
-    close: () => setOpen(false, { focusSearch: false }),
-    destroy() {
-      for (const remove of listeners.splice(0)) {
-        try { remove(); } catch (_error) { /* no-op */ }
+    if (isOpen) {
+      if (searchInput) {
+        searchInput.value = "";
+        searchInput.focus();
+        filter("");
+      } else {
+        const selected = options.find((o) => o.dataset.selected === "true") ?? options[0];
+        selected?.focus();
       }
     }
-  });
+  }
+
+  function filter(query) {
+    const q = normalizeSearch(query);
+    let visibleCount = 0;
+
+    for (const opt of options) {
+      const searchData = opt.dataset.smartSelectorSearch || "";
+      const matches = !q || searchData.includes(q);
+      opt.hidden = !matches;
+      if (matches) visibleCount++;
+    }
+
+    if (emptyMessage) {
+      emptyMessage.hidden = visibleCount > 0;
+    }
+  }
+
+  function handleTriggerClick(e) {
+    e.stopPropagation();
+    setOpen(!isOpen);
+  }
+
+  function handleOptionClick(e) {
+    const btn = e.target.closest("[data-smart-selector-option]");
+    if (!btn || btn.disabled) return;
+    const value = btn.dataset.smartSelectorOption;
+
+    for (const opt of options) {
+      const isSel = opt === btn;
+      opt.dataset.selected = String(isSel);
+      opt.setAttribute("aria-selected", String(isSel));
+    }
+
+    root.dataset.value = value;
+    setOpen(false);
+    trigger?.focus();
+
+    if (typeof onSelect === "function") {
+      onSelect(value);
+    }
+  }
+
+  function handleSearchInput(e) {
+    filter(e.target.value);
+  }
+
+  function handleKeydown(e) {
+    if (!isOpen) {
+      if (["Enter", " ", "ArrowDown"].includes(e.key)) {
+        e.preventDefault();
+        setOpen(true);
+      }
+      return;
+    }
+
+    if (e.key === "Escape") {
+      e.preventDefault();
+      setOpen(false);
+      trigger?.focus();
+      return;
+    }
+
+    if (["ArrowDown", "ArrowUp"].includes(e.key)) {
+      e.preventDefault();
+      const visible = options.filter((o) => !o.hidden && !o.disabled);
+      if (!visible.length) return;
+
+      const currentFocused = document.activeElement;
+      const currentIndex = visible.indexOf(currentFocused);
+      let nextIndex = 0;
+
+      if (e.key === "ArrowDown") {
+        nextIndex = currentIndex < visible.length - 1 ? currentIndex + 1 : 0;
+      } else {
+        nextIndex = currentIndex > 0 ? currentIndex - 1 : visible.length - 1;
+      }
+
+      visible[nextIndex]?.focus();
+    }
+  }
+
+  function handleDocumentClick(e) {
+    if (isOpen && !root.contains(e.target)) {
+      setOpen(false);
+    }
+  }
+
+  trigger?.addEventListener("click", handleTriggerClick);
+  optionsList?.addEventListener("click", handleOptionClick);
+  searchInput?.addEventListener("input", handleSearchInput);
+  root.addEventListener("keydown", handleKeydown);
+  document.addEventListener("click", handleDocumentClick);
+
+  return {
+    destroy() {
+      trigger?.removeEventListener("click", handleTriggerClick);
+      optionsList?.removeEventListener("click", handleOptionClick);
+      searchInput?.removeEventListener("input", handleSearchInput);
+      root.removeEventListener("keydown", handleKeydown);
+      document.removeEventListener("click", handleDocumentClick);
+    }
+  };
 }

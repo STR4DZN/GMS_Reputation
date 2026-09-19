@@ -1,0 +1,23 @@
+<section
+  class="gms-player-focal gms-double-bezel"
+  data-player-focal-profile
+  data-profile-id="{{profileId}}"
+  aria-labelledby="gms-focal-name-{{profileId}}"
+>
+  <div class="gms-player-focal__inner gms-double-bezel-inner">
+    <div class="gms-player-focal__scanner" aria-hidden="true"></div>
+    <div class="gms-player-focal__visual">
+      {{> "modules/gms-reputation/templates/components/portrait-frame.hbs" portrait}}
+    </div>
+    <div class="gms-player-focal__copy">
+      <div class="gms-player-focal__eyebrow-row">
+        <span class="gms-player-focal__eyebrow">PERSPECTIVA // PERFIL FOCAL</span>
+        <span class="gms-player-focal__badge">{{groupName}}</span>
+      </div>
+      <h2 id="gms-focal-name-{{profileId}}" class="gms-player-focal__title">{{name}}</h2>
+      {{#if description}}
+        <p class="gms-player-focal__description">{{description}}</p>
+      {{/if}}
+    </div>
+  </div>
+</section>

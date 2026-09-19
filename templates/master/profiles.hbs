@@ -1,0 +1,185 @@
+<div class="gms-workspace-profiles" data-workspace="profiles">
+  <!-- 1. BIBLIOTECA DE PERFIS -->
+  <section class="gms-profiles-column gms-profiles-column--library" aria-label="Biblioteca de Perfis">
+    <header class="gms-profiles-column__header">
+      <div>
+        <small class="gms-profiles-column__eyebrow">PERSPECTIVAS</small>
+        <h2 class="gms-profiles-column__title">Biblioteca de Perfis</h2>
+      </div>
+      <button type="button" class="gms-btn gms-btn--sm gms-btn--primary" data-action="create-profile">
+        <i class="fa-solid fa-plus" aria-hidden="true"></i>
+        <span>Novo</span>
+      </button>
+    </header>
+
+    <div class="gms-profiles-library__filter">
+      <select class="gms-select" data-action="filter-group">
+        <option value="all">Todos os Grupos ({{totalProfiles}})</option>
+        {{#each groups}}
+          <option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>
+        {{/each}}
+      </select>
+    </div>
+
+    <div class="gms-profiles-library__list" data-profiles-list>
+      {{#each profiles}}
+        <article
+          class="gms-profile-item {{#if selected}}is-selected{{/if}} {{#unless active}}is-inactive{{/unless}}"
+          data-profile-id="{{id}}"
+          role="button"
+          tabindex="0"
+        >
+          <div class="gms-profile-item__identity">
+            <span class="gms-profile-item__name">{{name}}</span>
+            <span class="gms-profile-item__focal">{{focalName}}</span>
+          </div>
+          <div class="gms-profile-item__actions">
+            <button
+              type="button"
+              class="gms-btn gms-btn--icon-sm"
+              data-action="move-profile"
+              data-direction="up"
+              title="Mover para cima"
+              aria-label="Mover para cima"
+            >
+              <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+            </button>
+            <button
+              type="button"
+              class="gms-btn gms-btn--icon-sm"
+              data-action="move-profile"
+              data-direction="down"
+              title="Mover para baixo"
+              aria-label="Mover para baixo"
+            >
+              <i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
+            </button>
+          </div>
+        </article>
+      {{else}}
+        <div class="gms-empty-hint">Nenhum perfil cadastrado.</div>
+      {{/each}}
+    </div>
+  </section>
+
+  {{#if hasSelectedProfile}}
+    <!-- 2. CONFIGURAÇÃO & ROSTER -->
+    <section class="gms-profiles-column gms-profiles-column--config" aria-label="Configuração e Roster">
+      <header class="gms-profiles-column__header">
+        <div>
+          <small class="gms-profiles-column__eyebrow">ESTRUTURA SOCIAL</small>
+          <h2 class="gms-profiles-column__title">Configuração da Matriz</h2>
+        </div>
+      </header>
+
+      <div class="gms-profiles-config__form">
+        <div class="gms-form-group">
+          <label for="prof-name-input">Nome do Perfil</label>
+          <input
+            id="prof-name-input"
+            type="text"
+            class="gms-input"
+            data-field="name"
+            value="{{selectedProfile.name}}"
+            placeholder="Nome da perspectiva"
+          >
+        </div>
+
+        <div class="gms-form-group">
+          <label for="prof-group-input">Grupo Organizador</label>
+          <select id="prof-group-input" class="gms-select" data-field="groupId">
+            <option value="">(Sem Grupo)</option>
+            {{#each groups}}
+              <option value="{{id}}" {{#if isSelectedGroup}}selected{{/if}}>{{name}}</option>
+            {{/each}}
+          </select>
+        </div>
+
+        <div class="gms-form-group gms-form-group--checkboxes">
+          <label class="gms-checkbox-label">
+            <input type="checkbox" data-field="active" {{#if selectedProfile.active}}checked{{/if}}>
+            <span>Ativo para visualização</span>
+          </label>
+          <label class="gms-checkbox-label">
+            <input type="checkbox" data-field="archived" {{#if selectedProfile.archived}}checked{{/if}}>
+            <span>Arquivado</span>
+          </label>
+        </div>
+
+        <!-- Subárea Roster Social -->
+        <fieldset class="gms-roster-subarea">
+          <legend class="gms-roster-subarea__legend">
+            <span>Roster Social</span>
+            <small>({{rosterStats.included}} de {{rosterStats.total}} incluídos)</small>
+          </legend>
+
+          <div class="gms-roster-subarea__actions">
+            <button type="button" class="gms-btn gms-btn--xs gms-btn--secondary" data-action="roster-all">Todos</button>
+            <button type="button" class="gms-btn gms-btn--xs gms-btn--secondary" data-action="roster-none">Nenhum</button>
+          </div>
+
+          <div class="gms-roster-subarea__list" data-roster-list>
+            {{#each rosterSubjects}}
+              <label class="gms-roster-item {{#if included}}is-included{{/if}}">
+                <input
+                  type="checkbox"
+                  data-action="toggle-roster-subject"
+                  data-subject-id="{{id}}"
+                  {{#if included}}checked{{/if}}
+                >
+                <span class="gms-roster-item__alias">{{alias}}</span>
+                {{#if realName}}<span class="gms-roster-item__real">({{realName}})</span>{{/if}}
+              </label>
+            {{/each}}
+          </div>
+        </fieldset>
+      </div>
+    </section>
+
+    <!-- 3. APRESENTAÇÃO FOCAL -->
+    <section class="gms-profiles-column gms-profiles-column--focal" aria-label="Apresentação Focal">
+      <header class="gms-profiles-column__header">
+        <div>
+          <small class="gms-profiles-column__eyebrow">PERSPECTIVA PÚBLICA</small>
+          <h2 class="gms-profiles-column__title">Perfil Focal</h2>
+        </div>
+      </header>
+
+      <div class="gms-profiles-focal__form">
+        <div class="gms-form-group">
+          <label for="prof-focal-name-input">Nome de Exibição Focal</label>
+          <input
+            id="prof-focal-name-input"
+            type="text"
+            class="gms-input"
+            data-field="focalName"
+            value="{{selectedProfile.focal.name}}"
+            placeholder="Nome aparente para os jogadores"
+          >
+        </div>
+
+        <div class="gms-form-group">
+          <label for="prof-focal-desc-input">Descrição da Perspectiva</label>
+          <textarea
+            id="prof-focal-desc-input"
+            class="gms-textarea"
+            rows="3"
+            data-field="focalDescription"
+            placeholder="Breve resumo da perspectiva..."
+          >{{selectedProfile.focal.description}}</textarea>
+        </div>
+
+        <div class="gms-form-group">
+          <label>Retrato Focal</label>
+          {{> "modules/gms-reputation/templates/components/portrait-editor.hbs" focalPortraitContext}}
+        </div>
+      </div>
+    </section>
+  {{else}}
+    <div class="gms-profiles-column gms-profiles-column--empty gms-empty-state">
+      <i class="fa-solid fa-layer-group gms-empty-state__icon" aria-hidden="true"></i>
+      <h3 class="gms-empty-state__title">Selecione ou crie um perfil</h3>
+      <p class="gms-empty-state__description">Escolha uma matriz à esquerda para gerenciar sua estrutura, roster social e apresentação focal.</p>
+    </div>
+  {{/if}}
+</div>

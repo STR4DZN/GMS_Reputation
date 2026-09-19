@@ -1,0 +1,10 @@
+{{#if active}}
+  <aside class="gms-special-protocol is-{{state}}" data-special-state="{{state}}">
+    {{#if sigilAsset}}
+      <span class="gms-special-protocol__sigil" aria-hidden="true">
+        <img src="{{sigilAsset}}" alt="" draggable="false">
+      </span>
+    {{/if}}
+    <strong class="gms-special-protocol__label">{{label}}</strong>
+  </aside>
+{{/if}}

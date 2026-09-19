@@ -1,0 +1,75 @@
+/**
+ * GMS Reputation Track (Heart Track)
+ * Responsive 10/12 slot tracker without inline CSS or reflow hacks.
+ */
+.gms-reputation-heart-track {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gms-space-1);
+  padding: 2px 0;
+  vertical-align: middle;
+}
+
+.gms-reputation-heart {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--gms-duration-fast) var(--gms-ease-out);
+}
+
+.gms-reputation-heart i {
+  position: absolute;
+  inset: 0;
+  background-color: var(--gms-border-subtle);
+  clip-path: path("M 7,13 C 7,13 1,8.5 1,4.5 C 1,2 3,0.5 5,0.5 C 6,0.5 6.8,1.2 7,2 C 7.2,1.2 8,0.5 9,0.5 C 11,0.5 13,2 13,4.5 C 13,8.5 7,13 7,13 Z");
+  transition: background-color var(--gms-duration-fast) var(--gms-ease-out);
+}
+
+/* Polarity & Bands */
+.is-band-hostile .gms-reputation-heart[data-heart-state="full"] i { background-color: var(--gms-rel-hostile); }
+.is-band-caution .gms-reputation-heart[data-heart-state="full"] i { background-color: var(--gms-rel-caution); }
+.is-band-neutral .gms-reputation-heart[data-heart-state="full"] i { background-color: var(--gms-rel-neutral); }
+.is-band-contact .gms-reputation-heart[data-heart-state="full"] i { background-color: var(--gms-rel-contact); }
+.is-band-trusted .gms-reputation-heart[data-heart-state="full"] i { background-color: var(--gms-rel-trusted); }
+.is-band-ally .gms-reputation-heart[data-heart-state="full"] i { background-color: var(--gms-rel-ally); }
+.is-band-extreme .gms-reputation-heart[data-heart-state="full"] i { background-color: var(--gms-rel-extreme); }
+
+/* Half Hearts */
+.gms-reputation-heart[data-heart-state="half"] i {
+  background: linear-gradient(90deg, var(--gms-rel-contact) 50%, var(--gms-border-subtle) 50%);
+}
+.is-band-hostile .gms-reputation-heart[data-heart-state="half"] i {
+  background: linear-gradient(90deg, var(--gms-rel-hostile) 50%, var(--gms-border-subtle) 50%);
+}
+.is-band-caution .gms-reputation-heart[data-heart-state="half"] i {
+  background: linear-gradient(90deg, var(--gms-rel-caution) 50%, var(--gms-border-subtle) 50%);
+}
+.is-band-trusted .gms-reputation-heart[data-heart-state="half"] i {
+  background: linear-gradient(90deg, var(--gms-rel-trusted) 50%, var(--gms-border-subtle) 50%);
+}
+.is-band-ally .gms-reputation-heart[data-heart-state="half"] i {
+  background: linear-gradient(90deg, var(--gms-rel-ally) 50%, var(--gms-border-subtle) 50%);
+}
+.is-band-extreme .gms-reputation-heart[data-heart-state="half"] i {
+  background: linear-gradient(90deg, var(--gms-rel-extreme) 50%, var(--gms-border-subtle) 50%);
+}
+
+/* Slots especiais (11 e 12) */
+.gms-reputation-heart[data-special-slot="true"] {
+  transform: scale(1.1);
+}
+.gms-reputation-heart.is-bond[data-heart-state="full"] i {
+  background-color: var(--gms-proto-bond);
+  box-shadow: 0 0 6px var(--gms-proto-bond);
+}
+.gms-reputation-heart.is-communion[data-heart-state="full"] i {
+  background-color: var(--gms-proto-communion);
+  box-shadow: 0 0 6px var(--gms-proto-communion);
+}
+.gms-reputation-heart.is-dual-sync[data-heart-state="full"] i {
+  background: linear-gradient(135deg, var(--gms-proto-dual-cyan), var(--gms-proto-dual-magenta));
+  box-shadow: 0 0 8px var(--gms-proto-dual-magenta);
+}

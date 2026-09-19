@@ -1,0 +1,100 @@
+/**
+ * GMS // MATRIZ DE REPUTAÇÃO
+ * Design Tokens canônicos (Gothic Tech + Botanical Vector + Lancer Sci-Fi)
+ */
+
+:root {
+  /* Camadas e Superfícies (Dark Tech Palette) */
+  --gms-bg-void: #05080c;
+  --gms-bg-carbon: #0b1017;
+  --gms-bg-graphite: #121822;
+  --gms-bg-steel: #1b2432;
+  --gms-bg-subtle: rgba(255, 255, 255, 0.03);
+  --gms-bg-surface-elevated: rgba(18, 24, 34, 0.85);
+
+  /* Bordas e Divisores */
+  --gms-border-hairline: rgba(75, 199, 255, 0.12);
+  --gms-border-subtle: rgba(255, 255, 255, 0.08);
+  --gms-border-focus: #4bc7ff;
+  --gms-border-danger: rgba(255, 48, 79, 0.5);
+
+  /* Tipografia & Cores de Texto */
+  --gms-text-display: #f1f5f9;
+  --gms-text-primary: #e2e8f0;
+  --gms-text-secondary: #94a3b8;
+  --gms-text-muted: #64748b;
+  --gms-text-accent: #4bc7ff;
+
+  /* Escala Tipográfica Estrita */
+  --gms-font-display: 28px;
+  --gms-font-title-lg: 20px;
+  --gms-font-title-md: 16px;
+  --gms-font-body: 13px;
+  --gms-font-label: 11px;
+  --gms-font-micro: 9px;
+
+  /* Famílias Tipográficas */
+  --gms-font-family-mono: "Fira Code", "JetBrains Mono", "SF Mono", Consolas, monospace;
+  --gms-font-family-sans: "Plus Jakarta Sans", "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* Escala de Espaçamento 8-pt */
+  --gms-space-1: 4px;
+  --gms-space-2: 8px;
+  --gms-space-3: 12px;
+  --gms-space-4: 16px;
+  --gms-space-6: 24px;
+  --gms-space-8: 32px;
+  --gms-space-12: 48px;
+
+  /* Raios de Borda (Angulares / Militares) */
+  --gms-radius-sm: 2px;
+  --gms-radius-md: 4px;
+  --gms-radius-lg: 6px;
+
+  /* Cores Semânticas de Relacionamento */
+  --gms-rel-hostile: #FF304F;
+  --gms-rel-hostile-bg: rgba(255, 48, 79, 0.12);
+  --gms-rel-caution: #FFB51B;
+  --gms-rel-caution-bg: rgba(255, 181, 27, 0.12);
+  --gms-rel-neutral: #9AA8B3;
+  --gms-rel-neutral-bg: rgba(154, 168, 179, 0.12);
+  --gms-rel-contact: #4BC7FF;
+  --gms-rel-contact-bg: rgba(75, 199, 255, 0.12);
+  --gms-rel-trusted: #7DFF9B;
+  --gms-rel-trusted-bg: rgba(125, 255, 155, 0.12);
+  --gms-rel-ally: #28F0D0;
+  --gms-rel-ally-bg: rgba(40, 240, 208, 0.12);
+  --gms-rel-extreme: #FF375F;
+  --gms-rel-extreme-bg: rgba(255, 55, 95, 0.15);
+
+  /* Protocolos Especiais */
+  --gms-proto-bond: #D7A45A;
+  --gms-proto-bond-secondary: #FFBD75;
+  --gms-proto-bond-bg: rgba(215, 164, 90, 0.15);
+
+  --gms-proto-communion: #4BC7FF;
+  --gms-proto-communion-secondary: #B266FF;
+  --gms-proto-communion-bg: rgba(75, 199, 255, 0.15);
+
+  --gms-proto-dual: #FFFFFF;
+  --gms-proto-dual-cyan: #4BC7FF;
+  --gms-proto-dual-magenta: #FF2A6D;
+  --gms-proto-dual-bg: rgba(255, 42, 109, 0.15);
+
+  /* Z-Index Canônico por Camadas */
+  --gms-z-bg: 0;
+  --gms-z-texture: 1;
+  --gms-z-geometry: 2;
+  --gms-z-panels: 10;
+  --gms-z-content: 20;
+  --gms-z-overlay: 50;
+  --gms-z-scanner: 100;
+  --gms-z-modal: 1000;
+
+  /* Curvas de Animação e Durações (WAAPI & Emil Design Engineering) */
+  --gms-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --gms-ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --gms-duration-fast: 160ms;
+  --gms-duration-normal: 240ms;
+  --gms-duration-enter: 280ms;
+}

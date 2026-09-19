@@ -4,7 +4,7 @@ const VALID_SAVE_MODES = new Set(Object.values(MASTER_SAVE_MODE));
 
 export function normalizeMasterSaveMode(value) {
   const mode = String(value || "").trim();
-  return VALID_SAVE_MODES.has(mode) ? mode : MASTER_SAVE_MODE.MANUAL;
+  return VALID_SAVE_MODES.has(mode) ? mode : MASTER_SAVE_MODE.AUTOMATIC;
 }
 
 export function normalizeMasterAutoSaveDelay(value) {
@@ -14,21 +14,39 @@ export function normalizeMasterAutoSaveDelay(value) {
 }
 
 export function getMasterSaveMode() {
-  return normalizeMasterSaveMode(game.settings.get(MODULE_ID, SETTINGS.MASTER_SAVE_MODE));
+  if (!globalThis.game?.settings?.get) return MASTER_SAVE_MODE.AUTOMATIC;
+  try {
+    return normalizeMasterSaveMode(globalThis.game.settings.get(MODULE_ID, SETTINGS.MASTER_SAVE_MODE));
+  } catch {
+    return MASTER_SAVE_MODE.AUTOMATIC;
+  }
 }
 
 export async function setMasterSaveMode(mode) {
   const normalized = normalizeMasterSaveMode(mode);
-  await game.settings.set(MODULE_ID, SETTINGS.MASTER_SAVE_MODE, normalized);
+  if (globalThis.game?.settings?.set) {
+    try {
+      await globalThis.game.settings.set(MODULE_ID, SETTINGS.MASTER_SAVE_MODE, normalized);
+    } catch {}
+  }
   return normalized;
 }
 
 export function getMasterAutoSaveDelay() {
-  return normalizeMasterAutoSaveDelay(game.settings.get(MODULE_ID, SETTINGS.MASTER_AUTOSAVE_DELAY));
+  if (!globalThis.game?.settings?.get) return 2;
+  try {
+    return normalizeMasterAutoSaveDelay(globalThis.game.settings.get(MODULE_ID, SETTINGS.MASTER_AUTOSAVE_DELAY));
+  } catch {
+    return 2;
+  }
 }
 
 export async function setMasterAutoSaveDelay(seconds) {
   const normalized = normalizeMasterAutoSaveDelay(seconds);
-  await game.settings.set(MODULE_ID, SETTINGS.MASTER_AUTOSAVE_DELAY, normalized);
+  if (globalThis.game?.settings?.set) {
+    try {
+      await globalThis.game.settings.set(MODULE_ID, SETTINGS.MASTER_AUTOSAVE_DELAY, normalized);
+    } catch {}
+  }
   return normalized;
 }

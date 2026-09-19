@@ -1,0 +1,90 @@
+/**
+ * Resets focados no escopo do módulo para não poluir o Foundry VTT global.
+ */
+.gms-player-dashboard,
+.gms-master-shell,
+.gms-subject-detail,
+.gms-modal-dialog,
+.gms-toast-container {
+  box-sizing: border-box;
+  font-family: var(--gms-font-family-sans);
+  color: var(--gms-text-primary);
+  background-color: var(--gms-bg-void);
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+}
+
+.gms-player-dashboard *,
+.gms-master-shell *,
+.gms-subject-detail *,
+.gms-modal-dialog *,
+.gms-toast-container * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.gms-player-dashboard button,
+.gms-master-shell button,
+.gms-subject-detail button {
+  font-family: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  user-select: none;
+  transition: transform var(--gms-duration-fast) var(--gms-ease-out),
+              background var(--gms-duration-fast) var(--gms-ease-out),
+              border-color var(--gms-duration-fast) var(--gms-ease-out);
+}
+
+.gms-player-dashboard button:active,
+.gms-master-shell button:active,
+.gms-subject-detail button:active {
+  transform: scale(0.97);
+}
+
+.gms-player-dashboard input,
+.gms-master-shell input,
+.gms-player-dashboard textarea,
+.gms-master-shell textarea {
+  font-family: inherit;
+  color: var(--gms-text-primary);
+  background: var(--gms-bg-carbon);
+  border: 1px solid var(--gms-border-hairline);
+  border-radius: var(--gms-radius-sm);
+  padding: var(--gms-space-2) var(--gms-space-3);
+  outline: none;
+  transition: border-color var(--gms-duration-fast) var(--gms-ease-out);
+}
+.gms-player-dashboard input:focus-visible,
+.gms-master-shell input:focus-visible,
+.gms-player-dashboard textarea:focus-visible,
+.gms-master-shell textarea:focus-visible {
+  border-color: var(--gms-border-focus);
+  outline: 2px solid var(--gms-border-focus);
+  outline-offset: 1px;
+}
+
+.gms-player-dashboard button:focus-visible,
+.gms-master-shell button:focus-visible,
+.gms-subject-detail button:focus-visible,
+.gms-player-dashboard [tabindex="0"]:focus-visible,
+.gms-master-shell [tabindex="0"]:focus-visible,
+.gms-subject-detail [tabindex="0"]:focus-visible {
+  outline: 2px solid var(--gms-color-cyan);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gms-player-dashboard *,
+  .gms-master-shell *,
+  .gms-subject-detail *,
+  .gms-modal-dialog *,
+  .gms-toast-container * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

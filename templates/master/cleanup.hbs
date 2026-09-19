@@ -1,0 +1,106 @@
+<div class="gms-workspace-cleanup" data-workspace="cleanup">
+  <!-- Warning Banner (Section 22) -->
+  <header class="gms-cleanup-warning-banner">
+    <div class="gms-cleanup-warning-banner__icon">
+      <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+    </div>
+    <div class="gms-cleanup-warning-banner__copy">
+      <small>ZONA DE MANUTENÇÃO CRÍTICA</small>
+      <h2>Ações Permanentes e Destrutivas</h2>
+      <p>As operações executadas nesta área removem registros diretamente do WorldState de forma irreversível. Elas não podem ser desfeitas via Undo/Redo.</p>
+    </div>
+  </header>
+
+  <div class="gms-cleanup-grid">
+    <!-- Personagens Arquivados / Elegíveis para Exclusão -->
+    <section class="gms-cleanup-card">
+      <header class="gms-cleanup-card__header">
+        <i class="fa-solid fa-user-xmark" aria-hidden="true"></i>
+        <div>
+          <h3>Personagens</h3>
+          <small>{{subjects.length}} cadastrados no mundo</small>
+        </div>
+      </header>
+
+      <div class="gms-cleanup-card__list">
+        {{#each subjects}}
+          <div class="gms-cleanup-item {{#if archived}}is-archived{{/if}}">
+            <div class="gms-cleanup-item__info">
+              <strong>{{name}}</strong>
+              <small>{{relationshipCount}} relações · {{rosterCount}} matrizes{{#if archived}} · (Arquivado){{/if}}</small>
+            </div>
+            <button
+              type="button"
+              class="gms-btn gms-btn--danger-sm"
+              data-action="delete-subject-permanent"
+              data-subject-id="{{id}}"
+              data-subject-name="{{name}}"
+            >Excluir</button>
+          </div>
+        {{else}}
+          <div class="gms-empty-hint">Nenhum personagem encontrado.</div>
+        {{/each}}
+      </div>
+    </section>
+
+    <!-- Perfis Elegíveis para Exclusão -->
+    <section class="gms-cleanup-card">
+      <header class="gms-cleanup-card__header">
+        <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+        <div>
+          <h3>Perfis e Matrizes</h3>
+          <small>{{profiles.length}} perfis no mundo</small>
+        </div>
+      </header>
+
+      <div class="gms-cleanup-card__list">
+        {{#each profiles}}
+          <div class="gms-cleanup-item {{#if archived}}is-archived{{/if}}">
+            <div class="gms-cleanup-item__info">
+              <strong>{{name}}</strong>
+              <small>{{groupName}} · {{relationshipCount}} relações{{#if archived}} · (Arquivado){{/if}}</small>
+            </div>
+            <button
+              type="button"
+              class="gms-btn gms-btn--danger-sm"
+              data-action="delete-profile-permanent"
+              data-profile-id="{{id}}"
+              data-profile-name="{{name}}"
+            >Excluir</button>
+          </div>
+        {{else}}
+          <div class="gms-empty-hint">Nenhum perfil encontrado.</div>
+        {{/each}}
+      </div>
+    </section>
+
+    <!-- Manutenção Geral do WorldState -->
+    <section class="gms-cleanup-card gms-cleanup-card--wide">
+      <header class="gms-cleanup-card__header">
+        <i class="fa-solid fa-broom" aria-hidden="true"></i>
+        <div>
+          <h3>Integridade e Limpeza de Dados</h3>
+          <small>Purga de registros órfãos e compactação de log</small>
+        </div>
+      </header>
+
+      <div class="gms-cleanup-actions-group">
+        <div class="gms-cleanup-action-row">
+          <div>
+            <strong>Purgar Relações Órfãs</strong>
+            <p>Varre todas as matrizes e remove referências a personagens que não existem mais.</p>
+          </div>
+          <button type="button" class="gms-btn gms-btn--secondary" data-action="purge-orphans">Executar Purga</button>
+        </div>
+
+        <div class="gms-cleanup-action-row">
+          <div>
+            <strong>Compactar Histórico</strong>
+            <p>Reduz a linha do tempo preservando apenas os últimos 100 registros de auditoria.</p>
+          </div>
+          <button type="button" class="gms-btn gms-btn--secondary" data-action="compact-history">Compactar Log</button>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

@@ -1,0 +1,197 @@
+<div class="gms-workspace-characters" data-workspace="characters">
+  <!-- 1. LISTA ESCANEÁVEL DE PERSONAGENS -->
+  <section class="gms-characters-column gms-characters-column--list" aria-label="Lista de Personagens">
+    <header class="gms-characters-column__header">
+      <div>
+        <small class="gms-characters-column__eyebrow">CADASTRO GERAL</small>
+        <h2 class="gms-characters-column__title">Personagens ({{totalSubjects}})</h2>
+      </div>
+      <button type="button" class="gms-btn gms-btn--sm gms-btn--primary" data-action="create-character">
+        <i class="fa-solid fa-user-plus" aria-hidden="true"></i>
+        <span>Novo</span>
+      </button>
+    </header>
+
+    <div class="gms-characters-search">
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <input
+        type="search"
+        class="gms-input gms-input--sm"
+        placeholder="Filtrar por nome ou apelido..."
+        data-action="search-character"
+        value="{{searchQuery}}"
+      >
+    </div>
+
+    <div class="gms-characters-list" data-characters-list>
+      {{#each subjects}}
+        <article
+          class="gms-character-card {{#if selected}}is-selected{{/if}} {{#unless active}}is-inactive{{/unless}}"
+          data-subject-id="{{id}}"
+          role="button"
+          tabindex="0"
+        >
+          <div class="gms-character-card__thumb">
+            {{#if portrait.src}}
+              <img src="{{portrait.src}}" alt="" loading="lazy">
+            {{else}}
+              <i class="fa-solid fa-user" aria-hidden="true"></i>
+            {{/if}}
+          </div>
+
+          <div class="gms-character-card__info">
+            <strong class="gms-character-card__alias">{{alias}}</strong>
+            {{#if realName}}<span class="gms-character-card__real">{{realName}}</span>{{/if}}
+            <div class="gms-character-card__meta">
+              <span class="gms-status-dot {{#if active}}is-active{{else}}is-inactive{{/if}}"></span>
+              <small>{{#if active}}Ativo{{else}}Inativo{{/if}}</small>
+              <span class="gms-character-card__profiles-count">· {{profileCount}} perfis</span>
+            </div>
+          </div>
+
+          <div class="gms-character-card__actions">
+            <button
+              type="button"
+              class="gms-btn gms-btn--icon-sm"
+              data-action="move-subject"
+              data-direction="up"
+              title="Mover para cima"
+              aria-label="Mover para cima"
+            >
+              <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+            </button>
+            <button
+              type="button"
+              class="gms-btn gms-btn--icon-sm"
+              data-action="move-subject"
+              data-direction="down"
+              title="Mover para baixo"
+              aria-label="Mover para baixo"
+            >
+              <i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
+            </button>
+          </div>
+        </article>
+      {{else}}
+        <div class="gms-empty-hint">Nenhum personagem encontrado.</div>
+      {{/each}}
+    </div>
+  </section>
+
+  {{#if hasSelectedSubject}}
+    <!-- 2. CADASTRO & DADOS -->
+    <section class="gms-characters-column gms-characters-column--form" aria-label="Dados do Personagem">
+      <header class="gms-characters-column__header">
+        <div>
+          <small class="gms-characters-column__eyebrow">FICHA SOCIAL</small>
+          <h2 class="gms-characters-column__title">Identidade & Registro</h2>
+        </div>
+      </header>
+
+      <div class="gms-characters-form">
+        <div class="gms-form-group">
+          <label for="char-alias-input">Apelido / Nome Social</label>
+          <input
+            id="char-alias-input"
+            type="text"
+            class="gms-input"
+            data-field="alias"
+            value="{{selectedSubject.alias}}"
+            placeholder="Nome público nos cards de relação"
+          >
+        </div>
+
+        <div class="gms-form-group">
+          <label for="char-real-input">Nome Real / Verdadeiro</label>
+          <input
+            id="char-real-input"
+            type="text"
+            class="gms-input"
+            data-field="realName"
+            value="{{selectedSubject.realName}}"
+            placeholder="Nome de registro oficial"
+          >
+        </div>
+
+        <div class="gms-form-group">
+          <label for="char-tags-input">Marcadores (separados por vírgula)</label>
+          <input
+            id="char-tags-input"
+            type="text"
+            class="gms-input"
+            data-field="tags"
+            value="{{tagsString}}"
+            placeholder="ex: Nobreza, Guarda, Contrabando"
+          >
+        </div>
+
+        <div class="gms-form-group">
+          <label for="char-desc-input">Biografia & Arquivo</label>
+          <textarea
+            id="char-desc-input"
+            class="gms-textarea"
+            rows="5"
+            data-field="description"
+            placeholder="Histórico, notas sociais e detalhes para o dossiê..."
+          >{{selectedSubject.description}}</textarea>
+        </div>
+
+        <div class="gms-form-group gms-form-group--checkboxes">
+          <label class="gms-checkbox-label">
+            <input type="checkbox" data-field="active" {{#if selectedSubject.active}}checked{{/if}}>
+            <span>Ativo no mundo</span>
+          </label>
+          <label class="gms-checkbox-label">
+            <input type="checkbox" data-field="archived" {{#if selectedSubject.archived}}checked{{/if}}>
+            <span>Arquivado</span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. RETRATO & DISPONIBILIDADE -->
+    <section class="gms-characters-column gms-characters-column--portrait" aria-label="Retrato e Disponibilidade">
+      <header class="gms-characters-column__header">
+        <div>
+          <small class="gms-characters-column__eyebrow">RECURSOS VISUAIS</small>
+          <h2 class="gms-characters-column__title">Retrato & Matrizes</h2>
+        </div>
+      </header>
+
+      <div class="gms-characters-portrait-wrapper">
+        <div class="gms-form-group">
+          <label>Retrato do Personagem</label>
+          {{> "modules/gms-reputation/templates/components/portrait-editor.hbs" portraitContext}}
+        </div>
+
+        <!-- Disponibilidade em Perfis -->
+        <fieldset class="gms-roster-subarea">
+          <legend class="gms-roster-subarea__legend">
+            <span>Disponibilidade nos Perfis</span>
+            <small>({{membershipStats.count}} de {{membershipStats.total}})</small>
+          </legend>
+
+          <div class="gms-roster-subarea__list">
+            {{#each profileMemberships}}
+              <label class="gms-roster-item {{#if included}}is-included{{/if}}">
+                <input
+                  type="checkbox"
+                  data-action="toggle-profile-membership"
+                  data-profile-id="{{id}}"
+                  {{#if included}}checked{{/if}}
+                >
+                <span class="gms-roster-item__alias">{{name}}</span>
+              </label>
+            {{/each}}
+          </div>
+        </fieldset>
+      </div>
+    </section>
+  {{else}}
+    <div class="gms-characters-column gms-characters-column--empty gms-empty-state">
+      <i class="fa-solid fa-user-pen gms-empty-state__icon" aria-hidden="true"></i>
+      <h3 class="gms-empty-state__title">Selecione ou crie um personagem</h3>
+      <p class="gms-empty-state__description">Escolha um personagem à esquerda para gerenciar sua identidade, biografia, retrato ótico e presença nas matrizes.</p>
+    </div>
+  {{/if}}
+</div>

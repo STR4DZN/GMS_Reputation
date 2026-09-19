@@ -1,0 +1,43 @@
+<article
+  class="gms-player-card gms-double-bezel is-band-{{relationship.bandId}} {{#if special.active}}is-special-{{special.state}}{{/if}}"
+  data-player-card
+  data-subject-id="{{subjectId}}"
+  data-profile-id="{{profileId}}"
+  tabindex="0"
+  role="button"
+  aria-label="{{identity.alias}}: {{relationship.label}}, {{score.text}} de {{score.limit}}"
+>
+  <div class="gms-player-card__inner gms-double-bezel-inner">
+    <div class="gms-player-card__portrait">
+      {{> "modules/gms-reputation/templates/components/portrait-frame.hbs" portrait}}
+    </div>
+
+    <div class="gms-player-card__body">
+      <header class="gms-player-card__header">
+        <div class="gms-player-card__identity">
+          {{> "modules/gms-reputation/templates/components/identity.hbs" identity}}
+        </div>
+        <span class="gms-player-card__band-pill" style="--band-accent: {{relationship.accent}}">
+          {{relationship.label}}
+        </span>
+      </header>
+
+      <div class="gms-player-card__track">
+        {{> "modules/gms-reputation/templates/components/reputation-track.hbs" hearts}}
+      </div>
+    </div>
+
+    <aside class="gms-player-card__side">
+      <div class="gms-player-card__score" aria-label="{{score.accessibleLabel}}">
+        <strong>{{score.text}}</strong>
+        <small>/ {{score.limit}}</small>
+      </div>
+
+      {{#if special.active}}
+        <div class="gms-player-card__protocol">
+          {{> "modules/gms-reputation/templates/components/special-protocol.hbs" special}}
+        </div>
+      {{/if}}
+    </aside>
+  </div>
+</article>

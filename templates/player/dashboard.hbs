@@ -1,0 +1,107 @@
+<section
+  class="gms-player-dashboard gms-shell gms-layer-shell"
+  data-player-dashboard
+  data-profile-id="{{profileId}}"
+  data-world-revision="{{worldRevision}}"
+>
+  {{> "modules/gms-reputation/templates/components/background-art.hbs"}}
+
+  <header class="gms-player-dashboard__header">
+    <div class="gms-player-dashboard__masthead">
+      <span class="gms-player-dashboard__tag">GMS // MATRIZ DE REPUTAÇÃO</span>
+      <h1 class="gms-player-dashboard__title">{{#if hasProfile}}{{profileName}}{{else}}SEM PERFIL DISPONÍVEL{{/if}}</h1>
+    </div>
+
+    <div class="gms-player-dashboard__header-actions">
+      <span class="gms-player-dashboard__live-indicator" data-player-live-update data-active="false" role="status" aria-live="polite"></span>
+      {{#if showProfileLibrary}}
+        <button
+          type="button"
+          class="gms-btn gms-btn--secondary gms-player-dashboard__switch-btn"
+          data-action="toggle-library"
+          aria-expanded="false"
+          aria-controls="gms-player-library-drawer"
+        >
+          <i class="fa-solid fa-people-arrows" aria-hidden="true"></i>
+          <span>Perspectivas</span>
+        </button>
+      {{/if}}
+    </div>
+  </header>
+
+  {{#if showProfileLibrary}}
+    <div id="gms-player-library-drawer" class="gms-player-library-drawer" data-player-library-drawer hidden>
+      <header class="gms-player-library-drawer__header">
+        <div>
+          <small>DIRETÓRIO DE PERSPECTIVAS</small>
+          <strong>Escolha o perfil para visualizar relações</strong>
+        </div>
+        <button type="button" class="gms-btn gms-btn--icon" data-action="close-library" aria-label="Fechar lista de perfis">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </header>
+
+      <div class="gms-player-library-drawer__groups">
+        {{#each profileGroups}}
+          <div class="gms-profile-group-accordion {{#if active}}is-open{{/if}}" data-profile-group="{{id}}">
+            <button
+              type="button"
+              class="gms-profile-group-accordion__trigger"
+              data-action="toggle-group"
+              aria-expanded="{{#if active}}true{{else}}false{{/if}}"
+            >
+              <span class="gms-profile-group-accordion__title">{{name}}</span>
+              <span class="gms-profile-group-accordion__count">{{count}} perfis</span>
+              <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </button>
+            <div class="gms-profile-group-accordion__content" {{#unless active}}hidden{{/unless}}>
+              {{#each profiles}}
+                <button
+                  type="button"
+                  class="gms-profile-choice {{#if selected}}is-selected{{/if}}"
+                  data-player-profile-choice="{{id}}"
+                  aria-current="{{#if selected}}true{{else}}false{{/if}}"
+                >
+                  <span class="gms-profile-choice__thumb">
+                    {{#if image}}
+                      <img src="{{image}}" alt="" loading="lazy">
+                    {{else}}
+                      <i class="fa-solid fa-user" aria-hidden="true"></i>
+                    {{/if}}
+                  </span>
+                  <span class="gms-profile-choice__info">
+                    <strong>{{focalName}}</strong>
+                    <small>{{name}}</small>
+                  </span>
+                  {{#if selected}}
+                    <span class="gms-profile-choice__badge">ATIVO</span>
+                  {{/if}}
+                </button>
+              {{/each}}
+            </div>
+          </div>
+        {{/each}}
+      </div>
+    </div>
+  {{/if}}
+
+  {{#if hasProfile}}
+    <div class="gms-player-dashboard__scroll" data-player-scroll>
+      <div class="gms-player-dashboard__content">
+        {{> "modules/gms-reputation/templates/player/focal.hbs" focal}}
+
+        <section class="gms-player-dashboard__records" aria-label="Relações do perfil" data-player-cards-grid>
+          {{#each cards}}
+            {{> "modules/gms-reputation/templates/player/card.hbs" this}}
+          {{/each}}
+        </section>
+      </div>
+    </div>
+  {{else}}
+    <div class="gms-player-dashboard__empty gms-empty-state">
+      <i class="fa-solid fa-folder-open gms-empty-state__icon" aria-hidden="true"></i>
+      <h2 class="gms-empty-state__title">Nenhum perfil social ativo</h2>
+      <p class="gms-empty-state__description">O Mestre ainda não disponibilizou um perfil de reputação neste mundo.</p>
+    </div>
+  {{/if}}
+</section>

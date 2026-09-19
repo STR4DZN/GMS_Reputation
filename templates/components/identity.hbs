@@ -1,0 +1,14 @@
+<span
+  class="gms-reputation-identity {{#if hasDistinctRealName}}has-reveal{{else}}is-single{{/if}}"
+  data-subject-id="{{subjectId}}"
+  data-identity-reveal="{{hasDistinctRealName}}"
+  tabindex="0"
+  aria-label="{{accessibleLabel}}"
+>
+  <span class="gms-reputation-identity__viewport">
+    <strong class="gms-reputation-identity__alias">{{alias}}</strong>
+    {{#if hasDistinctRealName}}
+      <small class="gms-reputation-identity__real">{{realName}}</small>
+    {{/if}}
+  </span>
+</span>

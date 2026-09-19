@@ -1,0 +1,124 @@
+<section
+  class="gms-subject-detail gms-shell gms-layer-shell"
+  data-subject-detail-root
+  data-profile-id="{{profileId}}"
+  data-subject-id="{{subjectId}}"
+  data-relation-band="{{relationship.bandId}}"
+  data-relation-polarity="{{relationship.polarity}}"
+>
+  {{#if found}}
+    <header class="gms-subject-detail__header">
+      <div class="gms-subject-detail__masthead">
+        <small class="gms-subject-detail__eyebrow">DOSSIÊ // {{profileName}}</small>
+        <h1 class="gms-subject-detail__title">REGISTRO DE RELAÇÃO</h1>
+      </div>
+      <button
+        type="button"
+        class="gms-btn gms-btn--icon"
+        data-action="close-detail"
+        aria-label="Fechar detalhes"
+      >
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+    </header>
+
+    <div class="gms-subject-detail__scroll" data-detail-scroll>
+      <div class="gms-subject-detail__hero gms-double-bezel">
+        <div class="gms-subject-detail__hero-inner gms-double-bezel-inner">
+          <div class="gms-subject-detail__portrait">
+            {{> "modules/gms-reputation/templates/components/portrait-frame.hbs" portrait}}
+          </div>
+
+          <div class="gms-subject-detail__identity-block">
+            {{> "modules/gms-reputation/templates/components/identity.hbs" identity}}
+            {{#if identity.hasDistinctRealName}}
+              <div class="gms-subject-detail__real-name">NOME REAL // {{identity.realName}}</div>
+            {{/if}}
+
+            <div class="gms-subject-detail__relation-badge" style="--band-accent: {{relationship.accent}}">
+              {{relationship.label}}
+            </div>
+
+            <div class="gms-subject-detail__track">
+              {{> "modules/gms-reputation/templates/components/reputation-track.hbs" hearts}}
+            </div>
+          </div>
+
+          <aside class="gms-subject-detail__score-card">
+            <div class="gms-subject-detail__score-val" aria-label="{{score.accessibleLabel}}">
+              <strong>{{score.text}}</strong>
+              <small>/ {{score.limit}}</small>
+            </div>
+
+            {{#if special.active}}
+              <div class="gms-subject-detail__protocol">
+                {{> "modules/gms-reputation/templates/components/special-protocol.hbs" special}}
+              </div>
+            {{/if}}
+          </aside>
+        </div>
+      </div>
+
+      <div class="gms-subject-detail__sections">
+        <section class="gms-subject-detail__section" data-section="biography">
+          <h2 class="gms-subject-detail__section-title">Biografia & Anotações</h2>
+          {{#if hasDescription}}
+            <div class="gms-subject-detail__prose">{{description}}</div>
+          {{else}}
+            <p class="gms-subject-detail__empty-prose">Nenhuma biografia registrada no dossiê.</p>
+          {{/if}}
+        </section>
+
+        {{#if hasTags}}
+          <section class="gms-subject-detail__section" data-section="tags">
+            <h2 class="gms-subject-detail__section-title">Marcadores Sociais</h2>
+            <div class="gms-subject-detail__tags">
+              {{#each tags}}
+                <span class="gms-tag">{{this}}</span>
+              {{/each}}
+            </div>
+          </section>
+        {{/if}}
+
+        <section class="gms-subject-detail__section" data-section="history">
+          <h2 class="gms-subject-detail__section-title">Linha Temporal de Eventos</h2>
+          {{#if hasHistory}}
+            <div class="gms-timeline">
+              {{#each history}}
+                <div class="gms-timeline__item">
+                  <div class="gms-timeline__node" aria-hidden="true"></div>
+                  <div class="gms-timeline__content">
+                    <header class="gms-timeline__header">
+                      <time class="gms-timeline__time">{{timestampText}}</time>
+                      <strong class="gms-timeline__action">{{typeLabel}}</strong>
+                      <span class="gms-timeline__actor">{{actorLabel}}</span>
+                    </header>
+                    {{#if hasChanges}}
+                      <div class="gms-timeline__changes">
+                        {{#each changes}}
+                          <span class="gms-timeline__diff">{{label}}: <b>{{before}}</b> → <b>{{after}}</b></span>
+                        {{/each}}
+                      </div>
+                    {{/if}}
+                    {{#if reason}}
+                      <p class="gms-timeline__reason">{{reason}}</p>
+                    {{/if}}
+                  </div>
+                </div>
+              {{/each}}
+            </div>
+          {{else}}
+            <p class="gms-subject-detail__empty-prose">Nenhum evento registrado nesta linha temporal.</p>
+          {{/if}}
+        </section>
+      </div>
+    </div>
+  {{else}}
+    <div class="gms-subject-detail__empty gms-empty-state">
+      <i class="fa-solid fa-triangle-exclamation gms-empty-state__icon" aria-hidden="true"></i>
+      <h2 class="gms-empty-state__title">Registro Inacessível</h2>
+      <p class="gms-empty-state__description">O perfil ou personagem solicitado não está mais disponível no sistema.</p>
+      <button type="button" class="gms-btn gms-btn--secondary" data-action="close-detail">Fechar</button>
+    </div>
+  {{/if}}
+</section>

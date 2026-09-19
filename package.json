@@ -1,0 +1,20 @@
+{
+  "name": "gms-reputation",
+  "version": "1.2.0-dev.71",
+  "description": "GMS // Matriz de Reputação - Arquitetura de Refatoração Visual e Runtime",
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "build:css": "node tools/build-css.mjs",
+    "audit": "node tools/audit-unused.mjs",
+    "build": "node tools/build-css.mjs && node tools/audit-unused.mjs && node --test tests/*.test.mjs"
+  },
+  "keywords": [
+    "foundry-vtt",
+    "gms",
+    "reputation",
+    "social-dossier"
+  ],
+  "author": "GMS",
+  "license": "MIT"
+}

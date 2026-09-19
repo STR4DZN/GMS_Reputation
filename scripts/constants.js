@@ -1,6 +1,6 @@
 export const MODULE_ID = "gms-reputation";
 export const MODULE_TITLE = "GMS // Matriz de Reputação";
-export const MODULE_VERSION = "1.2.0-dev.70";
+export const MODULE_VERSION = "1.2.0-dev.71";
 export const DATA_SCHEMA_VERSION = 5;
 
 export const SETTINGS = Object.freeze({
@@ -8,7 +8,8 @@ export const SETTINGS = Object.freeze({
   WORLD_STATE_BACKUP: "worldStateBackup",
   MASTER_SAVE_MODE: "masterSaveMode",
   MASTER_AUTOSAVE_DELAY: "masterAutoSaveDelay",
-  PERMISSIONS: "permissions"
+  PERMISSIONS: "permissions",
+  MOTION_INTENSITY: "motionIntensity"
 });
 
 export const MASTER_SAVE_MODE = Object.freeze({
@@ -17,7 +18,11 @@ export const MASTER_SAVE_MODE = Object.freeze({
   IDLE: "idle"
 });
 
-
+export const MOTION_INTENSITY = Object.freeze({
+  FULL: "full",
+  STANDARD: "standard",
+  MINIMAL: "minimal"
+});
 
 export const SCORE = Object.freeze({
   MIN: -10,

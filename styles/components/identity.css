@@ -1,0 +1,29 @@
+/**
+ * Identity Styles (Alias / Real Name)
+ */
+.gms-reputation-identity {
+  display: inline-flex;
+  flex-direction: column;
+  outline: none;
+}
+
+.gms-reputation-identity__viewport {
+  display: flex;
+  flex-direction: column;
+}
+
+.gms-reputation-identity__alias {
+  font-size: var(--gms-font-title-md);
+  font-weight: 700;
+  color: var(--gms-text-display);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.gms-reputation-identity__real {
+  font-size: var(--gms-font-label);
+  color: var(--gms-text-muted);
+  font-family: var(--gms-font-family-mono);
+  letter-spacing: 0.04em;
+  margin-top: 1px;
+}

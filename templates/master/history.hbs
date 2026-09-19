@@ -1,0 +1,81 @@
+<div class="gms-workspace-history" data-workspace="history">
+  <header class="gms-history-header">
+    <div>
+      <small class="gms-history-header__eyebrow">REGISTRO CRONOLÓGICO</small>
+      <h2 class="gms-history-header__title">Auditoria de Eventos</h2>
+    </div>
+
+    <!-- Filter Buttons -->
+    <div class="gms-history-filters" role="tablist">
+      <button
+        type="button"
+        class="gms-filter-btn {{#if (eq filter 'all')}}is-active{{/if}}"
+        data-action="filter-history"
+        data-filter="all"
+      >Todos ({{totalEvents}})</button>
+      <button
+        type="button"
+        class="gms-filter-btn {{#if (eq filter 'relationships')}}is-active{{/if}}"
+        data-action="filter-history"
+        data-filter="relationships"
+      >Relações</button>
+      <button
+        type="button"
+        class="gms-filter-btn {{#if (eq filter 'profiles')}}is-active{{/if}}"
+        data-action="filter-history"
+        data-filter="profiles"
+      >Perfis</button>
+      <button
+        type="button"
+        class="gms-filter-btn {{#if (eq filter 'characters')}}is-active{{/if}}"
+        data-action="filter-history"
+        data-filter="characters"
+      >Personagens</button>
+    </div>
+
+    <div class="gms-history-search">
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <input
+        type="search"
+        class="gms-input gms-input--sm"
+        placeholder="Filtrar por ator, motivo ou tipo..."
+        data-action="search-history"
+        value="{{searchQuery}}"
+      >
+    </div>
+  </header>
+
+  <div class="gms-history-feed" data-history-feed>
+    {{#each events}}
+      <article class="gms-history-card {{#if isUndoTarget}}is-undo-target{{/if}}">
+        <div class="gms-history-card__node" aria-hidden="true"></div>
+        <div class="gms-history-card__content">
+          <header class="gms-history-card__top">
+            <time class="gms-history-card__time">{{timestampText}}</time>
+            <span class="gms-history-card__type">{{typeLabel}}</span>
+            <span class="gms-history-card__actor"><i class="fa-solid fa-user-gear" aria-hidden="true"></i> {{actorLabel}}</span>
+            {{#if isUndoTarget}}
+              <span class="gms-undo-badge">ÚLTIMA AÇÃO REVERSÍVEL</span>
+            {{/if}}
+          </header>
+
+          {{#if hasChanges}}
+            <div class="gms-history-card__diffs">
+              {{#each changes}}
+                <span class="gms-diff-pill">
+                  <b>{{label}}:</b> <i>{{before}}</i> → <strong>{{after}}</strong>
+                </span>
+              {{/each}}
+            </div>
+          {{/if}}
+
+          {{#if reason}}
+            <p class="gms-history-card__reason">“{{reason}}”</p>
+          {{/if}}
+        </div>
+      </article>
+    {{else}}
+      <div class="gms-empty-hint">Nenhum evento registrado com os filtros atuais.</div>
+    {{/each}}
+  </div>
+</div>

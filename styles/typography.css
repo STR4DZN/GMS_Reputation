@@ -1,0 +1,56 @@
+/**
+ * Tipografia Editorial & Técnica
+ */
+.gms-text-display {
+  font-size: var(--gms-font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--gms-text-display);
+}
+
+.gms-text-title-lg {
+  font-size: var(--gms-font-title-lg);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--gms-text-primary);
+}
+
+.gms-text-title-md {
+  font-size: var(--gms-font-title-md);
+  font-weight: 600;
+  color: var(--gms-text-primary);
+}
+
+.gms-text-body {
+  font-size: var(--gms-font-body);
+  color: var(--gms-text-secondary);
+}
+
+.gms-text-label {
+  font-size: var(--gms-font-label);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gms-text-muted);
+}
+
+.gms-text-micro {
+  font-size: var(--gms-font-micro);
+  font-family: var(--gms-font-family-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gms-text-muted);
+}
+
+.gms-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gms-space-1);
+  padding: 2px 6px;
+  font-size: var(--gms-font-micro);
+  font-family: var(--gms-font-family-mono);
+  font-weight: 600;
+  border-radius: var(--gms-radius-sm);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}

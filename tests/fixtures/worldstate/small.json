@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 5,
+  "revision": 5,
+  "profiles": {
+    "prof-1": {
+      "id": "prof-1",
+      "name": "Ordem de Vidro",
+      "groupId": "grp-1",
+      "sortOrder": 1,
+      "active": true,
+      "subjectIds": [
+        "subj-1",
+        "subj-2"
+      ],
+      "focal": {
+        "name": "Matriarca",
+        "description": "Líder",
+        "portrait": {
+          "src": "icons/matriarch.png"
+        }
+      },
+      "relationships": {
+        "subj-1": {
+          "subjectId": "subj-1",
+          "score": 6.5,
+          "bond": true
+        },
+        "subj-2": {
+          "subjectId": "subj-2",
+          "score": -3
+        }
+      }
+    },
+    "prof-2": {
+      "id": "prof-2",
+      "name": "Vanguarda",
+      "groupId": null,
+      "sortOrder": 2,
+      "active": true,
+      "subjectIds": [
+        "subj-1"
+      ],
+      "focal": {
+        "name": "Comandante"
+      },
+      "relationships": {
+        "subj-1": {
+          "subjectId": "subj-1",
+          "score": 2
+        }
+      }
+    }
+  },
+  "groups": {
+    "grp-1": {
+      "id": "grp-1",
+      "name": "Fações Maiores",
+      "active": true
+    }
+  },
+  "subjects": {
+    "subj-1": {
+      "id": "subj-1",
+      "alias": "Vane",
+      "realName": "Lord Vane",
+      "active": true,
+      "sortOrder": 1
+    },
+    "subj-2": {
+      "id": "subj-2",
+      "alias": "Corvo",
+      "realName": "Daniel Shirako",
+      "active": true,
+      "sortOrder": 2
+    }
+  },
+  "history": [
+    {
+      "id": "h-1",
+      "transactionId": "tx-1",
+      "type": "relationship",
+      "timestamp": 1710000000000,
+      "profileId": "prof-1",
+      "subjectId": "subj-1",
+      "before": {
+        "score": 0
+      },
+      "after": {
+        "score": 6.5,
+        "bond": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" fill="none">
+  <defs>
+    <linearGradient id="stem" x1="48" y1="90" x2="48" y2="14" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8B5CF6"/>
+      <stop offset=".52" stop-color="#27F3FF"/>
+      <stop offset="1" stop-color="#F1F3F6"/>
+    </linearGradient>
+    <radialGradient id="core" cx="0" cy="0" r="1" gradientTransform="translate(48 39) rotate(90) scale(16)">
+      <stop stop-color="#F1F3F6"/>
+      <stop offset=".34" stop-color="#27F3FF"/>
+      <stop offset="1" stop-color="#8B5CF6" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <!-- xenotechnological bouquet: three synthetic blooms bound to one lattice -->
+  <path d="M48 88V48M48 68 32 53M48 66l17-16M48 59 38 39M48 60l11-23" stroke="url(#stem)" stroke-width="2"/>
+  <path d="M31 53c-8 2-13-2-14-8 6 0 10 2 14 8Zm34-3c8 0 13-4 14-10-6 1-10 4-14 10ZM38 62c-7 5-12 4-16-1 5-3 10-3 16 1Zm20 1c7 4 13 3 16-2-5-3-10-2-16 2Z" stroke="#8B5CF6" stroke-width="1.4" fill="#120B25"/>
+  <g stroke="#27F3FF" stroke-width="1.7">
+    <path d="M48 13 55 24 68 21 66 34 78 40 67 48 71 61 57 59 48 70 39 59 25 61 29 48 18 40 30 34 28 21 41 24Z" opacity=".34"/>
+    <circle cx="48" cy="38" r="18" stroke-dasharray="2 4" opacity=".58"/>
+  </g>
+  <g>
+    <path d="M48 24c6-8 15-5 14 4 8-3 13 5 7 10 9 2 8 12-1 13 5 7-2 14-9 9-2 9-12 9-14 0-7 5-14-2-9-9-9-2-10-12-1-14-6-6-1-14 7-10-1-9 8-12 14-4 4-8 14-5 14 4Z" fill="url(#core)" stroke="#27F3FF" stroke-width="1.8"/>
+    <path d="M48 27c3-6 10-5 10 2 6-2 9 4 5 8 7 1 6 8 0 10 3 5-2 10-7 7-1 6-8 7-10 1-5 3-10-2-7-7-6-2-7-9-1-11-4-5 0-10 6-7 1-6 7-8 11-3 3-5 10-3 10 4Z" fill="#09181F" stroke="#8B5CF6" stroke-width="1.2"/>
+    <circle cx="48" cy="40" r="6" fill="#F1F3F6" stroke="#27F3FF"/>
+    <path d="m48 33 2 5 5 2-5 2-2 5-2-5-5-2 5-2Z" fill="#8B5CF6"/>
+  </g>
+  <g fill="#07171B" stroke="#27F3FF" stroke-width="1.2">
+    <path d="M27 25c7-7 16-2 13 7-2 7-10 10-17 7-4-5-2-10 4-14Z"/>
+    <path d="M69 24c-7-6-16-1-13 8 2 7 10 9 17 6 4-5 2-10-4-14Z"/>
+  </g>
+  <path d="M27 32h10M32 27v10M59 31h10M64 26v10" stroke="#8B5CF6" stroke-width="1"/>
+  <path d="M35 72 48 82 61 72M37 79l11 9 11-9" stroke="#27F3FF" stroke-width="1.4" opacity=".72"/>
+  <path d="M13 13h15M13 13v15M83 13H68M83 13v15" stroke="#F1F3F6" stroke-width="1" opacity=".45"/>
+</svg>

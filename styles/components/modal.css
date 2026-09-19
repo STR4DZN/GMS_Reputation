@@ -1,0 +1,60 @@
+/**
+ * Diálogos e Modais do GMS Reputation
+ */
+.gms-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 7, 10, 0.82);
+  backdrop-filter: blur(4px);
+  z-index: var(--gms-z-modal, 500);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--gms-space-4);
+  animation: gms-fade-in var(--gms-duration-fast) var(--gms-ease-out);
+}
+
+.gms-modal-dialog {
+  background: var(--gms-bg-carbon);
+  border: 1px solid var(--gms-border-subtle);
+  border-radius: var(--gms-radius-md);
+  box-shadow: var(--gms-shadow-dialog);
+  width: 100%;
+  max-width: 520px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.gms-modal-header {
+  padding: var(--gms-space-3) var(--gms-space-4);
+  background: var(--gms-bg-graphite);
+  border-bottom: 1px solid var(--gms-border-hairline);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.gms-modal-header h3 {
+  font-size: var(--gms-text-md);
+  font-weight: 600;
+  color: var(--gms-text-primary);
+  margin: 0;
+}
+
+.gms-modal-body {
+  padding: var(--gms-space-4);
+  font-size: var(--gms-text-sm);
+  color: var(--gms-text-secondary);
+  line-height: 1.5;
+}
+
+.gms-modal-footer {
+  padding: var(--gms-space-3) var(--gms-space-4);
+  background: var(--gms-bg-graphite);
+  border-top: 1px solid var(--gms-border-hairline);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--gms-space-2);
+}

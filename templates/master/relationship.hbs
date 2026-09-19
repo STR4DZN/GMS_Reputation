@@ -1,0 +1,246 @@
+<div class="gms-workspace-relationship" data-workspace="relationship">
+  <!-- 1. ROSTER & SELEÇÃO -->
+  <aside class="gms-reputation-sidebar">
+    <header class="gms-reputation-sidebar__header">
+      <label for="rep-profile-select" class="gms-reputation-sidebar__label">PERSPECTIVA</label>
+      <select id="rep-profile-select" class="gms-select" data-action="select-profile">
+        {{#each profiles}}
+          <option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>
+        {{/each}}
+      </select>
+    </header>
+
+    <div class="gms-reputation-sidebar__search">
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <input
+        type="search"
+        class="gms-input gms-input--sm"
+        placeholder="Buscar relação..."
+        data-action="filter-subjects"
+        value="{{searchQuery}}"
+      >
+      <button
+        type="button"
+        class="gms-btn gms-btn--icon-sm {{#if bulkMode}}is-active{{/if}}"
+        data-action="toggle-bulk-mode"
+        title="Modo de Seleção Múltipla"
+        aria-label="Seleção Múltipla"
+      >
+        <i class="fa-solid fa-list-check" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <div class="gms-reputation-roster-list" data-roster-list>
+      {{#each rosterList}}
+        <article
+          class="gms-reputation-roster-card {{#if selected}}is-selected{{/if}} is-band-{{bandId}}"
+          data-subject-id="{{subjectId}}"
+          role="button"
+          tabindex="0"
+        >
+          {{#if ../bulkMode}}
+            <input
+              type="checkbox"
+              class="gms-reputation-bulk-cb"
+              data-action="bulk-check"
+              data-subject-id="{{subjectId}}"
+              {{#if bulkChecked}}checked{{/if}}
+            >
+          {{/if}}
+
+          <div class="gms-reputation-roster-card__thumb">
+            {{#if portrait.src}}
+              <img src="{{portrait.src}}" alt="" loading="lazy">
+            {{else}}
+              <i class="fa-solid fa-user" aria-hidden="true"></i>
+            {{/if}}
+          </div>
+
+          <div class="gms-reputation-roster-card__info">
+            <strong class="gms-reputation-roster-card__alias">{{alias}}</strong>
+            <span class="gms-reputation-roster-card__band" style="--band-accent: {{accent}}">{{bandLabel}}</span>
+          </div>
+
+          <div class="gms-reputation-roster-card__score">
+            <strong>{{scoreText}}</strong>
+          </div>
+        </article>
+      {{else}}
+        <div class="gms-empty-hint">Nenhum personagem no roster deste perfil.</div>
+      {{/each}}
+    </div>
+  </aside>
+
+  <!-- 2. PALCO CENTRAL DA RELAÇÃO (Section 19) -->
+  <main class="gms-reputation-stage">
+    {{#if hasSelectedRelation}}
+      <!-- PERSONAGEM -->
+      <header class="gms-reputation-stage__hero gms-double-bezel">
+        <div class="gms-reputation-stage__hero-inner gms-double-bezel-inner">
+          <div class="gms-reputation-stage__portrait">
+            {{> "modules/gms-reputation/templates/components/portrait-frame.hbs" currentPortraitContext}}
+          </div>
+
+          <div class="gms-reputation-stage__identity">
+            <small class="gms-reputation-stage__eyebrow">RELAÇÃO SOCIAL ATIVA</small>
+            <h2 class="gms-reputation-stage__name">{{currentSubject.alias}}</h2>
+            {{#if currentSubject.realName}}
+              <span class="gms-reputation-stage__real-name">NOME REAL // {{currentSubject.realName}}</span>
+            {{/if}}
+          </div>
+
+          <div class="gms-reputation-stage__band-display" style="--band-accent: {{relationView.band.accent}}">
+            <span class="gms-band-label">{{relationView.band.label}}</span>
+            <small class="gms-polarity-tag">{{relationView.polarity}}</small>
+          </div>
+        </div>
+      </header>
+
+      <!-- HEART TRACK -->
+      <section class="gms-reputation-stage__track-card">
+        <header class="gms-reputation-stage__track-header">
+          <span>MATRIZ CARDÍACA // TRACK</span>
+          <small>Clique em um coração para calibrar score</small>
+        </header>
+        <div class="gms-reputation-stage__track-wrap" data-action="click-track">
+          {{> "modules/gms-reputation/templates/components/reputation-track.hbs" heartTrackModel}}
+        </div>
+      </section>
+
+      <!-- SCORE STEPPER -->
+      <section class="gms-reputation-stage__stepper-card">
+        <div class="gms-stepper">
+          <button type="button" class="gms-btn gms-btn--stepper" data-action="delta-score" data-delta="-1.0">−1.0</button>
+          <button type="button" class="gms-btn gms-btn--stepper" data-action="delta-score" data-delta="-0.5">−0.5</button>
+
+          <div class="gms-stepper__input-wrap">
+            <input
+              type="number"
+              step="0.5"
+              class="gms-stepper__input"
+              data-field="score"
+              value="{{currentRelationship.score}}"
+            >
+            <span class="gms-stepper__limit">/ {{relationView.scoreLimit}}</span>
+          </div>
+
+          <button type="button" class="gms-btn gms-btn--stepper" data-action="delta-score" data-delta="+0.5">+0.5</button>
+          <button type="button" class="gms-btn gms-btn--stepper" data-action="delta-score" data-delta="+1.0">+1.0</button>
+        </div>
+
+        <div class="gms-presets">
+          <span class="gms-presets__label">Presets:</span>
+          <button type="button" class="gms-btn gms-btn--preset" data-action="set-score" data-value="-10">−10</button>
+          <button type="button" class="gms-btn gms-btn--preset" data-action="set-score" data-value="-5">−5</button>
+          <button type="button" class="gms-btn gms-btn--preset" data-action="set-score" data-value="0">0</button>
+          <button type="button" class="gms-btn gms-btn--preset" data-action="set-score" data-value="5">+5</button>
+          <button type="button" class="gms-btn gms-btn--preset" data-action="set-score" data-value="10">+10</button>
+        </div>
+      </section>
+
+      <!-- PROTOCOLOS ESPECIAIS (Section 19) -->
+      <section class="gms-reputation-stage__protocols-card">
+        <header class="gms-reputation-stage__protocols-header">
+          <span>PROTOCOLOS ESPECIAIS</span>
+          <small>Elevação de limites e ressonância</small>
+        </header>
+
+        <div class="gms-protocols-grid">
+          <!-- VÍNCULO -->
+          <button
+            type="button"
+            class="gms-protocol-toggle {{#if currentRelationship.bond}}is-active{{/if}}"
+            data-action="toggle-bond"
+            aria-pressed="{{#if currentRelationship.bond}}true{{else}}false{{/if}}"
+          >
+            <div class="gms-protocol-toggle__icon">
+              <img src="modules/gms-reputation/assets/protocols/bond-sigil.svg" alt="" aria-hidden="true">
+            </div>
+            <div class="gms-protocol-toggle__copy">
+              <strong>VÍNCULO</strong>
+              <small>Expande limite para +12</small>
+            </div>
+            <span class="gms-protocol-toggle__status">{{#if currentRelationship.bond}}ATIVO{{else}}INATIVO{{/if}}</span>
+          </button>
+
+          <!-- COMUNHÃO -->
+          <button
+            type="button"
+            class="gms-protocol-toggle {{#if currentRelationship.communion}}is-active{{/if}}"
+            data-action="toggle-communion"
+            aria-pressed="{{#if currentRelationship.communion}}true{{else}}false{{/if}}"
+          >
+            <div class="gms-protocol-toggle__icon">
+              <img src="modules/gms-reputation/assets/protocols/communion-sigil.svg" alt="" aria-hidden="true">
+            </div>
+            <div class="gms-protocol-toggle__copy">
+              <strong>COMUNHÃO</strong>
+              <small>Canal de afinidade espiritual</small>
+            </div>
+            <span class="gms-protocol-toggle__status">{{#if currentRelationship.communion}}ATIVA{{else}}INATIVA{{/if}}</span>
+          </button>
+
+          <!-- DUPLO//SINC (Read-Only & Derivado) -->
+          <div
+            class="gms-protocol-toggle is-derived {{#if isDualSync}}is-active{{/if}}"
+            title="Derivado automaticamente de Vínculo + Comunhão + Score >= 10"
+          >
+            <div class="gms-protocol-toggle__icon">
+              <img src="modules/gms-reputation/assets/protocols/dual-sync-sigil.svg" alt="" aria-hidden="true">
+            </div>
+            <div class="gms-protocol-toggle__copy">
+              <strong>DUPLO//SINC</strong>
+              <small>Sincronia máxima derivada</small>
+            </div>
+            <span class="gms-protocol-toggle__status">{{#if isDualSync}}RESSONÂNCIA{{else}}DESALINHADO{{/if}}</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- NOTA NARRATIVA -->
+      <section class="gms-reputation-stage__note-card">
+        <label for="rep-note-input">Nota Narrativa da Relação</label>
+        <textarea
+          id="rep-note-input"
+          class="gms-textarea"
+          rows="3"
+          data-field="note"
+          placeholder="Anotações privadas sobre o estado atual ou eventos marcantes..."
+        >{{currentRelationship.note}}</textarea>
+      </section>
+    {{else}}
+      <div class="gms-reputation-stage__empty gms-empty-state">
+        <i class="fa-solid fa-heart-pulse gms-empty-state__icon" aria-hidden="true"></i>
+        <h3 class="gms-empty-state__title">Nenhuma relação selecionada</h3>
+        <p class="gms-empty-state__description">Escolha um personagem no menu lateral para visualizar e calibrar a relação social.</p>
+      </div>
+    {{/if}}
+  </main>
+
+  <!-- 3. BARRA CONTEXTUAL DE BULK (Section 20) -->
+  {{#if showBulkBar}}
+    <footer class="gms-bulk-action-bar" data-bulk-bar>
+      <div class="gms-bulk-action-bar__summary">
+        <i class="fa-solid fa-check-double" aria-hidden="true"></i>
+        <strong>{{bulkCount}} selecionados</strong>
+      </div>
+
+      <div class="gms-bulk-action-bar__actions">
+        <span class="gms-bulk-action-bar__label">Score:</span>
+        <button type="button" class="gms-btn gms-btn--xs" data-action="bulk-delta" data-delta="-1.0">−1.0</button>
+        <button type="button" class="gms-btn gms-btn--xs" data-action="bulk-delta" data-delta="+1.0">+1.0</button>
+        <button type="button" class="gms-btn gms-btn--xs" data-action="bulk-set" data-value="0">Zerar (0)</button>
+
+        <span class="gms-bulk-action-bar__separator" aria-hidden="true"></span>
+
+        <span class="gms-bulk-action-bar__label">Protocolos:</span>
+        <button type="button" class="gms-btn gms-btn--xs" data-action="bulk-bond" data-state="true">Vínculo On</button>
+        <button type="button" class="gms-btn gms-btn--xs" data-action="bulk-bond" data-state="false">Vínculo Off</button>
+        <button type="button" class="gms-btn gms-btn--xs" data-action="bulk-communion" data-state="true">Comunhão On</button>
+        <button type="button" class="gms-btn gms-btn--xs" data-action="bulk-communion" data-state="false">Comunhão Off</button>
+
+        <button type="button" class="gms-btn gms-btn--xs gms-btn--secondary" data-action="bulk-clear">Desmarcar</button>
+      </div>
+    </footer>
+  {{/if}}
+</div>

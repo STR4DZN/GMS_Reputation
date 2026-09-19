@@ -1,0 +1,186 @@
+<div class="gms-workspace-system" data-workspace="system">
+  <div class="gms-system-grid">
+    <!-- 1. SALVAMENTO -->
+    <section class="gms-system-card">
+      <header class="gms-system-card__header">
+        <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
+        <div>
+          <h3>Salvamento & Persistência</h3>
+          <small>Políticas de commit no WorldState</small>
+        </div>
+      </header>
+
+      <div class="gms-system-card__body">
+        <div class="gms-form-group">
+          <label for="sys-save-mode">Modo de Salvamento do Mestre</label>
+          <select id="sys-save-mode" class="gms-select" data-field="saveMode">
+            <option value="automatic" {{#if (eq saveMode 'automatic')}}selected{{/if}}>Automático (ao parar de digitar)</option>
+            <option value="idle" {{#if (eq saveMode 'idle')}}selected{{/if}}>Em Espera (após intervalo de inatividade)</option>
+            <option value="manual" {{#if (eq saveMode 'manual')}}selected{{/if}}>Manual (apenas ao clicar em Salvar)</option>
+          </select>
+        </div>
+
+        <div class="gms-form-group">
+          <label for="sys-save-delay">Delay de Inatividade (<output data-save-delay-output>{{saveDelay}}s</output>)</label>
+          <input
+            id="sys-save-delay"
+            type="range"
+            min="0.75"
+            max="10"
+            step="0.25"
+            value="{{saveDelay}}"
+            data-field="saveDelay"
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. DIAGNÓSTICO -->
+    <section class="gms-system-card">
+      <header class="gms-system-card__header">
+        <i class="fa-solid fa-microchip" aria-hidden="true"></i>
+        <div>
+          <h3>Diagnóstico & Metadados</h3>
+          <small>Estado da base de dados social</small>
+        </div>
+      </header>
+
+      <div class="gms-system-card__body">
+        <div class="gms-diagnostic-stats">
+          <div class="gms-diag-item">
+            <small>SCHEMA</small>
+            <strong>v{{diagnostics.schemaVersion}}</strong>
+          </div>
+          <div class="gms-diag-item">
+            <small>REVISÃO</small>
+            <strong>#{{diagnostics.worldRevision}}</strong>
+          </div>
+          <div class="gms-diag-item">
+            <small>MATRIZES</small>
+            <strong>{{diagnostics.profileCount}}</strong>
+          </div>
+          <div class="gms-diag-item">
+            <small>PERSONAGENS</small>
+            <strong>{{diagnostics.subjectCount}}</strong>
+          </div>
+          <div class="gms-diag-item">
+            <small>RELAÇÕES</small>
+            <strong>{{diagnostics.relationshipCount}}</strong>
+          </div>
+          <div class="gms-diag-item">
+            <small>HISTÓRICO</small>
+            <strong>{{diagnostics.historyCount}}</strong>
+          </div>
+        </div>
+
+        <div class="gms-system-health">
+          <span class="gms-status-dot is-active"></span>
+          <small>Integridade de Esquema: <b>Consistente e Normalizado</b></small>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. PERMISSÕES -->
+    <section class="gms-system-card gms-system-card--wide">
+      <header class="gms-system-card__header">
+        <i class="fa-solid fa-user-shield" aria-hidden="true"></i>
+        <div>
+          <h3>Matriz de Permissões</h3>
+          <small>Controle granular de acesso por nível de usuário</small>
+        </div>
+      </header>
+
+      <div class="gms-system-card__body">
+        <table class="gms-permissions-table">
+          <thead>
+            <tr>
+              <th>Capacidade</th>
+              <th>Assistente</th>
+              <th>Jogador Confiável</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Abrir Painel do Mestre</td>
+              <td><input type="checkbox" data-perm-role="assistant" data-perm-cap="openMaster" {{#if permissions.assistant.openMaster}}checked{{/if}}></td>
+              <td><input type="checkbox" data-perm-role="trusted" data-perm-cap="openMaster" {{#if permissions.trusted.openMaster}}checked{{/if}}></td>
+            </tr>
+            <tr>
+              <td>Calibrar Relações & Scores</td>
+              <td><input type="checkbox" data-perm-role="assistant" data-perm-cap="relationships" {{#if permissions.assistant.relationships}}checked{{/if}}></td>
+              <td><input type="checkbox" data-perm-role="trusted" data-perm-cap="relationships" {{#if permissions.trusted.relationships}}checked{{/if}}></td>
+            </tr>
+            <tr>
+              <td>Gerenciar Personagens & Retratos</td>
+              <td><input type="checkbox" data-perm-role="assistant" data-perm-cap="subjects" {{#if permissions.assistant.subjects}}checked{{/if}}></td>
+              <td><input type="checkbox" data-perm-role="trusted" data-perm-cap="subjects" {{#if permissions.trusted.subjects}}checked{{/if}}></td>
+            </tr>
+            <tr>
+              <td>Gerenciar Perfis Focais</td>
+              <td><input type="checkbox" data-perm-role="assistant" data-perm-cap="focal" {{#if permissions.assistant.focal}}checked{{/if}}></td>
+              <td><input type="checkbox" data-perm-role="trusted" data-perm-cap="focal" {{#if permissions.trusted.focal}}checked{{/if}}></td>
+            </tr>
+            <tr>
+              <td>Operações em Lote (Bulk)</td>
+              <td><input type="checkbox" data-perm-role="assistant" data-perm-cap="bulk" {{#if permissions.assistant.bulk}}checked{{/if}}></td>
+              <td><input type="checkbox" data-perm-role="trusted" data-perm-cap="bulk" {{#if permissions.trusted.bulk}}checked{{/if}}></td>
+            </tr>
+            <tr>
+              <td>Desfazer / Refazer Histórico</td>
+              <td><input type="checkbox" data-perm-role="assistant" data-perm-cap="history" {{#if permissions.assistant.history}}checked{{/if}}></td>
+              <td><input type="checkbox" data-perm-role="trusted" data-perm-cap="history" {{#if permissions.trusted.history}}checked{{/if}}></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 4. BACKUP & SEGURANÇA -->
+    <section class="gms-system-card gms-system-card--wide">
+      <header class="gms-system-card__header">
+        <i class="fa-solid fa-cloud-arrow-down" aria-hidden="true"></i>
+        <div>
+          <h3>Backup & Restauração</h3>
+          <small>Exportação e recuperação de segurança do WorldState</small>
+        </div>
+      </header>
+
+      <div class="gms-system-card__body">
+        <div class="gms-backup-actions">
+          <div class="gms-backup-action-item">
+            <div>
+              <strong>Exportar Backup JSON</strong>
+              <p>Baixa um arquivo com todos os perfis, personagens, relações e histórico.</p>
+            </div>
+            <button type="button" class="gms-btn gms-btn--secondary" data-action="export-backup">
+              <i class="fa-solid fa-download" aria-hidden="true"></i>
+              <span>Exportar</span>
+            </button>
+          </div>
+
+          <div class="gms-backup-action-item">
+            <div>
+              <strong>Restaurar Backup do Servidor</strong>
+              <p>Restaura o último backup de segurança automático salvo nas configurações do mundo.</p>
+            </div>
+            <button type="button" class="gms-btn gms-btn--secondary" data-action="restore-backup">
+              <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i>
+              <span>Restaurar</span>
+            </button>
+          </div>
+
+          <div class="gms-backup-action-item is-danger">
+            <div>
+              <strong>Reinicializar WorldState</strong>
+              <p>Zera todos os dados sociais e recria um estado vazio inicial.</p>
+            </div>
+            <button type="button" class="gms-btn gms-btn--danger" data-action="reset-worldstate">
+              <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+              <span>Reset Geral</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
