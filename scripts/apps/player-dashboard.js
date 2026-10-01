@@ -7,11 +7,15 @@ import { HandlebarsApplicationV2, appElement, destroyListeners, listen, notify, 
 import { subscribeWorldStateChanges } from "../events/world-sync.js";
 import { wireApplicationAccessibility } from "../utils/accessibility.js";
 import { wireMotionSystem } from "../motion/motion-system.js";
+import { adjacentId, wireNavigationPalette } from "../ui/navigation.js";
+import { getPersonalReputationStatus } from "../persistence/personal-reputation.js";
+import { registerReputationFeedbackSurface, unregisterReputationFeedbackSurface } from "../ui/reputation-feedback.js";
 
 const CARD_TEMPLATE = `modules/${MODULE_ID}/templates/partials/player-card.hbs`;
 const FOCAL_TEMPLATE = `modules/${MODULE_ID}/templates/partials/focal-profile.hbs`;
 
 const PARTIALS = [
+  `modules/${MODULE_ID}/templates/partials/navigation-palette.hbs`,
   `modules/${MODULE_ID}/templates/partials/background-art.hbs`,
   `modules/${MODULE_ID}/templates/partials/portrait-frame.hbs`,
   `modules/${MODULE_ID}/templates/partials/identity.hbs`,
@@ -43,11 +47,13 @@ export function buildPlayerDashboardContext({ profileId = "", state = loadWorldS
   const profile = resolveProfile(state, profileId);
   if (!profile) {
     return Object.freeze({
+      personalReputation: getPersonalReputationStatus(state),
       hasProfile: false,
       profiles: Object.freeze([]),
       profileGroups: Object.freeze([]),
       profileId: "",
-      cards: Object.freeze([])
+      cards: Object.freeze([]),
+      navigationKind: "player", navigationPlaceholder: "Nome do perfil…"
     });
   }
 
@@ -113,9 +119,14 @@ export function buildPlayerDashboardContext({ profileId = "", state = loadWorldS
   }
 
   return Object.freeze({
+    personalReputation: getPersonalReputationStatus(state),
     hasProfile: true,
     profileId: profile.id,
     profileName: profile.name,
+    navigationKind: "player",
+    navigationPlaceholder: "Nome do perfil ou grupo…",
+    navigation: Object.freeze({ position: profiles.findIndex((item) => item.id === profile.id) + 1,
+      hasPrevious: Boolean(adjacentId(profiles, profile.id, -1)), hasNext: Boolean(adjacentId(profiles, profile.id, 1)) }),
     currentProfile: Object.freeze({
       id: profile.id,
       name: String(profile.name || "Perfil"),
@@ -184,6 +195,8 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
     this._motionController = null;
     this._motionBooted = false;
     this._pendingMotion = "";
+    this._navigationController = null;
+    this._syncTail = Promise.resolve();
   }
 
   async _prepareContext(options) {
@@ -237,7 +250,10 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
     if (!replacement) return false;
     const previousSpecial = existing.querySelector?.("[data-special-state]")?.dataset?.specialState ?? "standard";
     const nextSpecial = replacement.querySelector?.("[data-special-state]")?.dataset?.specialState ?? "standard";
+    const focused = existing.contains(globalThis.document?.activeElement);
+    const identityFocused = globalThis.document?.activeElement?.matches?.(".gms-reputation-identity");
     existing.replaceWith(replacement);
+    if (focused) (identityFocused ? replacement.querySelector(".gms-reputation-identity") : replacement)?.focus?.({ preventScroll: true });
     this._motionController?.relationship?.(replacement);
     if (previousSpecial !== nextSpecial) this._motionController?.protocol?.(replacement.querySelector?.("[data-special-state]"));
     return true;
@@ -260,9 +276,7 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
       listen(this._listeners, button, "click", async () => {
         const nextId = String(button.dataset.playerProfileChoice || "");
         if (!nextId || nextId === this.profileId) return;
-        this.profileId = nextId;
-        this._pendingMotion = "profile";
-        await this.render({ force: true });
+        await this._navigateProfile(nextId);
       });
     }
   }
@@ -283,17 +297,23 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
   _rewireCardSurface(root) {
     destroyListeners(this._cardListeners);
     this._wireCardDetails(root);
+    this._accessibilityController?.destroy?.();
     this._accessibilityController = wireApplicationAccessibility(root, { onEscape: () => this.close() });
   }
 
-  async _onWorldStateSync(event) {
+  _onWorldStateSync(event) {
+    this._syncTail = this._syncTail.then(() => this._applyWorldStateSync(event)).catch((error) => console.warn("GMS Reputation | Player sync failed.", error));
+    return this._syncTail;
+  }
+
+  async _applyWorldStateSync(event) {
     if (!this.rendered) return;
     const root = appElement(this);
     if (!root) return;
     const { state, diff } = event;
     const profile = state.profiles?.[this.profileId];
     if (!profile || profile.active === false || profile.archived) { await this.render({ force: true }); return; }
-    if (diff.changedGroupIds?.length || diff.structuralSubjectIds.length || diff.structuralProfileIds?.includes?.(this.profileId)) { await this.render({ force: true }); return; }
+    if (diff.changedGroupIds?.length || diff.structuralSubjectIds.length || diff.structuralProfileIds?.length || diff.focalProfileIds.some((id) => id !== this.profileId)) { await this.render({ force: true }); return; }
     const ids = new Set(diff.changedSubjectIds);
     for (const change of diff.relationshipChanges) if (change.profileId === this.profileId) ids.add(change.subjectId);
     if (ids.size > 8) { await this.render({ force: true }); return; }
@@ -308,6 +328,29 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
     this._motionController?.sync?.(root.querySelector?.("[data-player-live-update]") ?? root);
   }
 
+  async _navigateProfile(profileId) {
+    if (!profileId || profileId === this.profileId) return;
+    this.profileId = String(profileId);
+    this._pendingMotion = "profile";
+    await this.render({ force: true });
+  }
+
+  _wireNavigation(root, context) {
+    this._navigationController = wireNavigationPalette(root, {
+      items: context.profileGroups.flatMap((group) => group.profiles.map((profile) => ({ label: profile.focalName,
+        description: `${profile.name} · ${group.name}`, group: "PERFIS", target: { profileId: profile.id } }))),
+      onNavigate: ({ profileId }) => this._navigateProfile(profileId)
+    });
+    for (const button of root.querySelectorAll("[data-player-profile-step]")) listen(this._listeners, button, "click", () => {
+      const id = adjacentId(context.profiles, this.profileId, Number(button.dataset.playerProfileStep));
+      if (id) return this._navigateProfile(id);
+    });
+    for (const button of root.querySelectorAll("[data-player-anchor]")) listen(this._listeners, button, "click", () => {
+      const target = root.querySelector(`.gms-player-dashboard__${button.dataset.playerAnchor}`);
+      target?.scrollIntoView?.({ block: "start", behavior: globalThis.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ? "auto" : "smooth" });
+    });
+  }
+
   _onRender(context, options) {
     super._onRender?.(context, options);
     destroyListeners(this._listeners);
@@ -316,6 +359,7 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
     this._accessibilityController = null;
     this._motionController?.destroy?.();
     this._motionController = null;
+    this._navigationController?.destroy?.();
 
     const root = appElement(this);
     if (!root) return;
@@ -325,9 +369,15 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
     this._wireProfileChoices(root);
     this._wireProfileGroupAccordion(root);
     this._wireCardDetails(root);
+    this._wireNavigation(root, context);
+    this._accessibilityController = wireApplicationAccessibility(root, { onEscape: () => this.close() });
+    this._motionController?.reveal?.(root.querySelectorAll("[data-player-card]"));
+    registerReputationFeedbackSurface(this, { kind: "player", profileId: () => this.profileId, onInspect: openSubjectDetail });
   }
 
   async _onClose(options) {
+    this._navigationController?.destroy?.(); this._navigationController = null;
+    unregisterReputationFeedbackSurface(this);
     destroyListeners(this._listeners);
     destroyListeners(this._cardListeners);
     this._accessibilityController?.destroy?.();

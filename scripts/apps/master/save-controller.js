@@ -38,10 +38,15 @@ export class MasterSaveController {
     this.status = SAVE_STATUS.SYNCED;
     this.lastError = null;
     this.destroyed = false;
+    this._operationTail = Promise.resolve();
+    this._operations = 0;
+    this._flushPromise = null;
   }
 
   get hasPending() { return this.pending.size > 0; }
   get pendingCount() { return this.pending.size; }
+  get isSaving() { return this._operations > 0; }
+  async whenIdle() { while (this.isSaving) await this._operationTail; }
 
   snapshot() {
     return Object.freeze({
@@ -51,11 +56,14 @@ export class MasterSaveController {
       label: SAVE_STATUS_LABEL[this.status],
       pendingCount: this.pendingCount,
       hasPending: this.hasPending,
+      isSaving: this.isSaving,
       error: this.lastError
     });
   }
 
   _emitStatus(status, error = null) {
+    if (this.destroyed) return;
+    if (this.isSaving && status !== SAVE_STATUS.ERROR) status = SAVE_STATUS.SAVING;
     this.status = status;
     this.lastError = error;
     this.onStatus?.(this.snapshot());
@@ -68,7 +76,7 @@ export class MasterSaveController {
 
   _schedule() {
     this._clearTimer();
-    if (!this.hasPending || this.destroyed || this.mode === MASTER_SAVE_MODE.MANUAL) return;
+    if (!this.hasPending || this.isSaving || this.destroyed || this.mode === MASTER_SAVE_MODE.MANUAL) return;
     const delay = this.mode === MASTER_SAVE_MODE.IDLE
       ? Math.round(this.idleDelay * 1000)
       : this.automaticDelay;
@@ -101,7 +109,29 @@ export class MasterSaveController {
     return this.snapshot();
   }
 
-  async flush() {
+  _serialize(action) {
+    this._operations++;
+    this._emitStatus(SAVE_STATUS.SAVING);
+    const task = this._operationTail.then(() => this.destroyed ? null : action());
+    this._operationTail = task.catch(() => undefined);
+    return task.finally(() => {
+      this._operations--;
+      if (!this.destroyed) {
+        this._emitStatus(this.lastError ? SAVE_STATUS.ERROR : this.hasPending ? SAVE_STATUS.DIRTY : SAVE_STATUS.SYNCED, this.lastError);
+        this._schedule();
+      }
+    });
+  }
+
+  flush() {
+    if (this._flushPromise) return this._flushPromise;
+    if (this.destroyed) return Promise.resolve(null);
+    this._clearTimer();
+    this._flushPromise = this._serialize(() => this._flushBatch()).finally(() => { this._flushPromise = null; });
+    return this._flushPromise;
+  }
+
+  async _flushBatch() {
     if (this.destroyed) return null;
     this._clearTimer();
     if (!this.hasPending) {
@@ -120,7 +150,7 @@ export class MasterSaveController {
         completed += 1;
       }
     } catch (error) {
-      for (const [key, action] of batch.slice(completed)) if (!this.pending.has(key)) this.pending.set(key, action);
+      if (!this.destroyed) for (const [key, action] of batch.slice(completed)) if (!this.pending.has(key)) this.pending.set(key, action);
       this._emitStatus(SAVE_STATUS.ERROR, error);
       throw error;
     }
@@ -134,9 +164,13 @@ export class MasterSaveController {
     return results;
   }
 
-  async runImmediate(action, { flushPending = true } = {}) {
-    if (this.destroyed) return null;
-    if (flushPending && this.hasPending) await this.flush();
+  runImmediate(action, { flushPending = true } = {}) {
+    if (this.destroyed) return Promise.resolve(null);
+    return this._serialize(() => this._runImmediate(action, { flushPending }));
+  }
+
+  async _runImmediate(action, { flushPending }) {
+    if (flushPending && this.hasPending) await this._flushBatch();
     this._emitStatus(SAVE_STATUS.SAVING);
     let result;
     try {

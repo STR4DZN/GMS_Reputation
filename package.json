@@ -1,0 +1,7 @@
+{
+  "name": "gms-reputation-dev",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "bash tests/run-all.sh", "preview": "node visualizer/serve.mjs" },
+  "devDependencies": { "handlebars": "4.7.9" }
+}

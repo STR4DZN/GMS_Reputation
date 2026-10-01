@@ -1,3 +1,14 @@
+## 1.2.0-dev.72 — Navegação, Motion e reputação pessoal
+
+- Navegação com histórico, atalhos, menu rápido e troca de contexto no Mestre/Player.
+- Layout adaptado à largura da janela, rascunhos preservados e saves serializados.
+- Aba Sistema → Jogadores e perfis para associar usuários por nome, com seleção automática de personagem quando o nome é único.
+- Resumo pessoal das mudanças na linha do personagem nas outras matrizes desde a última visualização, inclusive offline.
+- Comparação completa, agrupamento, paginação e reabertura do último resumo; flags por usuário sem mudar WorldState ou histórico.
+- Entradas escalonadas, movimento reduzido e limpeza de timers/animações ao fechar.
+- Prévia interativa com templates/controladores reais e testes de concorrência, teclado e responsividade.
+- Schema 5, configurações e API pública preservados; manifesto e constantes atualizados para a versão 1.2.0-dev.72.
+
 ## 1.2.0-dev.70 — Restauração da Base 60.3
 
 - restauração completa e fiel da interface original comprovada da versão 60.3;

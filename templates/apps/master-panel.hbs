@@ -1,4 +1,4 @@
-<section class="gms-master-panel gms-v2-tech-texture" data-master-panel-root data-gms-visual-generation="3" data-gms-build="59.10" data-gms-v2-surface="command-deck" data-master-active-section="{{activeSection}}">
+<section class="gms-master-panel gms-v2-tech-texture" data-master-panel-root data-master-context-profile="{{profileId}}" data-master-context-subject="{{subjectId}}" data-master-context-group="{{profileEditor.groupId}}" data-gms-visual-generation="3" data-gms-build="59.10" data-gms-navigation="enhanced" data-gms-v2-surface="command-deck" data-master-active-section="{{activeSection}}">
   {{> "modules/gms-reputation/templates/partials/background-art.hbs"}}
   {{#if authorized}}
     <header class="gms-master-panel__header" data-gms-v2-role="command-masthead">
@@ -6,14 +6,23 @@
       <div><small>GMS // CONTROLE DE REPUTAÇÃO</small><strong>MATRIZ SOCIAL</strong><span>Perfis, personagens e relações em um fluxo único de comando.</span></div>
     </header>
 
+    <div class="gms-navigation-bar" aria-label="Navegação do painel">
+      <div class="gms-navigation-bar__history"><button type="button" data-navigation-back aria-label="Voltar ao contexto anterior" title="Voltar · Alt + ←" disabled>←</button><button type="button" data-navigation-forward aria-label="Avançar contexto" title="Avançar · Alt + →" disabled>→</button></div>
+      <div class="gms-navigation-bar__breadcrumb"><small>{{profileName}}</small><strong data-navigation-location>{{activeSectionLabel}}</strong></div>
+      <button type="button" class="gms-navigation-bar__command" data-navigation-open><span aria-hidden="true">⌕</span><span>Ir para…</span><kbd>Ctrl K</kbd></button>
+      {{#if personalReputation.linked}}<button type="button" class="gms-navigation-bar__command" data-personal-reputation-open>Meu resumo</button>{{/if}}
+      <button type="button" class="gms-navigation-bar__player" data-master-open-player title="Abrir este perfil na Matriz do Player"><span aria-hidden="true">↗</span><span>Visão Player</span></button>
+    </div>
+
     <section class="gms-master-panel__selection-bus" aria-label="Seleção ativa">
       <div class="gms-master-panel__selection-copy">
-        <small>CONTEXTO GLOBAL</small>
-        <strong>Defina a matriz e o personagem usados em todas as áreas.</strong>
+        <small>VOCÊ ESTÁ EDITANDO</small>
+        <strong>{{#if subjectEditor}}{{subjectEditor.alias}}{{else}}Escolha um personagem{{/if}}</strong>
       </div>
       <div class="gms-master-panel__selectors">
         {{> "modules/gms-reputation/templates/partials/smart-selector.hbs" profileSelector}}
         {{> "modules/gms-reputation/templates/partials/smart-selector.hbs" subjectSelector}}
+        <div class="gms-navigation-context-step"><button type="button" data-navigation-subject-step="-1" aria-label="Personagem anterior" title="Personagem anterior" {{#if hasPreviousSubject}}{{else}}disabled{{/if}}>‹</button><span>{{subjectPosition}} / {{subjects.length}}</span><button type="button" data-navigation-subject-step="1" aria-label="Próximo personagem" title="Próximo personagem" {{#if hasNextSubject}}{{else}}disabled{{/if}}>›</button></div>
       </div>
     </section>
 
@@ -35,14 +44,14 @@
     <div class="gms-master-panel__layout">
       <nav class="gms-master-panel__nav" data-gms-v2-role="command-rail" role="tablist" aria-label="Áreas do controle de reputação">
         {{#each sections}}
-          <button type="button" role="tab" data-master-section-choice="{{id}}" data-active="{{active}}" aria-selected="{{active}}">
-            <i class="fa-solid {{icon}}" aria-hidden="true"></i><span class="gms-master-panel__nav-copy"><small>{{kicker}}</small><strong>{{label}}</strong></span>
+          <button type="button" role="tab" id="gms-nav-{{id}}" aria-controls="{{controls}}" data-master-section-choice="{{id}}" data-active="{{active}}" aria-selected="{{active}}">
+            <i class="fa-solid {{icon}}" aria-hidden="true"></i><span class="gms-master-panel__nav-copy"><small>{{kicker}}</small><strong>{{label}}</strong></span><span class="gms-navigation-count">{{count}}</span>
           </button>
         {{/each}}
       </nav>
 
       <main class="gms-master-panel__content" data-gms-v2-role="command-workspace">
-        <section data-master-section-panel="subjects" data-gms-v2-bay="subject-registry-bay">
+        <section id="gms-workspace-subjects" role="tabpanel" aria-labelledby="gms-nav-profiles" data-master-section-panel="subjects" data-gms-v2-bay="subject-registry-bay">
           <header><small>ORGANIZAÇÃO CENTRAL</small><h2>Matrizes, perfis e grupos</h2></header>
 
           <section class="gms-master-profile-hub" data-master-subject-admin>
@@ -112,7 +121,7 @@
 
         </section>
 
-        <section data-master-section-panel="profile" data-gms-v2-bay="profile-editor-bay" hidden>
+        <section id="gms-workspace-profile" role="tabpanel" aria-labelledby="gms-nav-profiles" data-master-section-panel="profile" data-gms-v2-bay="profile-editor-bay" hidden>
           <header><small>CONFIGURAÇÃO DA MATRIZ</small><h2>Perfil selecionado</h2></header>
           {{#if profileEditor}}
             <section class="gms-master-profile-editor" data-master-subject-admin aria-label="Editar perfil selecionado">
@@ -148,7 +157,7 @@
           {{else}}<p class="is-empty">Selecione um Perfil na aba Perfis para editar.</p>{{/if}}
         </section>
 
-        <section data-master-section-panel="characters" data-gms-v2-bay="character-registry-bay" hidden>
+        <section id="gms-workspace-characters" role="tabpanel" aria-labelledby="gms-nav-characters" data-master-section-panel="characters" data-gms-v2-bay="character-registry-bay" hidden>
           <header><small>CADASTRO SOCIAL</small><h2>Personagens</h2></header>
           {{#if subjectEditor}}
             <section class="gms-master-character-editor" data-master-subject-admin aria-label="Editar personagem selecionado">
@@ -213,7 +222,7 @@
           </section>
         </section>
 
-        <section data-master-section-panel="relationship" data-gms-v2-bay="relationship-control-bay" hidden>
+        <section id="gms-workspace-relationship" role="tabpanel" aria-labelledby="gms-nav-relationship" data-master-section-panel="relationship" data-gms-v2-bay="relationship-control-bay" hidden>
           <header class="gms-master-panel__relationship-heading"><div><small>EDIÇÃO DE REPUTAÇÃO</small><h2>Reputação e protocolos</h2></div><p>Leitura, ajuste e protocolos da relação selecionada.</p></header>
           {{#if hasSelection}}
             <div class="gms-master-reputation-console" data-master-relation-console data-gms-v2-role="relationship-console" data-relation-band="{{selection.relationBand}}">
@@ -259,7 +268,7 @@
           {{else}}<p class="is-empty">Selecione um perfil e personagem.</p>{{/if}}
         </section>
 
-        <section data-master-section-panel="portrait" data-gms-v2-bay="optics-bay" hidden>
+        <section id="gms-workspace-portrait" role="tabpanel" aria-labelledby="gms-nav-characters" data-master-section-panel="portrait" data-gms-v2-bay="optics-bay" hidden>
           <header><small>ÓPTICA DO CADASTRO</small><h2>Retrato do personagem</h2></header>
           {{#if hasSelection}}
             <div data-master-portrait-editor data-gms-v2-role="optics-console">{{> "modules/gms-reputation/templates/partials/portrait-editor.hbs" selection.portraitEditor}}</div>
@@ -267,7 +276,7 @@
           {{else}}<p class="is-empty">Selecione um personagem.</p>{{/if}}
         </section>
 
-        <section data-master-section-panel="focal" data-gms-v2-bay="focal-bay" hidden>
+        <section id="gms-workspace-focal" role="tabpanel" aria-labelledby="gms-nav-profiles" data-master-section-panel="focal" data-gms-v2-bay="focal-bay" hidden>
           <header><small>APRESENTAÇÃO AO JOGADOR</small><h2>Identidade do perfil</h2></header>
           {{#if focal}}
             <div class="gms-master-focal-workspace">
@@ -284,7 +293,7 @@
           {{else}}<p class="is-empty">Nenhum perfil selecionado.</p>{{/if}}
         </section>
 
-        <section data-master-section-panel="history" data-gms-v2-bay="audit-log-bay" hidden>
+        <section id="gms-workspace-history" role="tabpanel" aria-labelledby="gms-nav-history" data-master-section-panel="history" data-gms-v2-bay="audit-log-bay" hidden>
           <header><small>REGISTRO DE ALTERAÇÕES</small><h2>Auditoria e histórico</h2></header>
           {{#if history.length}}
             <div class="gms-master-panel__history" data-gms-v2-role="audit-timeline">
@@ -301,7 +310,7 @@
         </section>
 
 
-        <section data-master-section-panel="cleanup" data-gms-v2-bay="cleanup-bay" hidden>
+        <section id="gms-workspace-cleanup" role="tabpanel" aria-labelledby="gms-nav-cleanup" data-master-section-panel="cleanup" data-gms-v2-bay="cleanup-bay" hidden>
           <header><small>GERENCIADOR DE LIMPEZA</small><h2>Excluir dados antigos</h2></header>
           {{#if permissions.isFullGM}}
             <section class="gms-master-cleanup" data-master-cleanup-root data-cleanup-unlocked="false">
@@ -368,8 +377,12 @@
           {{/if}}
         </section>
 
-        <section data-master-section-panel="settings" data-gms-v2-bay="system-config-bay" hidden>
+        <section id="gms-workspace-settings" role="tabpanel" aria-labelledby="gms-nav-settings" data-master-section-panel="settings" data-gms-v2-bay="system-config-bay" hidden>
           <header><small>DIAGNÓSTICO E ACESSO</small><h2>Sistema</h2></header>
+          <nav class="gms-settings-tabs" data-master-settings-tabs role="tablist" aria-label="Configurações do Mestre">
+            {{#each settingsTabs}}<button type="button" id="gms-settings-tab-{{id}}" role="tab" aria-controls="gms-settings-pane-{{id}}" aria-selected="{{active}}" data-master-settings-tab="{{id}}">{{label}}</button>{{/each}}
+          </nav>
+          <div id="gms-settings-pane-general" role="tabpanel" aria-labelledby="gms-settings-tab-general" data-master-settings-pane="general">
           <dl class="gms-master-panel__settings" data-gms-v2-role="system-readout">
             <div><dt>Versão do módulo</dt><dd>{{world.moduleVersion}}</dd></div>
             <div><dt>Schema</dt><dd>{{world.schemaVersion}}</dd></div>
@@ -415,10 +428,29 @@
             </div>
             <button type="button" data-master-save-permissions {{#if permissions.canConfigurePermissions}}{{else}}disabled{{/if}}><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Salvar permissões</button>
           </section>
+          </div>
+          <div id="gms-settings-pane-players" role="tabpanel" aria-labelledby="gms-settings-tab-players" data-master-settings-pane="players" hidden>
+            <section class="gms-player-bindings" aria-label="Vincular jogadores e perfis">
+              <header><small>REPUTAÇÃO PESSOAL</small><h3>Jogadores e perfis</h3></header>
+              <p>Vincule cada usuário ao seu perfil. O resumo reúne as mudanças no personagem dele dentro das matrizes dos outros, desde a última visualização.</p>
+              <p class="gms-player-bindings__example">Exemplo: Mari → perfil Mari → personagem Mari. Ao editar Mari no perfil Corvo, ela verá “Sua reputação aumentou com Corvo”.</p>
+              {{#if permissions.isFullGM}}{{else}}<p>Somente um Gamemaster completo pode alterar os vínculos.</p>{{/if}}
+              {{#each playerBindings}}
+                <fieldset class="gms-player-binding" data-player-binding-user="{{userId}}" {{#if ../permissions.isFullGM}}{{else}}disabled{{/if}}>
+                  <legend><span class="gms-player-binding__initial" aria-hidden="true">{{initial}}</span>{{userName}}<small>{{#if online}}Online{{else}}Offline{{/if}}</small></legend>
+                  <label><span>Perfil do jogador</span><select data-player-binding-profile aria-label="Perfil de {{userName}}"><option value="">Sem perfil vinculado</option>{{#each profiles}}<option value="{{id}}" data-profile-subject="{{match}}" {{#if selected}}selected{{/if}}>{{label}} — {{name}}{{#if unavailable}} (indisponível){{/if}}</option>{{/each}}</select></label>
+                  <label><span>Personagem nas outras matrizes</span><select data-player-binding-subject aria-label="Personagem de {{userName}}"><option value="">Escolher personagem…</option>{{#each subjects}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{label}}{{#if unavailable}} (indisponível){{/if}}</option>{{/each}}</select></label>
+                  <button type="button" data-player-binding-save>Salvar vínculo</button>
+                  <p data-player-binding-hint>{{#if draft}}Escolha pendente. Clique em Salvar vínculo para confirmar.{{else}}{{#if linked}}Vínculo configurado. A leitura do resumo é individual para esse usuário.{{else}}Sem vínculo: esse usuário não recebe avisos pessoais.{{/if}}{{/if}}</p>
+                </fieldset>
+              {{else}}<p>Nenhum usuário disponível neste mundo.</p>{{/each}}
+            </section>
+          </div>
         </section>
       </main>
     </div>
   {{else}}
     <div class="gms-master-panel__denied"><i class="fa-solid fa-lock" aria-hidden="true"></i><strong>Acesso não autorizado para esta função.</strong></div>
   {{/if}}
+  {{> "modules/gms-reputation/templates/partials/navigation-palette.hbs"}}
 </section>

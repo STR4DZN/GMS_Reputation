@@ -10,7 +10,7 @@ function now() {
 
 
 export function shouldRunMotion(root) {
-  return Boolean(root);
+  return Boolean(root) && !globalThis.document?.hidden && !globalThis.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
 }
 
 function shellHeight(root) {
@@ -37,8 +37,7 @@ function createScanner(root) {
 
 /**
  * Controller central de Motion Design.
- * Runtime 59.10: motion em qualidade integral. Nenhum perfil automático,
- * preferência do sistema ou visibilityState pode desativar os disparos de animação.
+ * Mantém o estilo visual e respeita movimento reduzido e abas em segundo plano.
  */
 export function wireMotionSystem(root, {
   kind = "generic",
@@ -54,6 +53,7 @@ export function wireMotionSystem(root, {
       relationship() { return false; },
       protocol() { return false; },
       sync() { return false; },
+      reveal() { return false; },
       destroy() {}
     });
   }
@@ -62,6 +62,8 @@ export function wireMotionSystem(root, {
   root.dataset.gmsMotionSystem = "59";
   root.dataset.gmsRuntimeBuild = "59.10";
   const timers = new Set();
+  const animations = new Set();
+  const frames = new Set();
   const removers = [];
   const cooldowns = new Map();
   let scanner = root.querySelector?.("[data-motion-scanner='true']") ?? null;
@@ -89,9 +91,15 @@ export function wireMotionSystem(root, {
   const restartClass = (target, className, duration, { key = className, cooldown = 0 } = {}) => {
     if (!target?.classList || !canTrigger(key, cooldown)) return false;
     target.classList.remove(className);
-    try { void target.offsetWidth; } catch (_error) { /* browser may not expose layout in tests */ }
-    target.classList.add(className);
-    later(() => target?.classList?.remove?.(className), duration);
+    const activate = () => {
+      if (destroyed || !shouldRunMotion(root)) return;
+      target.classList.add(className);
+      later(() => target?.classList?.remove?.(className), duration);
+    };
+    if (typeof globalThis.requestAnimationFrame === "function") {
+      const id = requestAnimationFrame(() => { frames.delete(id); activate(); });
+      frames.add(id);
+    } else activate();
     return true;
   };
 
@@ -102,9 +110,10 @@ export function wireMotionSystem(root, {
     if (!scanner) return false;
     const resolvedDuration = Math.max(800, Number(duration) || DEFAULT_SCANNER_MS);
     scanner.dataset.variant = String(variant || "boot");
-    scanner.style?.setProperty?.("--gms54-scan-distance", `${shellHeight(root)}px`);
+    const distance = `${shellHeight(root)}px`;
+    scanner.style?.setProperty?.("--gms54-scan-distance", distance);
     scanner.style?.setProperty?.("--gms54-scan-duration", `${resolvedDuration}ms`);
-    scanner.style?.setProperty?.("--gms57-scan-distance", `${shellHeight(root)}px`);
+    scanner.style?.setProperty?.("--gms57-scan-distance", distance);
     scanner.style?.setProperty?.("--gms57-scan-duration", `${resolvedDuration}ms`);
     scanner.classList.remove("is-active");
     try { void scanner.offsetWidth; } catch (_error) { /* no-op */ }
@@ -172,6 +181,28 @@ export function wireMotionSystem(root, {
     return changed;
   };
 
+  const reveal = (elements) => {
+    if (!shouldRunMotion(root)) return false;
+    for (const [index, element] of [...elements].slice(0, 12).entries()) {
+      if (!element?.animate) continue;
+      const animation = element.animate([{ opacity: 0, transform: "translateY(8px)" }, { opacity: 1, transform: "translateY(0)" }], { duration: 260, delay: index * 24, easing: "cubic-bezier(.2,.8,.2,1)" });
+      animations.add(animation);
+      animation.finished?.then(() => animations.delete(animation), () => animations.delete(animation));
+    }
+    return true;
+  };
+
+  const stopAnimations = () => {
+    if (shouldRunMotion(root)) return;
+    for (const animation of animations) animation.cancel();
+    animations.clear();
+    scanner?.classList?.remove?.("is-active");
+  };
+  const media = globalThis.matchMedia?.("(prefers-reduced-motion: reduce)");
+  media?.addEventListener?.("change", stopAnimations);
+  globalThis.document?.addEventListener?.("visibilitychange", stopAnimations);
+  removers.push(() => media?.removeEventListener?.("change", stopAnimations), () => globalThis.document?.removeEventListener?.("visibilitychange", stopAnimations));
+
   const wireAccordions = () => {
     for (const details of root.querySelectorAll("details")) {
       const onToggle = () => {
@@ -210,6 +241,7 @@ export function wireMotionSystem(root, {
 
   return Object.freeze({
     scan,
+    reveal,
     boot: bootShell,
     transition,
     section,
@@ -218,6 +250,10 @@ export function wireMotionSystem(root, {
     sync,
     destroy() {
       destroyed = true;
+      for (const animation of animations) animation.cancel();
+      animations.clear();
+      for (const id of frames) globalThis.cancelAnimationFrame?.(id);
+      frames.clear();
       for (const id of timers) clearTimeout(id);
       timers.clear();
       for (const remove of removers.splice(0)) {

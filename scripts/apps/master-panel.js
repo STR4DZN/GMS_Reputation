@@ -7,7 +7,7 @@ import { buildHeartTrackModel } from "../components/heart-track.js";
 import { buildFocalProfileContext } from "../components/focal-profile.js";
 import { getReputationView } from "../core/reputation-engine.js";
 import { getSemanticBand } from "../core/semantic-bands.js";
-import { updateRelationship } from "../data/reputation-registry.js";
+import { computeRelationshipCandidate, updateRelationship } from "../data/reputation-registry.js";
 import { setSubjectPortrait } from "../data/portrait-registry.js";
 import { createNewSubject, updateSubject, moveSubjectOneStep } from "../data/subject-registry.js";
 import { createNewProfile, setProfileSubjectIncluded, updateFocalProfile, updateProfile, moveProfileOneStep } from "../data/profile-registry.js";
@@ -34,9 +34,13 @@ import {
   subscribePermissionChanges
 } from "../persistence/permissions.js";
 import { subscribeWorldStateChanges } from "../events/world-sync.js";
-import { wireApplicationAccessibility } from "../utils/accessibility.js";
+import { wireApplicationAccessibility, wireTablistKeyboard } from "../utils/accessibility.js";
 import { wireMotionSystem } from "../motion/motion-system.js";
 import { buildSmartSelectorContext, wireSmartSelector } from "../components/smart-selector.js";
+import { NavigationTrail, adjacentId, wireNavigationPalette } from "../ui/navigation.js";
+import { registerReputationFeedbackSurface, unregisterReputationFeedbackSurface } from "../ui/reputation-feedback.js";
+import { openPlayerDashboard } from "./player-dashboard.js";
+import { buildPlayerBindingsContext, campaignUsers, getPersonalBinding, getPersonalReputationStatus, setUserPersonalBinding } from "../persistence/personal-reputation.js";
 
 const SECTIONS = Object.freeze([
   ["profiles", "Perfis", "fa-layer-group", "MATRIZES"],
@@ -70,6 +74,7 @@ function normalizeWorkspace(value = "profiles") {
 }
 
 const PARTIALS = [
+  `modules/${MODULE_ID}/templates/partials/navigation-palette.hbs`,
   `modules/${MODULE_ID}/templates/partials/background-art.hbs`,
   `modules/${MODULE_ID}/templates/partials/portrait-frame.hbs`,
   `modules/${MODULE_ID}/templates/partials/portrait-editor.hbs`,
@@ -91,6 +96,10 @@ function listGroups(state) {
   return Object.values(state.groups ?? {})
     .filter((group) => !group.archived)
     .sort((a, b) => Number(a.sortOrder) - Number(b.sortOrder) || String(a.name).localeCompare(String(b.name), "pt-BR"));
+}
+
+function profileRosterCount(profile) {
+  return Array.isArray(profile?.subjectIds) ? profile.subjectIds.length : Object.keys(profile?.relationships ?? {}).length;
 }
 
 function normalizeUiSearch(value) {
@@ -153,7 +162,7 @@ async function confirmMasterAction({ title, message, confirmLabel = "Confirmar" 
   return true;
 }
 
-export function buildMasterPanelContext({ profileId = "", subjectId = "", activeSection = "profiles", newProfileGroupId = "", state = loadWorldState() } = {}) {
+export function buildMasterPanelContext({ profileId = "", subjectId = "", activeSection = "profiles", newProfileGroupId = "", settingsTab = "general", state = loadWorldState() } = {}) {
   const profiles = listProfiles(state);
   const subjects = listSubjects(state);
   const groups = listGroups(state);
@@ -169,7 +178,8 @@ export function buildMasterPanelContext({ profileId = "", subjectId = "", active
   const idleDelay = getMasterAutoSaveDelay();
   const permissions = permissionContext();
   const backup = backupStatus();
-  const cleanup = buildCleanupImpact(state);
+  const cleanup = sectionId === "cleanup" && permissions.isFullGM ? buildCleanupImpact(state) : { subjects: [], profiles: [], groups: [] };
+  const sectionCounts = { profiles: profiles.length, characters: subjects.length, relationship: profileRosterCount(profile), history: history.length, cleanup: subjects.length + profiles.length + groups.length, settings: "" };
 
   const profilesByGroup = new Map(groups.map((group) => [group.id, []]));
   const ungroupedProfiles = [];
@@ -270,6 +280,15 @@ export function buildMasterPanelContext({ profileId = "", subjectId = "", active
     subjectId: subject?.id ?? "",
     newProfileGroupId: initialNewProfileGroup,
     profileName: profile?.name ?? "Sem perfil",
+    personalReputation: getPersonalReputationStatus(state),
+    playerBindings: sectionId === "settings" ? buildPlayerBindingsContext(state) : [],
+    settingsTabs: [{ id: "general", label: "Geral", active: settingsTab !== "players" }, { id: "players", label: "Jogadores e perfis", active: settingsTab === "players" }],
+    navigationKind: "master",
+    navigationPlaceholder: "Área, perfil ou personagem…",
+    activeSectionLabel: SECTIONS.find(([id]) => id === sectionId)?.[1] ?? "Perfis",
+    subjectPosition: subject ? subjects.findIndex((entry) => entry.id === subject.id) + 1 : 0,
+    hasPreviousSubject: Boolean(subject && adjacentId(subjects, subject.id, -1)),
+    hasNextSubject: Boolean(subject && adjacentId(subjects, subject.id, 1)),
     profileEditor,
     profiles: Object.freeze(profiles.map((entry) => Object.freeze({
       id: entry.id,
@@ -350,7 +369,7 @@ export function buildMasterPanelContext({ profileId = "", subjectId = "", active
     }),
     sections: Object.freeze(SECTIONS
       .filter(([id]) => id !== "cleanup" || permissions.isFullGM)
-      .map(([id, label, icon, kicker]) => Object.freeze({ id, label, icon, kicker, active: id === sectionId }))),
+      .map(([id, label, icon, kicker]) => Object.freeze({ id, label, icon, kicker, active: id === sectionId, count: sectionCounts[id], controls: WORKSPACE_PANELS[id].map((panel) => `gms-workspace-${panel}`).join(" ") }))),
     cleanup,
     activeSection: sectionId,
     hasSelection: Boolean(profile && subject),
@@ -442,27 +461,58 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
     this._motionController = null;
     this._motionBooted = false;
     this._pendingMotion = "";
+    this._navigationTrail = new NavigationTrail({ profileId: this.profileId, subjectId: this.subjectId, activeSection: this.activeSection });
+    this._navigationController = null;
+    this._relationshipDrafts = new Map();
+    this._portraitDrafts = new Map();
+    this._fieldDrafts = new Map();
+    this._focalPortraitDrafts = new Map();
+    this._settingsTab = "general";
+    this._bindingDrafts = new Map();
+    this._settingsTabController = null;
+    this._sectionScroll = new Map();
+    this._navigationTail = Promise.resolve();
     this._permissionUnsubscribe = subscribePermissionChanges(() => this._onPermissionChanged());
-    this._syncUnsubscribe = subscribeWorldStateChanges((event) => this._onWorldStateSync(event));
+    this._syncUnsubscribe = subscribeWorldStateChanges((event) => this._onWorldStateSync(event).catch((error) => console.warn("GMS Reputation | Master sync failed.", error)));
     this._saveController = new MasterSaveController({
       mode: getMasterSaveMode(),
       idleDelay: getMasterAutoSaveDelay(),
       onStatus: (snapshot) => this._updateSaveStatus(appElement(this), snapshot),
       onCommitted: async (_results, keys = []) => {
         this._refreshUndoRedoControls(appElement(this));
-        if (keys.includes("relationship") && this.rendered) await this.render({ force: true });
+        if (keys.some((key) => key.startsWith("relationship:")) && this.rendered && !this._saveController.hasPending) {
+          this._captureFormDrafts(appElement(this));
+          await this.render({ force: true });
+        }
       }
     });
   }
 
   async _prepareContext(options) {
     const parent = await super._prepareContext?.(options) ?? {};
-    const context = buildMasterPanelContext({ profileId: this.profileId, subjectId: this.subjectId, activeSection: this.activeSection, newProfileGroupId: this.newProfileGroupId });
+    const state = loadWorldState();
+    for (const draft of this._relationshipDrafts.values()) {
+      const relationship = state.profiles?.[draft.profileId]?.relationships?.[draft.subjectId];
+      const profile = state.profiles?.[draft.profileId];
+      if (profile && state.subjects[draft.subjectId]) profile.relationships[draft.subjectId] = { ...relationship, subjectId: draft.subjectId, ...computeRelationshipCandidate(relationship ?? {}, draft.patch) };
+    }
+    for (const [id, portrait] of this._portraitDrafts) if (state.subjects[id]) state.subjects[id].portrait = portrait;
+    for (const [id, portrait] of this._focalPortraitDrafts) if (state.profiles[id]) state.profiles[id].focal.portrait = portrait;
+    const context = buildMasterPanelContext({ profileId: this.profileId, subjectId: this.subjectId, activeSection: this.activeSection, newProfileGroupId: this.newProfileGroupId, settingsTab: this._settingsTab, state });
+    for (const row of context.playerBindings ?? []) {
+      const draft = this._bindingDrafts.get(row.userId);
+      if (!draft) continue;
+      row.draft = true;
+      for (const profile of row.profiles) profile.selected = profile.id === draft.profileId;
+      for (const subject of row.subjects) subject.selected = subject.id === draft.subjectId;
+    }
     this.profileId = context.profileId;
     this.subjectId = context.subjectId;
     this.activeSection = context.activeSection;
     this.newProfileGroupId = context.newProfileGroupId;
     this._saveController.configure({ mode: context.savePreferences.mode, idleDelay: context.savePreferences.idleDelay });
+    this._lastContext = context;
+    this._navigationTrail.entries[this._navigationTrail.index] = { profileId: this.profileId, subjectId: this.subjectId, activeSection: this.activeSection };
     return { ...parent, ...context };
   }
 
@@ -477,9 +527,10 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
 
   async _onWorldStateSync(event) {
     if (!this.rendered) return;
-    if (String(event.state?.metadata?.updatedBy || "") === String(globalThis.game?.user?.id || "")) return;
-    if (this._saveController.hasPending) {
-      notify("warn", "Outro usuário atualizou a Matriz enquanto existem alterações locais pendentes. Salve ou descarte antes de continuar.");
+    const local = String(event.state?.metadata?.updatedBy || "") === String(globalThis.game?.user?.id || "");
+    if (local && this._saveController.isSaving) return;
+    if (this._saveController.hasPending || this._saveController.isSaving || this._fieldDrafts.size || this._focalPortraitDrafts.size) {
+      if (!local) notify("warn", "Outro usuário atualizou a Matriz enquanto existem alterações locais pendentes. Salve ou descarte antes de continuar.");
       return;
     }
     this._pendingMotion = "sync";
@@ -571,6 +622,8 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
   _setSection(root, sectionId, { animate = true } = {}) {
     const workspace = normalizeWorkspace(sectionId);
     const visiblePanels = new Set(WORKSPACE_PANELS[workspace]);
+    const content = root.querySelector(".gms-master-panel__content");
+    if (content && animate) this._sectionScroll.set(this.activeSection, content.scrollTop);
     this.activeSection = workspace;
     root.dataset.masterActiveSection = workspace;
     for (const button of root.querySelectorAll("[data-master-section-choice]")) {
@@ -578,7 +631,12 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
       button.dataset.active = String(active);
       button.setAttribute("aria-selected", String(active));
       button.tabIndex = active ? 0 : -1;
+      if (active) button.scrollIntoView?.({ block: "nearest", inline: "nearest" });
     }
+    if (content) content.scrollTop = this._sectionScroll.get(workspace) ?? 0;
+    const location = root.querySelector("[data-navigation-location]");
+    if (location) location.textContent = SECTIONS.find(([id]) => id === workspace)?.[1] ?? "Perfis";
+    this._updateNavigationState(root);
     const panels = [...root.querySelectorAll("[data-master-section-panel]")];
     for (const panel of panels) {
       const visible = visiblePanels.has(String(panel.dataset.masterSectionPanel || ""));
@@ -590,6 +648,128 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
         .filter((panel) => !panel.hidden)
         .forEach((panel, order) => this._motionController?.section?.(panel, order));
     }
+  }
+
+  _updateNavigationState(root) {
+    const back = root?.querySelector?.("[data-navigation-back]");
+    const forward = root?.querySelector?.("[data-navigation-forward]");
+    if (back) back.disabled = !this._navigationTrail.canBack;
+    if (forward) forward.disabled = !this._navigationTrail.canForward;
+  }
+
+  _navigate(target = {}, options = {}) {
+    if (this._closingRequested) return Promise.resolve(this);
+    const task = this._navigationTail.catch(() => undefined).then(() => this._navigateNow(target, options));
+    this._navigationTail = task;
+    return task;
+  }
+
+  async _navigateNow(target = {}, { record = true } = {}) {
+    this._captureFormDrafts(appElement(this));
+    const next = { profileId: this.profileId, subjectId: this.subjectId, activeSection: this.activeSection, ...target };
+    next.activeSection = normalizeWorkspace(next.activeSection);
+    if (next.activeSection === "cleanup" && !permissionContext().isFullGM) next.activeSection = "profiles";
+    const contextChanged = next.profileId !== this.profileId || next.subjectId !== this.subjectId;
+    const needsCleanup = next.activeSection === "cleanup" && this.activeSection !== "cleanup";
+    const needsSettings = next.activeSection === "settings" && this.activeSection !== "settings";
+    if (record) this._navigationTrail.visit(next);
+    this.profileId = String(next.profileId || "");
+    this.subjectId = String(next.subjectId || "");
+    if (!contextChanged && !needsCleanup && !needsSettings && appElement(this)) {
+      this._setSection(appElement(this), next.activeSection);
+      return;
+    }
+    const content = appElement(this)?.querySelector?.(".gms-master-panel__content");
+    if (content) this._sectionScroll.set(this.activeSection, content.scrollTop);
+    this.activeSection = next.activeSection;
+    this._pendingMotion = contextChanged ? "subject" : "profile";
+    await this.render({ force: true });
+  }
+
+  _wireNavigation(root, context) {
+    this._navigationController = wireNavigationPalette(root, {
+      items: [
+        ...context.sections.map((section) => ({ label: section.label, description: section.kicker, group: "ÁREAS", target: { activeSection: section.id } })),
+        ...context.profiles.map((profile) => ({ label: profile.name, description: profile.groupName, group: "PERFIS", target: { profileId: profile.id } })),
+        ...context.subjects.map((subject) => ({ label: subject.alias, description: subject.realName, group: "PERSONAGENS", target: { subjectId: subject.id, activeSection: "relationship" } }))
+      ], onNavigate: (target) => this._navigate(target)
+    });
+    const travel = (direction) => {
+      if (!(direction < 0 ? this._navigationTrail.canBack : this._navigationTrail.canForward)) return;
+      return this._navigate(direction < 0 ? this._navigationTrail.back() : this._navigationTrail.forward(), { record: false });
+    };
+    listen(this._listeners, root.querySelector("[data-navigation-back]"), "click", () => travel(-1));
+    listen(this._listeners, root.querySelector("[data-navigation-forward]"), "click", () => travel(1));
+    listen(this._listeners, root, "keydown", (event) => {
+      if (event.altKey && ["ArrowLeft", "ArrowRight"].includes(event.key)) { event.preventDefault(); travel(event.key === "ArrowLeft" ? -1 : 1); }
+    });
+    listen(this._listeners, root, "input", () => this._captureFormDrafts(root));
+    listen(this._listeners, root, "change", () => this._captureFormDrafts(root));
+    for (const button of root.querySelectorAll("[data-navigation-subject-step]")) listen(this._listeners, button, "click", () => {
+      const id = adjacentId(context.subjects, this.subjectId, Number(button.dataset.navigationSubjectStep));
+      if (id) return this._navigate({ subjectId: id });
+    });
+    listen(this._listeners, root.querySelector("[data-master-open-player]"), "click", () => openPlayerDashboard({ profileId: this.profileId }));
+    this._updateNavigationState(root);
+  }
+
+  _contextIds(root) {
+    const surface = root?.matches?.("[data-master-panel-root]") ? root : root?.querySelector?.("[data-master-panel-root]");
+    return { profileId: surface?.dataset?.masterContextProfile ?? this.profileId, subjectId: surface?.dataset?.masterContextSubject ?? this.subjectId, groupId: surface?.dataset?.masterContextGroup ?? this._lastContext?.profileEditor?.groupId };
+  }
+
+  _captureFormDrafts(root) {
+    if (!root?.querySelector) return;
+    const { profileId, subjectId, groupId } = this._contextIds(root);
+    for (const [scope, id, fields] of [
+      ["subject", subjectId, ["alias", "real-name", "description", "tags", "active", "archived"]],
+      ["focal", profileId, ["name", "description"]],
+      ["profile-editor", profileId, ["name", "active", "archived"]]
+    ]) {
+      const values = [];
+      let changed = false;
+      for (const field of fields) {
+        const selector = `[data-master-${scope}-${field}]`;
+        const node = root.querySelector(selector);
+        if (!node) continue;
+        const check = node.type === "checkbox";
+        const value = check ? node.checked : node.value;
+        if (value !== (check ? node.defaultChecked : node.defaultValue)) changed = true;
+        values.push({ selector, value, check });
+      }
+      if (scope === "profile-editor") {
+        const group = root.querySelector('[data-master-profile-editor-group-choice][aria-pressed="true"]');
+        const selected = group?.dataset.masterProfileEditorGroupChoice;
+        if (selected) {
+          const persisted = groupId;
+          changed ||= selected !== persisted;
+          values.push({ group: selected });
+        }
+      }
+      const key = `${scope}:${id}`;
+      if (changed) {
+        if (JSON.stringify(this._fieldDrafts.get(key)) !== JSON.stringify(values)) this._fieldDrafts.set(key, values);
+      } else this._fieldDrafts.delete(key);
+    }
+  }
+
+  _restoreFormDrafts(root) {
+    for (const key of [`subject:${this.subjectId}`, `focal:${this.profileId}`, `profile-editor:${this.profileId}`]) {
+      for (const field of this._fieldDrafts.get(key) ?? []) {
+        if (field.group) {
+          for (const button of root.querySelectorAll("[data-master-profile-editor-group-choice]")) {
+            const active = button.dataset.masterProfileEditorGroupChoice === field.group;
+            button.dataset.active = String(active); button.setAttribute("aria-pressed", String(active));
+          }
+        } else {
+          const node = root.querySelector(field.selector);
+          if (node) { if (field.check) node.checked = field.value; else node.value = field.value; }
+        }
+      }
+    }
+    const draft = this._relationshipDrafts.get(`relationship:${this.profileId}:${this.subjectId}`);
+    const reason = root.querySelector('[data-master-reason="single"]');
+    if (draft && reason) reason.value = draft.reason;
   }
 
   _reason(root, scope = "single") {
@@ -649,16 +829,22 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
     const scoreInput = root.querySelector("[data-master-score-input]");
     const bondInput = root.querySelector("[data-master-bond]");
     const communionInput = root.querySelector("[data-master-communion]");
-    if (!scoreInput || !bondInput || !communionInput || !this.profileId || !this.subjectId) return;
-    const profileId = this.profileId;
-    const subjectId = this.subjectId;
+    const { profileId, subjectId } = this._contextIds(root);
+    if (!scoreInput || !bondInput || !communionInput || !profileId || !subjectId) return;
     const patch = {
       score: Number(scoreInput.value),
       bond: Boolean(bondInput.checked),
       communion: Boolean(communionInput.checked)
     };
     const reason = this._reason(root);
-    this._saveController.queue("relationship", () => updateRelationship(profileId, subjectId, patch, { reason }));
+    const key = `relationship:${profileId}:${subjectId}`;
+    const draft = { profileId, subjectId, patch, reason };
+    this._relationshipDrafts.set(key, draft);
+    this._saveController.queue(key, async () => {
+      const result = await updateRelationship(profileId, subjectId, patch, { reason });
+      if (this._relationshipDrafts.get(key) === draft) this._relationshipDrafts.delete(key);
+      return result;
+    });
   }
 
   async _flushPending(successMessage = "Alterações sincronizadas.") {
@@ -670,6 +856,19 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
       console.error("GMS Reputation | Pending save failed", error);
       notify("error", error?.message || "Não foi possível salvar as alterações pendentes.");
     }
+  }
+
+  _saveFormDrafts(scope, id, action) {
+    this._captureFormDrafts(appElement(this));
+    const key = `${scope}:${id}`;
+    const fields = this._fieldDrafts.get(key);
+    const portrait = scope === "focal" ? this._focalPortraitDrafts.get(id) : null;
+    return async () => {
+      const result = await action();
+      if (this._fieldDrafts.get(key) === fields) this._fieldDrafts.delete(key);
+      if (scope === "focal" && this._focalPortraitDrafts.get(id) === portrait) this._focalPortraitDrafts.delete(id);
+      return result;
+    };
   }
 
   async _runMutation(action, successMessage) {
@@ -774,23 +973,32 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
     const editorRoot = root.querySelector("[data-master-portrait-editor] [data-portrait-editor]");
     if (!editorRoot || !context?.selection?.portraitEditor) return;
     let draftPortrait = context.selection.portraitEditor.portrait;
-    const profileId = this.profileId;
-    const subjectId = this.subjectId;
+    const { profileId } = this._contextIds(root);
+    const { subjectId } = this._contextIds(root);
     this._portraitController = wirePortraitEditor(editorRoot, {
       initialPortrait: draftPortrait,
       onChange: (portrait) => {
         draftPortrait = portrait;
         const reason = this._reason(root);
         const snapshot = { ...portrait };
-        this._saveController.queue("portrait", () => setSubjectPortrait(subjectId, snapshot, { profileId, reason }));
+        this._queuePortraitDraft(subjectId, snapshot, profileId, reason);
       },
       onError: (error) => notify("warn", error?.message || "Fonte de retrato inválida.")
     });
     listen(this._listeners, root.querySelector("[data-master-save-portrait]"), "click", async () => {
       const reason = this._reason(root);
       const snapshot = { ...draftPortrait };
-      this._saveController.queue("portrait", () => setSubjectPortrait(subjectId, snapshot, { profileId, reason }));
+      this._queuePortraitDraft(subjectId, snapshot, profileId, reason);
       await this._flushPending("Retrato sincronizado.");
+    });
+  }
+
+  _queuePortraitDraft(subjectId, snapshot, profileId, reason) {
+    this._portraitDrafts.set(subjectId, snapshot);
+    this._saveController.queue(`portrait:${subjectId}`, async () => {
+      const result = await setSubjectPortrait(subjectId, snapshot, { profileId, reason });
+      if (this._portraitDrafts.get(subjectId) === snapshot) this._portraitDrafts.delete(subjectId);
+      return result;
     });
   }
 
@@ -801,16 +1009,19 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
     const editorRoot = root.querySelector("[data-master-focal-editor] [data-portrait-editor]");
     if (!editorRoot || !context?.focalEditor || !this.profileId) return;
     let draftPortrait = context.focalEditor.portrait;
+    const focalProfileId = context.profileId;
     this._focalPortraitController = wirePortraitEditor(editorRoot, {
       initialPortrait: draftPortrait,
-      onChange: (portrait) => { draftPortrait = portrait; },
+      onChange: (portrait) => { draftPortrait = portrait; this._focalPortraitDrafts.set(focalProfileId, portrait); },
       onError: (error) => notify("warn", error?.message || "Fonte de retrato focal inválida.")
     });
     listen(this._listeners, root.querySelector("[data-master-save-focal]"), "click", async () => {
       const name = String(root.querySelector("[data-master-focal-name]")?.value || "").trim();
       const description = String(root.querySelector("[data-master-focal-description]")?.value || "");
+      const { profileId } = this._contextIds(root);
+      const portrait = { ...draftPortrait };
       await this._runMutation(
-        () => updateFocalProfile(this.profileId, { name, description, portrait: { ...draftPortrait } }),
+        this._saveFormDrafts("focal", profileId, () => updateFocalProfile(profileId, { name, description, portrait })),
         "Perfil focal atualizado."
       );
     });
@@ -899,8 +1110,9 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
       const selectedGroup = profileEditorGroupButtons.find((button) => button.getAttribute("aria-pressed") === "true");
       const groupId = String(selectedGroup?.dataset.masterProfileEditorGroupChoice || "__ungrouped__");
       if (!name) { notify("warn", "Informe o nome da matriz."); return; }
+      const { profileId } = this._contextIds(root);
       await this._runMutation(
-        () => updateProfile(this.profileId, { name, groupId, active, archived }),
+        this._saveFormDrafts("profile-editor", profileId, () => updateProfile(profileId, { name, groupId, active, archived })),
         "Perfil atualizado."
       );
     });
@@ -908,8 +1120,9 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
     for (const button of root.querySelectorAll("[data-master-profile-move]")) {
       listen(this._listeners, button, "click", async () => {
         if (!this.profileId) return;
+        const { profileId } = this._contextIds(root);
         await this._runMutation(
-          () => moveProfileOneStep(this.profileId, button.dataset.masterProfileMove),
+          () => moveProfileOneStep(profileId, button.dataset.masterProfileMove),
           "Ordem do perfil atualizada."
         );
       });
@@ -932,8 +1145,9 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
         if (!this.profileId) return;
         const subjectId = String(button.dataset.masterProfileRosterToggle || "");
         const included = String(button.dataset.inProfile) !== "true";
+        const { profileId } = this._contextIds(root);
         await this._runMutation(
-          () => setProfileSubjectIncluded(this.profileId, subjectId, included),
+          () => setProfileSubjectIncluded(profileId, subjectId, included),
           included ? "Personagem adicionado ao perfil." : "Personagem removido do perfil."
         );
       });
@@ -957,8 +1171,7 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
       listen(this._listeners, button, "click", async () => {
         const id = String(button.dataset.masterProfileChoice || "");
         if (!id || id === this.profileId) return;
-        this.profileId = id;
-        await this.render({ force: true });
+        await this._navigate({ profileId: id });
       });
     }
 
@@ -972,8 +1185,9 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
       const active = Boolean(root.querySelector("[data-master-subject-active]")?.checked);
       const archived = Boolean(root.querySelector("[data-master-subject-archived]")?.checked);
       if (!alias && !realName) { notify("warn", "Informe ao menos o apelido ou o nome real do personagem."); return; }
+      const { subjectId } = this._contextIds(root);
       await this._runMutation(
-        () => updateSubject(this.subjectId, { alias, realName, description, active, archived, metadata: { tags } }, { reason: "Cadastro editado no Command Deck" }),
+        this._saveFormDrafts("subject", subjectId, () => updateSubject(subjectId, { alias, realName, description, active, archived, metadata: { tags } }, { reason: "Cadastro editado no Command Deck" })),
         "Cadastro do personagem atualizado."
       );
     });
@@ -981,10 +1195,62 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
     for (const button of root.querySelectorAll("[data-master-subject-move]")) {
       listen(this._listeners, button, "click", async () => {
         if (!this.subjectId) return;
+        const { subjectId } = this._contextIds(root);
         await this._runMutation(
-          () => moveSubjectOneStep(this.subjectId, button.dataset.masterSubjectMove),
+          () => moveSubjectOneStep(subjectId, button.dataset.masterSubjectMove),
           "Ordem dos personagens atualizada."
         );
+      });
+    }
+  }
+
+  _wirePlayerBindings(root, context) {
+    const tabs = root.querySelector("[data-master-settings-tabs]");
+    const selectTab = (tab) => {
+      this._settingsTab = tab === "players" ? "players" : "general";
+      for (const button of tabs?.querySelectorAll?.("[data-master-settings-tab]") ?? []) {
+        const active = button.dataset.masterSettingsTab === this._settingsTab;
+        button.setAttribute("aria-selected", String(active)); button.tabIndex = active ? 0 : -1;
+      }
+      for (const panel of root.querySelectorAll("[data-master-settings-pane]")) panel.hidden = panel.dataset.masterSettingsPane !== this._settingsTab;
+    };
+    for (const button of tabs?.querySelectorAll?.("[data-master-settings-tab]") ?? []) listen(this._listeners, button, "click", () => selectTab(button.dataset.masterSettingsTab));
+    this._settingsTabController = wireTablistKeyboard(tabs);
+    selectTab(this._settingsTab);
+    if (!context.permissions.isFullGM) return;
+    for (const row of root.querySelectorAll("[data-player-binding-user]")) {
+      const profile = row.querySelector("[data-player-binding-profile]");
+      const subject = row.querySelector("[data-player-binding-subject]");
+      const button = row.querySelector("[data-player-binding-save]");
+      const capture = () => {
+        const target = { profileId: String(profile.value || ""), subjectId: profile.value ? String(subject.value || "") : "" };
+        const user = campaignUsers().find(entry => String(entry.id) === row.dataset.playerBindingUser);
+        const current = getPersonalBinding(user);
+        const changed = current.profileId !== target.profileId || current.subjectId !== target.subjectId;
+        if (changed) this._bindingDrafts.set(row.dataset.playerBindingUser, target); else this._bindingDrafts.delete(row.dataset.playerBindingUser);
+        const hint = row.querySelector("[data-player-binding-hint]");
+        if (hint) hint.textContent = changed ? "Escolha pendente. Clique em Salvar vínculo para confirmar." : target.profileId ? "Vínculo configurado. A leitura é individual para esse usuário." : "Sem vínculo: esse usuário não recebe avisos pessoais.";
+      };
+      listen(this._listeners, subject, "change", capture);
+      listen(this._listeners, profile, "change", () => {
+        const match = profile.selectedOptions?.[0]?.dataset?.profileSubject || "";
+        subject.value = match;
+        capture();
+        const hint = row.querySelector("[data-player-binding-hint]");
+        if (hint) hint.textContent = !profile.value ? "Sem vínculo: esse usuário não recebe avisos pessoais." : match ? "Personagem encontrado pelo nome. Confira antes de salvar." : "Escolha o personagem que representa esse perfil nas outras matrizes.";
+      });
+      listen(this._listeners, button, "click", async () => {
+        const target = { profileId: String(profile.value || ""), subjectId: profile.value ? String(subject.value || "") : "" };
+        button.disabled = true;
+        try {
+          await setUserPersonalBinding(row.dataset.playerBindingUser, target);
+          const pending = this._bindingDrafts.get(row.dataset.playerBindingUser);
+          if (pending?.profileId === target.profileId && pending?.subjectId === target.subjectId) this._bindingDrafts.delete(row.dataset.playerBindingUser);
+          notify("info", target.profileId ? "Vínculo do jogador salvo." : "Vínculo do jogador removido.");
+          this._captureFormDrafts(root);
+          if (this.rendered) await this.render({ force: true });
+        } catch (error) { notify("error", error?.message || "Não foi possível salvar o vínculo do jogador."); }
+        finally { if (button.isConnected) button.disabled = false; }
       });
     }
   }
@@ -1060,8 +1326,10 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
       const scoreValue = Number(root.querySelector("[data-master-bulk-score-value]")?.value || 0);
       const bond = String(root.querySelector("[data-master-bulk-bond]")?.value || "keep");
       const communion = String(root.querySelector("[data-master-bulk-communion]")?.value || "keep");
+      const { profileId } = this._contextIds(root);
+      const reason = this._reason(root, "bulk");
       return this._runMutation(
-        () => applyBulkRelationshipChanges(this.profileId, ids, { scoreMode, scoreValue, bond, communion }, { reason: this._reason(root, "bulk") }),
+        () => applyBulkRelationshipChanges(profileId, ids, { scoreMode, scoreValue, bond, communion }, { reason }),
         `${ids.length} registro(s) processado(s) em massa.`
       );
     });
@@ -1128,6 +1396,7 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
       });
       if (!confirmed) return;
       this._saveController.discard();
+      this._relationshipDrafts.clear(); this._portraitDrafts.clear();
       await this.render({ force: true });
     });
 
@@ -1168,6 +1437,8 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
     this._profileGroupSelectorController = null;
     this._newProfileGroupSelectorController?.destroy?.();
     this._newProfileGroupSelectorController = null;
+    this._navigationController?.destroy?.();
+    this._settingsTabController?.destroy?.();
     const root = appElement(this);
     if (!root) return;
     this._motionController = wireMotionSystem(root, { kind: "master", boot: !this._motionBooted });
@@ -1178,19 +1449,17 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
     const profileSelector = root.querySelector('[data-smart-selector="master-profile"]');
     const subjectSelector = root.querySelector('[data-smart-selector="master-subject"]');
     this._profileSelectorController = wireSmartSelector(profileSelector, {
-      onSelect: async (value) => { this.profileId = String(value || ""); this._pendingMotion = "profile"; await this.render({ force: true }); }
+      onSelect: (value) => this._navigate({ profileId: String(value || "") })
     });
     this._subjectSelectorController = wireSmartSelector(subjectSelector, {
-      onSelect: async (value) => { this.subjectId = String(value || ""); this._pendingMotion = "subject"; await this.render({ force: true }); }
+      onSelect: (value) => this._navigate({ subjectId: String(value || "") })
     });
     for (const button of root.querySelectorAll("[data-master-subject-choice]")) {
       listen(this._listeners, button, "click", async () => {
-        this.subjectId = String(button.dataset.masterSubjectChoice || "");
-        this._pendingMotion = "subject";
-        await this.render({ force: true });
+        await this._navigate({ subjectId: String(button.dataset.masterSubjectChoice || "") });
       });
     }
-    for (const button of root.querySelectorAll("[data-master-section-choice]")) listen(this._listeners, button, "click", () => this._setSection(root, button.dataset.masterSectionChoice));
+    for (const button of root.querySelectorAll("[data-master-section-choice]")) listen(this._listeners, button, "click", () => this._navigate({ activeSection: button.dataset.masterSectionChoice }));
 
     this._wireSaveControls(root, context);
     this._wireRegistry(root);
@@ -1199,14 +1468,36 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
     this._wireFocal(root, context);
     this._wireBulk(root);
     this._wireCleanup(root, context);
+    this._wirePlayerBindings(root, context);
     this._wirePermissionSettings(root);
     this._wireBackupControls(root);
+    this._wireNavigation(root, context);
+    this._restoreFormDrafts(root);
     this._applyPermissionState(root, context);
     this._accessibilityController = wireApplicationAccessibility(root, { onEscape: () => this.close(), tablistRoot: root.querySelector("[role=tablist]") ?? root });
     this._setSection(root, this.activeSection, { animate: false });
+    registerReputationFeedbackSurface(this, { kind: "master", profileId: () => this.profileId, onInspect: (target) => this._navigate({ ...target, activeSection: "relationship" }) });
+  }
+
+  async close(options = {}) {
+    if (this._closingRequested) return this;
+    this._closingRequested = true;
+    try {
+      await this._navigationTail.catch(() => undefined);
+      if (this._saveController.isSaving) await this._saveController.whenIdle();
+      this._captureFormDrafts(appElement(this));
+      if (canOpenMasterPanel() && (this._saveController.hasPending || this._fieldDrafts.size || this._focalPortraitDrafts.size || this._bindingDrafts.size)) {
+        const confirmed = await confirmMasterAction({ title: "Fechar com alterações pendentes", message: "Há edições não salvas neste painel. Fechar e descartar esses rascunhos?", confirmLabel: "Fechar e descartar" });
+        if (!confirmed) return this;
+      }
+      return await super.close(options);
+    } finally { this._closingRequested = false; }
   }
 
   async _onClose(options) {
+    this._settingsTabController?.destroy?.(); this._settingsTabController = null;
+    this._navigationController?.destroy?.(); this._navigationController = null;
+    unregisterReputationFeedbackSurface(this);
     destroyListeners(this._listeners);
     this._portraitController?.destroy?.();
     this._portraitController = null;
@@ -1232,6 +1523,7 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
       this._saveController.discard();
       notify("warn", "Alterações pendentes não salvas foram descartadas ao fechar o painel.");
     }
+    this._bindingDrafts.clear();
     this._saveController.destroy();
     return super._onClose?.(options);
   }
@@ -1246,8 +1538,12 @@ export function openMasterPanel(options = {}) {
   }
   try {
     if (masterPanelApp?.rendered) {
-      if (options.profileId) masterPanelApp.profileId = String(options.profileId);
-      if (options.subjectId) masterPanelApp.subjectId = String(options.subjectId);
+      const target = Object.fromEntries(["profileId", "subjectId", "activeSection"].filter((key) => options[key]).map((key) => [key, String(options[key])]));
+      if (Object.keys(target).length) {
+        masterPanelApp._navigate(target).catch((error) => notify("error", error?.message || "Não foi possível navegar no painel."));
+        return masterPanelApp;
+      }
+      masterPanelApp._captureFormDrafts(appElement(masterPanelApp));
       return renderApplicationSafely(masterPanelApp, { label: "Controle de Reputação" });
     }
     masterPanelApp = new ReputationMasterPanelApplication(options);

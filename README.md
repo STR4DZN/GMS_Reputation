@@ -1,9 +1,18 @@
 # GMS // Matriz de Reputação
 
-**Versão:** `1.2.0-dev.70`  
+**Versão:** `1.2.0-dev.72`
+
 **Foundry VTT:** v13 — mínimo `13.341`, verificado para `13.351`.
 
 Módulo de reputação social com interfaces separadas para Player e Mestre, perfis/matrizes, personagens, retratos, reputação em passos de 0,5, Vínculo, Comunhão, Duplo//Sinc derivado, histórico, Undo/Redo, backup, permissões, sincronização e migração da macro legada.
+
+## Navegação e feedback de reputação
+
+O Mestre tem voltar/avançar, troca entre personagens e acesso rápido com `Ctrl/⌘ + K`. O Player tem troca rápida de perfil e atalhos para focal/relações. A navegação preserva rascunhos e adapta os painéis à largura da janela.
+
+Em **Sistema → Jogadores e perfis**, o Mestre vincula cada usuário a um perfil e personagem por nomes, sem digitar IDs. Os avisos pessoais mostram apenas as mudanças desse personagem nas matrizes dos outros desde a última visualização, inclusive após ficar offline: “Sua reputação aumentou com Corvo”. O resumo inclui retrato, score antes/depois, variação, corações e paginação; pode ser reaberto em **Suas atualizações**. O primeiro acesso estabelece a referência. Motion usa transições curtas e respeita movimento reduzido.
+
+Consulte [uso, pesquisa de Motion e validação](docs/NAVIGATION_MOTION.md). Para a prévia interativa: `npm ci` e `npm run preview`; para a suíte: `npm test`.
 
 ## Architecture 60 — Fase A
 

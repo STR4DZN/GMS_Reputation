@@ -3,18 +3,25 @@ import { readFile } from "node:fs/promises";
 import * as Motion from "../scripts/motion/motion-system.js";
 
 const manifest = JSON.parse(await readFile(new URL("../module.json", import.meta.url), "utf8"));
-assert.equal(manifest.version, "1.2.0-dev.70");
+assert.equal(manifest.version, "1.2.0-dev.72");
 assert.deepEqual(manifest.styles, ["styles/gms-reputation-59.10.css"]);
 assert.deepEqual(manifest.esmodules, ["scripts/main.js"]);
 
 const css = await readFile(new URL("../styles/gms-reputation-59.10.css", import.meta.url), "utf8");
-assert.doesNotMatch(css, /prefers-reduced-motion|data-gms-performance|performance-mode|figma/i);
+assert.doesNotMatch(css, /data-gms-performance|performance-mode|figma/i);
 assert.doesNotMatch(css, /player-favorite|is-favorite|gms-player-density|density-mode/i);
 assert.match(css, /\.gms-motion-scanner/);
 assert.match(css, /@keyframes\s+gms57-console-sweep/);
 assert.match(css, /data-gms-motion-system="59"/);
 assert.match(css, /\.gms-subject-detail\[data-gms-visual-generation="3"\]/);
 assert.equal((css.match(/\{/g) ?? []).length, (css.match(/\}/g) ?? []).length, "CSS com chaves desbalanceadas");
+assert.match(css, /prefers-reduced-motion/);
+globalThis.matchMedia = () => ({ matches: true });
+assert.equal(Motion.shouldRunMotion({}), false);
+globalThis.matchMedia = () => ({ matches: false });
+globalThis.document = { hidden: true };
+assert.equal(Motion.shouldRunMotion({}), false);
+delete globalThis.document;
 assert.equal(Motion.shouldRunMotion({ dataset: { gmsPerformance: "performance" } }), true);
 
 const classes = new Set();
@@ -41,4 +48,17 @@ assert.equal(scanner.style.values.get("--gms57-scan-duration"), "900ms");
 controller.destroy();
 assert.equal(scanner.removed, true);
 
+// Entry effects are bounded and stop immediately when the system preference changes.
+let mediaChange;
+const media = { matches: false, addEventListener(_type,callback){mediaChange=callback;}, removeEventListener(){} };
+globalThis.matchMedia = () => media;
+const revealController = Motion.wireMotionSystem(root, { boot: false });
+const activeAnimations=[];
+const elements=Array.from({length:30},()=>({animate(){const animation={cancelled:false,cancel(){this.cancelled=true;},finished:new Promise(()=>{})};activeAnimations.push(animation);return animation;}}));
+assert.equal(revealController.reveal(elements),true);
+assert.equal(activeAnimations.length,12,"A large roster must not animate every card simultaneously");
+media.matches=true;mediaChange();
+assert.equal(activeAnimations.every((animation)=>animation.cancelled),true);
+assert.equal(revealController.reveal(elements),false);
+revealController.destroy();
 console.log("motion-css: OK");

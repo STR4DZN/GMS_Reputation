@@ -1,0 +1,7 @@
+<dialog class="gms-navigation-palette" data-navigation-dialog id="gms-navigation-{{navigationKind}}" aria-label="Navegação rápida">
+  <header><span><small>GMS // NAVEGAÇÃO</small><strong>Para onde vamos?</strong></span><button type="button" data-navigation-close aria-label="Fechar navegação">×</button></header>
+  <label class="gms-navigation-palette__query"><span class="gms-navigation-palette__search-icon" aria-hidden="true">⌕</span><input type="text" data-navigation-query role="combobox" aria-label="Buscar um destino" aria-autocomplete="list" aria-expanded="true" aria-controls="gms-navigation-results-{{navigationKind}}" placeholder="{{navigationPlaceholder}}" autocomplete="off" spellcheck="false"><kbd>ESC</kbd></label>
+  <div class="gms-navigation-palette__results" data-navigation-results role="listbox" aria-label="Destinos" id="gms-navigation-results-{{navigationKind}}"></div>
+  <p class="gms-navigation-palette__empty" data-navigation-empty hidden>Nenhum destino encontrado. Tente outro nome.</p>
+  <footer><span data-navigation-result-count></span><span><kbd>↑</kbd><kbd>↓</kbd> navegar <kbd>↵</kbd> abrir</span></footer>
+</dialog>

@@ -1,4 +1,4 @@
-<section class="gms-player-dashboard gms-v2-tech-texture" data-gms-visual-generation="3" data-gms-build="59.10" data-player-matrix-surface data-profile-id="{{profileId}}" data-world-revision="{{worldRevision}}">
+<section class="gms-player-dashboard gms-v2-tech-texture" data-gms-visual-generation="3" data-gms-build="59.10" data-gms-navigation="enhanced" data-player-matrix-surface data-profile-id="{{profileId}}" data-world-revision="{{worldRevision}}">
   {{> "modules/gms-reputation/templates/partials/background-art.hbs"}}
   <header class="gms-player-dashboard__header">
     <span class="gms-player-dashboard__vector-field" aria-hidden="true"></span>
@@ -11,6 +11,15 @@
     </div>
     <span class="gms-player-dashboard__live-update" data-player-live-update data-active="false" role="status" aria-live="polite"></span>
   </header>
+
+  {{#if hasProfile}}
+    <nav class="gms-player-navigation" aria-label="Navegação da matriz">
+      <div class="gms-player-navigation__perspective"><button type="button" data-player-profile-step="-1" aria-label="Perfil anterior" {{#if navigation.hasPrevious}}{{else}}disabled{{/if}}>‹</button><span><small>PERSPECTIVA</small><strong>{{navigation.position}} / {{profiles.length}}</strong></span><button type="button" data-player-profile-step="1" aria-label="Próximo perfil" {{#if navigation.hasNext}}{{else}}disabled{{/if}}>›</button></div>
+      <div class="gms-player-navigation__anchors"><button type="button" data-player-anchor="focal">Perfil focal</button><button type="button" data-player-anchor="records">Relações <span>{{totalCount}}</span></button></div>
+      <div class="gms-personal-reputation-status"><span data-personal-reputation-label>{{personalReputation.label}}</span><button type="button" data-personal-reputation-open {{#if personalReputation.available}}{{else}}disabled{{/if}}>Suas atualizações</button></div>
+      <button type="button" class="gms-navigation-bar__command" data-navigation-open><span aria-hidden="true">⌕</span><span>Trocar perfil</span><kbd>Ctrl K</kbd></button>
+    </nav>
+  {{/if}}
 
   {{#if hasProfile}}
     <div class="gms-player-dashboard__scroll" data-gms-v2-role="dossier-scroll">
@@ -70,6 +79,8 @@
       <i class="fa-solid fa-folder-open" aria-hidden="true"></i>
       <strong>Nenhum perfil social ativo.</strong>
       <p>O Mestre ainda não disponibilizou um perfil de reputação neste mundo.</p>
+      <p data-personal-reputation-label>{{personalReputation.label}}</p>
     </div>
   {{/if}}
+  {{> "modules/gms-reputation/templates/partials/navigation-palette.hbs"}}
 </section>
