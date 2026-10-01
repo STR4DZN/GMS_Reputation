@@ -184,13 +184,15 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
     this._motionController = null;
     this._motionBooted = false;
     this._pendingMotion = "";
+    this._profileLibraryOpen = false;
+    this._focusProfileLibrary = false;
   }
 
   async _prepareContext(options) {
     const parent = await super._prepareContext?.(options) ?? {};
     const context = buildPlayerDashboardContext({ profileId: this.profileId });
     if (context.hasProfile) this.profileId = context.profileId;
-    return { ...parent, ...context };
+    return { ...parent, ...context, profileLibraryOpen: this._profileLibraryOpen };
   }
 
   _wireCardDetails(root) {
@@ -261,9 +263,31 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
         const nextId = String(button.dataset.playerProfileChoice || "");
         if (!nextId || nextId === this.profileId) return;
         this.profileId = nextId;
+        this._profileLibraryOpen = false;
+        this._focusProfileLibrary = true;
         this._pendingMotion = "profile";
         await this.render({ force: true });
       });
+    }
+  }
+
+  _wireProfileLibrary(root) {
+    const library = root?.querySelector?.("[data-player-profile-library]");
+    const tab = library?.querySelector?.(".gms-profile-library__tab");
+    if (!library || !tab) return;
+    listen(this._listeners, library, "toggle", () => {
+      this._profileLibraryOpen = library.open;
+    });
+    listen(this._listeners, root, "keydown", (event) => {
+      if (event.key !== "Escape" || !library.open || event.defaultPrevented) return;
+      event.preventDefault();
+      library.open = false;
+      this._profileLibraryOpen = false;
+      tab.focus?.();
+    }, { capture: true });
+    if (this._focusProfileLibrary) {
+      tab.focus?.();
+      this._focusProfileLibrary = false;
     }
   }
 
@@ -322,6 +346,7 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
     this._motionController = wireMotionSystem(root, { kind: "player", boot: !this._motionBooted });
     this._motionBooted = true;
     if (this._pendingMotion) { this._motionController.transition?.(this._pendingMotion, root); this._pendingMotion = ""; }
+    this._wireProfileLibrary(root);
     this._wireProfileChoices(root);
     this._wireProfileGroupAccordion(root);
     this._wireCardDetails(root);

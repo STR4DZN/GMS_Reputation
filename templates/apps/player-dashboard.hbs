@@ -13,18 +13,33 @@
   </header>
 
   {{#if hasProfile}}
-    <div class="gms-player-dashboard__scroll" data-gms-v2-role="dossier-scroll">
-      <div class="gms-player-dashboard__content" data-player-matrix-content>
-      {{#if showProfileLibrary}}
-        <details class="gms-profile-library" aria-label="Perfis de reputação organizados por grupo" data-player-profile-library>
-          <summary class="gms-profile-library__trigger" aria-label="Abrir lista de perfis">
-            <span class="gms-profile-library__current-thumb">{{#if currentProfile.image}}<img src="{{currentProfile.image}}" alt="">{{else}}<i class="fa-solid fa-user-astronaut" aria-hidden="true"></i>{{/if}}</span>
-            <span class="gms-profile-library__current-copy"><small>PERFIL ATIVO // {{currentProfile.groupName}}</small><strong>{{currentProfile.focalName}}</strong><em>{{currentProfile.name}}</em></span>
-            <span class="gms-profile-library__summary-meta"><small>{{profileGroups.length}} GRUPOS</small><strong>Trocar perfil</strong></span>
-            <i class="fa-solid fa-chevron-down gms-profile-library__chevron" aria-hidden="true"></i>
-          </summary>
+    <div class="gms-player-dashboard__body {{#if showProfileLibrary}}has-profile-library{{/if}}">
+      <div class="gms-player-dashboard__scroll" data-gms-v2-role="dossier-scroll">
+        <div class="gms-player-dashboard__content" data-player-matrix-content>
+        <section class="gms-player-dashboard__focal" aria-label="Perfil focal" data-gms-v2-role="focal-dossier">
+          {{> "modules/gms-reputation/templates/partials/focal-profile.hbs" focal}}
+        </section>
 
+        <section class="gms-player-dashboard__records" aria-label="Relações do perfil" data-gms-v2-role="relationship-grid">
+          {{#each cards}}
+            {{> "modules/gms-reputation/templates/partials/player-card.hbs" this}}
+          {{/each}}
+        </section>
+        </div>
+      </div>
+      {{#if showProfileLibrary}}
+        <details class="gms-profile-library gms-profile-library--sidebar" aria-label="Perfis de reputação organizados por grupo" data-player-profile-library {{#if profileLibraryOpen}}open{{/if}}>
+          <summary class="gms-profile-library__tab" aria-label="Abrir ou recolher navegação de NPCs" title="Navegação de NPCs">
+            <i class="fa-solid fa-users" aria-hidden="true"></i>
+            <span>NPCs</span>
+            <i class="fa-solid fa-chevron-left gms-profile-library__tab-arrow" aria-hidden="true"></i>
+          </summary>
           <div class="gms-profile-library__drawer">
+            <div class="gms-profile-library__trigger">
+              <span class="gms-profile-library__current-thumb">{{#if currentProfile.image}}<img src="{{currentProfile.image}}" alt="">{{else}}<i class="fa-solid fa-user-astronaut" aria-hidden="true"></i>{{/if}}</span>
+              <span class="gms-profile-library__current-copy"><small>PERFIL ATIVO // {{currentProfile.groupName}}</small><strong>{{currentProfile.focalName}}</strong><em>{{currentProfile.name}}</em></span>
+              <span class="gms-profile-library__summary-meta"><small>{{profileGroups.length}} GRUPOS</small><strong>Trocar perfil</strong></span>
+            </div>
             <header class="gms-profile-library__masthead">
               <div><small>DIRETÓRIO DE PERSPECTIVAS</small><strong>Perfis e grupos</strong><p>Abra um grupo e escolha a perspectiva desejada.</p></div>
               <span><i class="fa-solid fa-signal" aria-hidden="true"></i> SINCRONIZADO</span>
@@ -53,17 +68,6 @@
           </div>
         </details>
       {{/if}}
-
-      <section class="gms-player-dashboard__focal" aria-label="Perfil focal" data-gms-v2-role="focal-dossier">
-        {{> "modules/gms-reputation/templates/partials/focal-profile.hbs" focal}}
-      </section>
-
-      <section class="gms-player-dashboard__records" aria-label="Relações do perfil" data-gms-v2-role="relationship-grid">
-        {{#each cards}}
-          {{> "modules/gms-reputation/templates/partials/player-card.hbs" this}}
-        {{/each}}
-      </section>
-      </div>
     </div>
   {{else}}
     <div class="gms-player-dashboard__empty">
