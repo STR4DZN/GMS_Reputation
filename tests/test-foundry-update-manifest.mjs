@@ -1,19 +1,19 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { MODULE_VERSION } from "../scripts/constants.js";
 
 const manifest = JSON.parse(await readFile(new URL("../module.json", import.meta.url), "utf8"));
+const repository = "STR4DZN/GMS_Reputation";
+const branch = "dev70-npc-right-sidebar";
 
 assert.equal(manifest.id, "gms-reputation");
-assert.equal(manifest.version, "1.2.0-dev.70");
-assert.equal(manifest.url, "https://github.com/STR4DZN/GMS_Reputation");
-assert.equal(manifest.manifest, "https://raw.githubusercontent.com/STR4DZN/GMS_Reputation/main/module.json");
-assert.equal(
-  manifest.download,
-  "https://github.com/STR4DZN/GMS_Reputation/releases/download/v1.2.0-dev.70/GMS_Reputation_1.2.0-dev.70.zip"
-);
+assert.equal(manifest.version, "1.2.0-dev.70.1");
+assert.equal(manifest.version, MODULE_VERSION);
+assert.equal(manifest.url, `https://github.com/${repository}`);
+assert.equal(manifest.manifest, `https://raw.githubusercontent.com/${repository}/${branch}/module.json`);
+assert.equal(manifest.download, `https://github.com/${repository}/archive/refs/heads/${branch}.zip`);
 assert.match(manifest.manifest, /^https:\/\/raw\.githubusercontent\.com\//);
-assert.match(manifest.download, /^https:\/\/github\.com\/STR4DZN\/GMS_Reputation\/releases\/download\//);
-assert.ok(manifest.download.includes(`/v${manifest.version}/`), "download deve usar a tag correspondente à versão");
-assert.ok(manifest.download.endsWith(`GMS_Reputation_${manifest.version}.zip`), "asset deve acompanhar a versão do manifesto");
+assert.match(manifest.download, /^https:\/\/github\.com\/STR4DZN\/GMS_Reputation\/archive\/refs\/heads\//);
+assert.ok(manifest.download.endsWith(".zip"));
 
 console.log("foundry-update-manifest: OK");
