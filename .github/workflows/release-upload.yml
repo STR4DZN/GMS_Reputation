@@ -1,0 +1,72 @@
+name: Upload Foundry Release Assets
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing release tag with a draft GitHub release
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ inputs.tag }}
+      GMS_REPOSITORY: ${{ github.repository }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout release tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Validate tag and draft release
+        shell: bash
+        run: |
+          set -euo pipefail
+          GMS_VERSION=$(node -p "require('./module.json').version")
+          test "$RELEASE_TAG" = "v$GMS_VERSION"
+          test "$(gh release view "$RELEASE_TAG" --repo "$GMS_REPOSITORY" --json isDraft --jq '.isDraft')" = true
+
+      - name: Run test suite
+        run: bash tests/run-all.sh
+
+      - name: Build reproducible module ZIP
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED
+          import json
+          version = json.loads(Path('module.json').read_text())['version']
+          files = [Path(name) for name in ('module.json', 'README.md', 'CHANGELOG.md')]
+          for directory in ('assets', 'docs', 'scripts', 'styles', 'templates'):
+              files.extend(p for p in Path(directory).rglob('*') if p.is_file() and p.name not in ('.DS_Store', 'Thumbs.db'))
+          Path('dist').mkdir(exist_ok=True)
+          output = Path('dist') / f'GMS_Reputation_{version}.zip'
+          with ZipFile(output, 'w', compression=ZIP_DEFLATED, compresslevel=9) as archive:
+              for path in sorted(files):
+                  info = ZipInfo(path.as_posix(), date_time=(1980, 1, 1, 0, 0, 0))
+                  info.compress_type = ZIP_DEFLATED
+                  info.external_attr = 0o100644 << 16
+                  archive.writestr(info, path.read_bytes(), compresslevel=9)
+          with ZipFile(output) as archive:
+              assert archive.testzip() is None
+              assert json.loads(archive.read('module.json'))['version'] == version
+          PY
+
+      - name: Upload assets to draft release
+        shell: bash
+        run: |
+          set -euo pipefail
+          GMS_VERSION=$(node -p "require('./module.json').version")
+          gh release upload "$RELEASE_TAG" "dist/GMS_Reputation_${GMS_VERSION}.zip" module.json --repo "$GMS_REPOSITORY"
