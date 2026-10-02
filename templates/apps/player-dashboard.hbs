@@ -28,37 +28,31 @@
     </div>
     {{#if showProfileLibrary}}
       <div hidden data-player-navigation-mount>
-        <details class="gms-profile-library gms-profile-library--external" aria-label="Perfis de reputação organizados por grupo" data-player-profile-library {{#if profileLibraryOpen}}open{{/if}}>
-          <summary class="gms-profile-library__tab" aria-label="Abrir ou recolher navegação de NPCs" title="Navegação de NPCs">
+        <details class="gms-npc-navigation" aria-label="Navegação de NPCs por grupo" data-player-profile-library {{#if profileLibraryOpen}}open{{/if}}>
+          <summary class="gms-npc-navigation__toggle" data-player-navigation-toggle aria-label="Abrir ou recolher navegação de NPCs" title="Navegação de NPCs">
             <i class="fa-solid fa-users" aria-hidden="true"></i>
             <span>NPCs</span>
-            <i class="fa-solid fa-chevron-right gms-profile-library__tab-arrow" aria-hidden="true"></i>
+            <i class="fa-solid fa-chevron-left gms-npc-navigation__arrow" aria-hidden="true"></i>
           </summary>
-          <div class="gms-profile-library__drawer">
-            <div class="gms-profile-library__trigger">
-              <span class="gms-profile-library__current-thumb">{{#if currentProfile.image}}<img src="{{currentProfile.image}}" alt="">{{else}}<i class="fa-solid fa-user-astronaut" aria-hidden="true"></i>{{/if}}</span>
-              <span class="gms-profile-library__current-copy"><small>PERFIL ATIVO // {{currentProfile.groupName}}</small><strong>{{currentProfile.focalName}}</strong><em>{{currentProfile.name}}</em></span>
-              <span class="gms-profile-library__summary-meta"><small>{{profileGroups.length}} GRUPOS</small><strong>Trocar perfil</strong></span>
-            </div>
-            <header class="gms-profile-library__masthead">
-              <div><small>DIRETÓRIO DE PERSPECTIVAS</small><strong>Perfis e grupos</strong><p>Abra um grupo e escolha a perspectiva desejada.</p></div>
-              <span><i class="fa-solid fa-signal" aria-hidden="true"></i> SINCRONIZADO</span>
+          <div class="gms-npc-navigation__drawer">
+            <header class="gms-npc-navigation__current">
+              <span class="gms-npc-navigation__portrait">{{#if currentProfile.image}}<img src="{{currentProfile.image}}" alt="">{{else}}<i class="fa-solid fa-user" aria-hidden="true"></i>{{/if}}</span>
+              <div><span class="gms-npc-navigation__label">Perfil atual</span><strong>{{currentProfile.focalName}}</strong></div>
             </header>
-            <div class="gms-profile-library__list" aria-label="Lista de grupos de perfis">
+            <div class="gms-npc-navigation__list" data-player-navigation-list aria-label="Grupos e NPCs">
               {{#each profileGroups}}
-                <details class="gms-profile-library__group" data-profile-group="{{id}}" data-active="{{active}}" {{#if active}}open{{/if}}>
-                  <summary>
-                    <span class="gms-profile-library__group-mark" aria-hidden="true"></span>
-                    <span class="gms-profile-library__group-copy"><strong>{{name}}</strong></span>
-                    <span class="gms-profile-library__group-count"><b>{{count}}</b><small>PERFIS</small></span>
-                    <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                <details class="gms-npc-navigation__group" data-profile-group="{{id}}" data-active="{{active}}" {{#if active}}open{{/if}}>
+                  <summary title="{{name}}">
+                    <span class="gms-npc-navigation__group-name">{{name}}</span>
+                    <span class="gms-npc-navigation__count" aria-label="{{count}} perfis">{{count}}</span>
+                    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
                   </summary>
-                  <div class="gms-profile-library__profiles">
+                  <div class="gms-npc-navigation__profiles">
                     {{#each profiles}}
-                      <button type="button" class="gms-profile-library__profile" data-player-profile-choice="{{id}}" data-selected="{{selected}}" aria-current="{{#if selected}}true{{else}}false{{/if}}">
-                        <span class="gms-profile-library__thumb">{{#if image}}<img src="{{image}}" alt="" loading="lazy">{{else}}<i class="fa-solid fa-user-astronaut" aria-hidden="true"></i>{{/if}}</span>
-                        <span class="gms-profile-library__identity"><strong>{{focalName}}</strong><small>{{name}}</small></span>
-                        {{#if selected}}<span class="gms-profile-library__active">EM USO</span>{{else}}<i class="fa-solid fa-chevron-right" aria-hidden="true"></i>{{/if}}
+                      <button type="button" class="gms-npc-navigation__profile" data-player-profile-choice="{{id}}" data-selected="{{selected}}" aria-current="{{#if selected}}true{{else}}false{{/if}}" title="{{name}}">
+                        <span class="gms-npc-navigation__portrait">{{#if image}}<img src="{{image}}" alt="" loading="lazy">{{else}}<i class="fa-solid fa-user" aria-hidden="true"></i>{{/if}}</span>
+                        <span class="gms-npc-navigation__name">{{focalName}}</span>
+                        {{#if selected}}<i class="fa-solid fa-check gms-npc-navigation__selected" aria-hidden="true"></i>{{/if}}
                       </button>
                     {{/each}}
                   </div>

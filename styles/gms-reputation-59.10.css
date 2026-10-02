@@ -14916,246 +14916,195 @@ grid-column: 1 !important;
 }
 
 
-/* dev.70: the NPC companion is outside the application. Everything above this
-   block remains the original dev.70 stylesheet, including dossier scrolling. */
+/* dev.70: isolated NPC navigation outside the original Player application. */
 .gms-player-profile-navigation {
   position: fixed;
   box-sizing: border-box;
-  color: #e9e1d5 !important;
-  font-family: "Segoe UI", sans-serif;
+  color: #e9e1d5;
+  font: 14px/1.4 "Segoe UI", sans-serif;
   pointer-events: auto;
 }
 .gms-player-profile-navigation[hidden] { display: none !important; }
 .gms-player-profile-navigation *, .gms-player-profile-navigation *::before,
 .gms-player-profile-navigation *::after { box-sizing: border-box; }
-.gms-player-profile-navigation .gms-profile-library--external {
-  position: relative !important;
-  display: block !important;
-  width: 100% !important;
-  height: 100% !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  overflow: hidden !important;
-  border: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  clip-path: none !important;
+.gms-player-profile-navigation .gms-npc-navigation {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
-.gms-player-profile-navigation .gms-profile-library__tab {
+.gms-player-profile-navigation .gms-npc-navigation[open] {
+  overflow: hidden;
+  border: 1px solid rgba(182,154,104,.35);
+  border-right: 0;
+  border-radius: 5px 0 0 5px;
+  background: #070a10;
+  box-shadow: -6px 0 18px rgba(0,0,0,.25);
+}
+.gms-player-profile-navigation .gms-npc-navigation__toggle {
   position: absolute;
-  z-index: 2;
-  inset: 40px 0 auto auto;
+  inset: 36px 0 auto auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 10px;
   width: 32px;
-  min-height: 120px;
+  height: 108px;
   margin: 0;
-  padding: 12px 0;
+  padding: 10px 0;
   cursor: pointer;
   list-style: none;
-  color: #e9e1d5 !important;
-  background: linear-gradient(180deg, #141820, #06090e);
-  border: 1px solid rgba(182,154,104,.40);
+  color: #e9e1d5;
+  background: #0b0d13;
+  border: 1px solid rgba(182,154,104,.4);
   border-right: 0;
   border-radius: 5px 0 0 5px;
 }
-.gms-player-profile-navigation .gms-profile-library__tab::-webkit-details-marker { display: none; }
-.gms-player-profile-navigation .gms-profile-library__tab > span {
+.gms-player-profile-navigation .gms-npc-navigation__toggle::-webkit-details-marker,
+.gms-player-profile-navigation .gms-npc-navigation__group > summary::-webkit-details-marker { display: none; }
+.gms-player-profile-navigation .gms-npc-navigation__toggle > span {
   writing-mode: vertical-rl;
-  font: 800 10px/1 "Consolas", monospace !important;
-  letter-spacing: .14em;
+  font: 700 14px/1 "Segoe UI", sans-serif;
 }
-.gms-player-profile-navigation .gms-profile-library__tab > i { font-size: 12px; }
-.gms-player-profile-navigation .gms-profile-library__tab:hover {
-  color: #fff8ec !important;
-  border-color: rgba(50,220,232,.65);
+.gms-player-profile-navigation .gms-npc-navigation__toggle > i { font-size: 13px; }
+.gms-player-profile-navigation .gms-npc-navigation[open] > .gms-npc-navigation__toggle {
+  inset: 0 0 auto 0;
+  flex-direction: row;
+  justify-content: flex-start;
+  width: 100%;
+  height: 36px;
+  padding: 0 12px;
+  border: 0;
+  border-bottom: 1px solid rgba(182,154,104,.25);
+  border-radius: 0;
 }
-.gms-player-profile-navigation .gms-profile-library__tab:focus-visible {
-  outline: 2px solid #32dce8;
-  outline-offset: -4px;
+.gms-player-profile-navigation .gms-npc-navigation[open] > .gms-npc-navigation__toggle > span {
+  writing-mode: horizontal-tb;
+  flex: 1;
+  font-size: 15px;
 }
-.gms-player-profile-navigation [open] > .gms-profile-library__tab .gms-profile-library__tab-arrow { transform: rotate(180deg); }
-.gms-player-profile-navigation .gms-profile-library__drawer {
-  position: absolute !important;
-  inset: 0 32px 0 0 !important;
-  display: grid !important;
-  grid-template-rows: auto auto minmax(0, 1fr) !important;
-  min-width: 0 !important;
-  min-height: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  overflow: hidden !important;
-  color: #e9e1d5 !important;
-  background: linear-gradient(180deg, #10141b, #05070c) !important;
-  border: 1px solid rgba(182,154,104,.30) !important;
-  box-shadow: -8px 0 20px rgba(0,0,0,.3) !important;
+.gms-player-profile-navigation .gms-npc-navigation[open] .gms-npc-navigation__arrow { transform: rotate(180deg); }
+.gms-player-profile-navigation .gms-npc-navigation__toggle:hover { color: #fff; background: #151a23; }
+.gms-player-profile-navigation :is(summary, button):focus-visible { outline: 2px solid #32dce8; outline-offset: -3px; }
+.gms-player-profile-navigation .gms-npc-navigation__drawer {
+  position: absolute;
+  inset: 36px 0 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
 }
-.gms-player-profile-navigation .gms-profile-library--external:not([open]) > .gms-profile-library__drawer { display: none !important; }
-.gms-player-profile-navigation .gms-profile-library__trigger {
-  display: grid !important;
-  grid-template-columns: 28px minmax(0, 1fr) !important;
-  align-items: center !important;
-  gap: 7px !important;
-  min-height: 64px !important;
-  margin: 0 !important;
-  padding: 8px !important;
-  cursor: default !important;
-  border: 0 !important;
-  border-bottom: 1px solid rgba(182,154,104,.20) !important;
-  background: rgba(255,255,255,.025) !important;
+.gms-player-profile-navigation .gms-npc-navigation:not([open]) > .gms-npc-navigation__drawer { display: none; }
+.gms-player-profile-navigation .gms-npc-navigation__current {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 12px;
+  border-bottom: 1px solid rgba(182,154,104,.22);
+  background: linear-gradient(135deg, #141922, #0b1017);
 }
-.gms-player-profile-navigation .gms-profile-library__current-copy {
-  display: grid !important;
-  gap: 4px !important;
-  min-width: 0 !important;
-}
-.gms-player-profile-navigation .gms-profile-library__current-copy small {
-  color: #b69a68 !important;
-  font: 800 8px/1.3 "Consolas", monospace !important;
+.gms-player-profile-navigation .gms-npc-navigation__current > div { display: grid; gap: 3px; min-width: 0; }
+.gms-player-profile-navigation .gms-npc-navigation__label { color: #a7b3bd; font-size: 12px; }
+.gms-player-profile-navigation .gms-npc-navigation__current strong {
+  color: #f0e8dc;
+  font: 650 14px/1.35 "Segoe UI", sans-serif;
   overflow-wrap: anywhere;
 }
-.gms-player-profile-navigation .gms-profile-library__current-copy strong {
-  color: #e9e1d5 !important;
-  font: 900 13px/1.2 "Segoe UI", sans-serif !important;
-  overflow-wrap: anywhere;
-}
-.gms-player-profile-navigation .gms-profile-library__current-copy em {
-  color: #93a0aa !important;
-  font: 600 9px/1.25 "Segoe UI", sans-serif !important;
-  overflow-wrap: anywhere;
-}
-.gms-player-profile-navigation .gms-profile-library__summary-meta { display: none !important; }
-.gms-player-profile-navigation .gms-profile-library__masthead {
-  display: grid !important;
-  gap: 5px !important;
-  min-width: 0 !important;
-  margin: 0 !important;
-  padding: 8px !important;
-  border: 0 !important;
-  border-bottom: 1px solid rgba(182,154,104,.15) !important;
-  background: transparent !important;
-}
-.gms-player-profile-navigation .gms-profile-library__masthead > div { display: grid; gap: 4px; min-width: 0; }
-.gms-player-profile-navigation .gms-profile-library__masthead small { color: #b69a68 !important; font: 800 8px/1.3 "Consolas", monospace !important; }
-.gms-player-profile-navigation .gms-profile-library__masthead strong { color: #e9e1d5 !important; font: 900 13px/1.2 "Segoe UI", sans-serif !important; }
-.gms-player-profile-navigation .gms-profile-library__masthead p { margin: 0; color: #93a0aa !important; font: 600 10px/1.35 "Segoe UI", sans-serif !important; }
-.gms-player-profile-navigation .gms-profile-library__masthead > span { color: #9fb7a1 !important; font: 800 8px/1.2 "Consolas", monospace !important; }
-.gms-player-profile-navigation .gms-profile-library__list {
-  display: grid !important;
-  grid-template-columns: minmax(0, 1fr) !important;
-  grid-auto-rows: max-content !important;
-  align-content: start !important;
-  min-height: 0 !important;
-  max-height: none !important;
-  width: 100% !important;
-  gap: 5px !important;
-  margin: 0 !important;
-  padding: 5px !important;
-  overflow-x: hidden !important;
-  overflow-y: auto !important;
+.gms-player-profile-navigation .gms-npc-navigation__list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-auto-rows: max-content;
+  align-content: start;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
-  scrollbar-color: rgba(182,154,104,.50) #05070c;
+  scrollbar-color: #927d59 #070a10;
 }
-.gms-player-profile-navigation .gms-profile-library__group {
-  display: block !important;
-  min-width: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  overflow: hidden !important;
-  border: 1px solid rgba(182,154,104,.20) !important;
-  background: #070b10 !important;
-  clip-path: none !important;
+.gms-player-profile-navigation .gms-npc-navigation__group {
+  display: block;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid rgba(182,154,104,.18);
 }
-.gms-player-profile-navigation .gms-profile-library__group > summary {
-  display: grid !important;
-  grid-template-columns: 3px minmax(0, 1fr) auto !important;
-  align-items: center !important;
-  gap: 6px !important;
-  height: auto !important;
-  min-height: 42px !important;
-  padding: 7px !important;
+.gms-player-profile-navigation .gms-npc-navigation__group > summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 12px;
+  align-items: center;
+  gap: 8px;
+  min-height: 50px;
+  padding: 10px 12px;
   cursor: pointer;
   list-style: none;
-  border: 0 !important;
-  background: transparent !important;
+  color: #e9e1d5;
+  background: #0b1017;
 }
-.gms-player-profile-navigation .gms-profile-library__group > summary::-webkit-details-marker { display: none; }
-.gms-player-profile-navigation .gms-profile-library__group > summary > i { display: none; }
-.gms-player-profile-navigation .gms-profile-library__group-mark { align-self: stretch; background: #b69a68; }
-.gms-player-profile-navigation .gms-profile-library__group-copy strong {
-  color: #e9e1d5 !important;
-  font: 800 11px/1.3 "Segoe UI", sans-serif !important;
-  white-space: normal !important;
+.gms-player-profile-navigation .gms-npc-navigation__group-name {
+  font: 650 15px/1.35 "Segoe UI", sans-serif;
   overflow-wrap: anywhere;
 }
-.gms-player-profile-navigation .gms-profile-library__group-count { display: grid; justify-items: center; gap: 2px; }
-.gms-player-profile-navigation .gms-profile-library__group-count b { color: #b69a68 !important; font: 900 12px/1 "Consolas", monospace !important; }
-.gms-player-profile-navigation .gms-profile-library__group-count small { color: #93a0aa !important; font: 700 6px/1 "Consolas", monospace !important; }
-.gms-player-profile-navigation .gms-profile-library__profiles {
-  display: grid !important;
-  grid-template-columns: minmax(0, 1fr) !important;
-  gap: 3px !important;
-  max-height: none !important;
-  margin: 0 !important;
-  padding: 4px !important;
-  overflow: visible !important;
+.gms-player-profile-navigation .gms-npc-navigation__count {
+  min-width: 24px;
+  padding: 2px 5px;
+  color: #c5b38f;
+  font: 600 13px/1.3 "Segoe UI", sans-serif;
+  text-align: center;
+  background: #191c22;
+  border-radius: 3px;
 }
-.gms-player-profile-navigation .gms-profile-library__profile {
-  display: grid !important;
-  grid-template-columns: 26px minmax(0, 1fr) !important;
-  align-items: center !important;
-  gap: 6px !important;
-  width: 100% !important;
-  height: auto !important;
-  min-height: 46px !important;
-  margin: 0 !important;
-  padding: 5px !important;
-  color: #e9e1d5 !important;
-  text-align: left !important;
+.gms-player-profile-navigation .gms-npc-navigation__group > summary > i { font-size: 11px; color: #b69a68; }
+.gms-player-profile-navigation .gms-npc-navigation__group[open] > summary { background: #171b22; }
+.gms-player-profile-navigation .gms-npc-navigation__group[open] > summary > i { transform: rotate(90deg); }
+.gms-player-profile-navigation .gms-npc-navigation__group > summary:hover { background: #1a202a; }
+.gms-player-profile-navigation .gms-npc-navigation__profiles { display: grid; gap: 3px; padding: 4px 6px 8px; }
+.gms-player-profile-navigation .gms-npc-navigation__profile {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 12px;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: auto;
+  min-height: 52px;
+  margin: 0;
+  padding: 8px 6px;
   cursor: pointer;
-  border: 1px solid rgba(147,160,170,.18) !important;
-  border-radius: 0 !important;
-  background: linear-gradient(135deg, #11161d, #080b10) !important;
-  box-shadow: none !important;
-  clip-path: none !important;
+  color: #e9e1d5;
+  font: 500 15px/1.35 "Segoe UI", sans-serif;
+  text-align: left;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: #0c1119;
+  box-shadow: none;
 }
-.gms-player-profile-navigation .gms-profile-library__profile::before { display: none !important; }
-.gms-player-profile-navigation .gms-profile-library__profile > i { display: none; }
-.gms-player-profile-navigation .gms-profile-library__profile[data-selected="true"] { border-color: rgba(50,220,232,.55) !important; }
-.gms-player-profile-navigation .gms-profile-library__profile:hover,
-.gms-player-profile-navigation .gms-profile-library__profile:focus-visible { outline: 1px solid #32dce8; outline-offset: -1px; }
-.gms-player-profile-navigation .gms-profile-library__identity { display: grid !important; gap: 3px !important; min-width: 0 !important; }
-.gms-player-profile-navigation .gms-profile-library__identity strong {
-  color: #e9e1d5 !important;
-  font: 800 11px/1.25 "Segoe UI", sans-serif !important;
-  white-space: normal !important;
-  overflow-wrap: anywhere;
-}
-.gms-player-profile-navigation .gms-profile-library__identity small {
-  color: #93a0aa !important;
-  font: 600 8px/1.25 "Segoe UI", sans-serif !important;
-  white-space: normal !important;
-  overflow-wrap: anywhere;
-}
-.gms-player-profile-navigation .gms-profile-library__active { grid-column: 2; color: #32dce8 !important; font: 800 7px/1 "Consolas", monospace !important; }
-.gms-player-profile-navigation :is(.gms-profile-library__thumb, .gms-profile-library__current-thumb) {
-  display: grid !important;
+.gms-player-profile-navigation .gms-npc-navigation__name { overflow-wrap: anywhere; }
+.gms-player-profile-navigation .gms-npc-navigation__profile:hover { background: #1b232d; }
+.gms-player-profile-navigation .gms-npc-navigation__profile[data-selected="true"] { background: #10232a; border-color: rgba(50,220,232,.5); }
+.gms-player-profile-navigation .gms-npc-navigation__selected { color: #58e2e8; font-size: 12px; }
+.gms-player-profile-navigation .gms-npc-navigation__portrait {
+  display: grid;
   place-items: center;
-  width: 26px !important;
-  height: 26px !important;
-  margin: 0 !important;
-  overflow: hidden !important;
-  border: 1px solid rgba(182,154,104,.30) !important;
+  width: 34px;
+  height: 34px;
+  overflow: hidden;
+  border: 1px solid rgba(182,154,104,.35);
+  border-radius: 2px;
+  background: #020508;
 }
-.gms-player-profile-navigation :is(.gms-profile-library__thumb, .gms-profile-library__current-thumb) img {
+.gms-player-profile-navigation .gms-npc-navigation__current > .gms-npc-navigation__portrait { width: 40px; height: 40px; }
+.gms-player-profile-navigation .gms-npc-navigation__portrait img {
   display: block;
-  width: 100% !important;
-  height: 100% !important;
-  margin: 0 !important;
-  border: 0 !important;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border: 0;
   object-fit: cover;
 }

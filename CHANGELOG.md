@@ -1,3 +1,10 @@
+## 1.2.0-dev.70.4 — Organização e legibilidade da navegação
+
+- Painel de largura estável, com cabeçalho integrado e sem faixa vazia ao lado do conteúdo.
+- Nomes maiores, contagens legíveis e setas para identificar a abertura de cada grupo.
+- Remove textos repetidos e metadados minúsculos da navegação.
+- A aba começa recolhida e preserva o tamanho, o visual e a rolagem da página dev.70.
+
 ## 1.2.0-dev.70.3 — Navegação externa dos Players
 
 - Move os grupos e perfis para um painel anexado à esquerda da janela.

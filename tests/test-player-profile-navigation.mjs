@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { playerNavigationPosition, mountPlayerProfileNavigation } from "../scripts/apps/player-profile-navigation.js";
 
-// The companion may change its own width, but must never overlap the dossier
+// The panel width stays stable, and must never overlap the dossier
 // or modify its dimensions, even after movement or resizing.
 for (const rect of [
   { left: 250, top: 40, width: 747, height: 600 },
@@ -13,6 +13,7 @@ for (const rect of [
   for (const open of [true, false]) {
     const position = playerNavigationPosition(rect, open);
     assert.equal(position.left + position.width, rect.left);
+    assert.equal(position.width, open ? 240 : 32);
     assert.equal(position.top, rect.top);
     assert.equal(position.height, rect.height);
     assert.deepEqual(rect, original);

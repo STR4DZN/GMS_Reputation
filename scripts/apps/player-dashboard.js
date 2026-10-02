@@ -185,7 +185,7 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
     this._motionController = null;
     this._motionBooted = false;
     this._pendingMotion = "";
-    this._profileLibraryOpen = true;
+    this._profileLibraryOpen = false;
     this._focusProfileLibrary = false;
     this._navigationController = null;
     this._navigationScrollTop = 0;
@@ -275,7 +275,7 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
 
   _wireProfileLibrary(root) {
     const library = root?.querySelector?.("[data-player-profile-library]");
-    const tab = library?.querySelector?.(".gms-profile-library__tab");
+    const tab = library?.querySelector?.("[data-player-navigation-toggle]");
     if (!library || !tab) return;
     listen(this._listeners, library, "toggle", () => {
       this._profileLibraryOpen = library.open;
@@ -358,7 +358,7 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
     this._navigationController = mountPlayerProfileNavigation(this, root.querySelector?.("[data-player-profile-library]"));
     const navigation = this._navigationController?.element;
     if (navigation) {
-      const list = navigation.querySelector(".gms-profile-library__list");
+      const list = navigation.querySelector("[data-player-navigation-list]");
       if (list) list.scrollTop = this._navigationScrollTop;
       this._wireProfileLibrary(navigation);
       this._wireProfileChoices(navigation);
