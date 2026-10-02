@@ -1,4 +1,4 @@
-# Instalação — GMS // Matriz de Reputação 1.2.0-dev.70.7
+# Instalação — GMS // Matriz de Reputação 1.2.0-dev.70.8
 
 ## Alvo
 
@@ -33,6 +33,10 @@ game.modules.get("gms-reputation").api.masterPanel.openMasterPanel();
 ```
 
 A API fica disponível em `game.modules.get("gms-reputation").api`.
+
+## Enquadramento das mídias
+
+No enquadramento padrão (100%), a imagem ou GIF completo é ajustado à largura e à altura do retângulo. O editor e as miniaturas usam o mesmo encaixe. Zoom acima de 100% permite recorte manual; “Resetar enquadramento” volta ao quadro completo.
 
 ## Verificação recomendada
 

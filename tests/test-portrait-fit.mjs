@@ -5,17 +5,17 @@ import { buildPortraitEditorContext } from "../scripts/components/portrait-edito
 
 for (const src of ["portraits/tall.png", "portraits/wide.gif", "https://example.test/npc.gif"]) {
   const portrait = { src, zoom: 100, x: 50, y: 50 };
-  assert.equal(getPortraitFitMode(portrait), "contain", "default framing must show the entire source");
+  assert.equal(getPortraitFitMode(portrait), "fill", "default framing must show the entire source in the rectangle");
   for (const kind of ["subject", "focal"]) {
     const model = buildPortraitFrameModel(portrait, { kind });
-    assert.equal(model.fit, "contain");
+    assert.equal(model.fit, "fill");
     assert.equal(buildPortraitEditorContext(portrait, { kind }).fit, model.fit);
     assert.ok(renderPortraitFrameHTML(model).includes(`src="${src}"`), "keep the original animated source");
   }
   const zoomed = { ...portrait, zoom: 160, x: 20, y: 30 };
   assert.equal(getPortraitFitMode(zoomed), "cover", "manual zoom may intentionally crop");
-  assert.equal(getPortraitFitMode(resetPortraitFrame(zoomed)), "contain", "reset restores the complete image");
+  assert.equal(getPortraitFitMode(resetPortraitFrame(zoomed)), "fill", "reset restores the complete image");
   assert.equal(resetPortraitFrame(zoomed).src, src);
 }
 
-console.log("portrait-fit: OK — complete default images/GIFs, consistent editor, manual zoom and reset");
+console.log("portrait-fit: OK — full-rectangle default images/GIFs, consistent editor, manual zoom and reset");

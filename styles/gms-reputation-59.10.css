@@ -15456,3 +15456,228 @@ grid-column: 1 !important;
   mask-image: url("../assets/icons/reputation-shield.svg") !important;
   -webkit-mask-image: url("../assets/icons/reputation-shield.svg") !important;
 }
+
+/* dev.70.8 — shared media framing and readable, responsive GM workspaces.
+   The ID in the scope intentionally outranks the historical theme layers.
+   Both Foundry root parts and nested template containers are supported. */
+
+.gms-reputation-portrait.is-fit-fill .gms-reputation-portrait__image {
+  object-fit: fill !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: none !important;
+  max-height: none !important;
+}
+:is(.gms-reputation-app, .gms-player-profile-navigation) :is(
+  .gms-npc-navigation__portrait, .gms-master-profile-entry__thumb,
+  .gms-smart-selector__trigger, .gms-smart-selector__option
+) > img {
+  object-fit: fill !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+}
+/* Selector images have an explicit slot, rather than sizing to the button. */
+.gms-reputation-app :is(.gms-smart-selector__trigger, .gms-smart-selector__option) > img {
+  width: 36px !important;
+  height: 44px !important;
+}
+.application.gms-reputation-player-dashboard-app > .window-header {
+  min-height: 24px !important;
+  height: 24px !important;
+  padding: 0 6px !important;
+  justify-content: flex-end;
+}
+.application.gms-reputation-player-dashboard-app > .window-header :is(.window-title, .window-icon) {
+  display: none !important;
+}
+/* Keep Foundry's drag handle and window controls; remove the redundant label. */
+
+:is(#gms-reputation-master-panel, .gms-reputation-master-panel-app) .window-content:not(:has(> .gms-master-panel)),
+.gms-master-panel[data-gms-visual-generation="3"] {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-rows: auto auto auto minmax(0, 1fr) !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  container: gms-master-panel / inline-size !important;
+}
+:is(#gms-reputation-master-panel, .gms-reputation-master-panel-app, .gms-master-panel[data-gms-visual-generation="3"]) {
+  & :is(.gms-master-panel__header, .gms-master-panel__selection-bus, .gms-master-panel__savebar, .gms-master-panel__layout) {
+    min-width: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+  & .gms-master-panel__header { min-height: 64px !important; height: auto !important; padding: 12px 18px !important; }
+  & .gms-master-panel__header > div { display: grid !important; grid-template-columns: minmax(0, 1fr) !important; gap: 4px !important; min-width: 0 !important; }
+  & .gms-master-panel__header > div > * { grid-column: 1 !important; grid-row: auto !important; }
+  & .gms-master-panel__header strong { font-size: 28px !important; line-height: 1.15 !important; }
+  & .gms-master-panel__header > div > span { font-size: 12px !important; line-height: 1.4 !important; }
+  & :is(small, em, time) { font-size: 11px !important; line-height: 1.4 !important; letter-spacing: .03em !important; }
+  & :is(p, dt, dd) { font-size: 14px !important; line-height: 1.5 !important; overflow-wrap: anywhere !important; }
+  & p { margin: 6px 0 !important; }
+  & :is(button, summary, label) { font-size: 13px !important; line-height: 1.4 !important; }
+  & :is(input:not([type="range"]):not([type="checkbox"]):not([type="hidden"]), select, textarea) {
+    min-width: 0 !important; max-width: 100% !important; width: 100% !important;
+    font-size: 14px !important; line-height: 1.4 !important; padding: 8px 10px !important;
+  }
+  & :is(input:not([type="range"]):not([type="checkbox"]):not([type="hidden"]), select) { height: 38px !important; }
+  & textarea { min-height: 128px !important; height: auto !important; resize: vertical; }
+  & button { min-height: 36px !important; height: auto !important; white-space: normal !important; overflow-wrap: anywhere !important; }
+  & :is(button, summary) > :is(strong, span, small, em) { min-width: 0 !important; }
+  & :is(strong, b) { line-height: 1.3 !important; overflow-wrap: anywhere !important; }
+  & :is(.gms-master-panel__content, .gms-master-panel__selectors, .gms-smart-selector__current, .gms-smart-selector__option-copy) { min-width: 0 !important; }
+
+  & .gms-master-panel__selection-bus { display: grid !important; grid-template-columns: minmax(160px, .5fr) minmax(0, 2fr) !important; gap: 14px !important; padding: 12px 16px !important; height: auto !important; }
+  & .gms-master-panel__selection-copy { display: grid !important; gap: 5px !important; }
+  & .gms-master-panel__selection-copy strong { font-size: 13px !important; line-height: 1.4 !important; }
+  & .gms-smart-selector__trigger { grid-template-columns: 36px minmax(0, 1fr) auto 14px !important; grid-template-rows: auto auto !important; min-height: 76px !important; gap: 4px 10px !important; padding: 9px 11px !important; clip-path: none !important; }
+  & .gms-smart-selector__eyebrow { grid-column: 1 / -1 !important; grid-row: 1 !important; }
+  & .gms-smart-selector__trigger > :is(img, .gms-smart-selector__current, em, i) { grid-row: 2 !important; }
+  & .gms-smart-selector__trigger > img { grid-column: 1 !important; }
+  & .gms-smart-selector__current { grid-column: 2 !important; display: grid !important; gap: 3px !important; }
+  & .gms-smart-selector__trigger > em { grid-column: 3 !important; }
+  & .gms-smart-selector__trigger > i { grid-column: 4 !important; }
+  & :is(.gms-smart-selector__current, .gms-smart-selector__option-copy) :is(strong, small) { white-space: normal !important; overflow: visible !important; text-overflow: clip !important; }
+  & :is(.gms-smart-selector__current, .gms-smart-selector__option-copy) strong { font-size: 14px !important; }
+  & .gms-smart-selector__popover { max-width: 100% !important; }
+
+  & .gms-master-panel__savebar { display: flex !important; flex-wrap: wrap !important; align-items: center !important; gap: 10px !important; padding: 10px 16px !important; height: auto !important; min-height: 56px !important; }
+  & .gms-master-panel__save-state { flex: 1 1 180px !important; }
+  & :is(.gms-master-panel__history-actions, .gms-master-panel__save-actions) { display: flex !important; flex-wrap: wrap !important; gap: 8px !important; }
+  & .gms-master-panel__layout { display: grid !important; grid-template-columns: minmax(0, 1fr) !important; grid-template-rows: auto minmax(0, 1fr) !important; min-height: 0 !important; overflow: hidden !important; }
+  & .gms-master-panel__nav { display: grid !important; grid-template-columns: repeat(6, minmax(0, 1fr)) !important; grid-auto-flow: row !important; grid-auto-columns: minmax(0, 1fr) !important; gap: 6px !important; padding: 8px 12px !important; height: auto !important; max-height: none !important; overflow: visible !important; }
+  & .gms-master-panel__nav > button { display: grid !important; grid-template-columns: 24px minmax(0, 1fr) !important; align-items: center !important; gap: 8px !important; min-width: 0 !important; min-height: 52px !important; padding: 8px !important; clip-path: none !important; }
+  & .gms-master-panel__nav-copy { position: static !important; display: grid !important; grid-template-columns: minmax(0, 1fr) !important; min-width: 0 !important; width: auto !important; height: auto !important; overflow: visible !important; clip: auto !important; }
+  & .gms-master-panel__nav > button:not([data-active="true"])::after { right: 0 !important; }
+  & .gms-master-panel__nav strong { font-size: 13px !important; white-space: normal !important; }
+  & .gms-master-panel__nav small { font-size: 11px !important; }
+  & .gms-master-panel__content { display: grid !important; grid-template-columns: minmax(0, 1fr) !important; grid-auto-rows: max-content !important; align-content: start !important; gap: 16px !important; padding: 16px !important; height: 100% !important; min-height: 0 !important; overflow: auto !important; }
+  & .gms-master-panel__content > [data-master-section-panel] { grid-column: 1 !important; grid-row: auto !important; padding: 16px !important; min-width: 0 !important; max-width: 100% !important; }
+  & .gms-master-panel__content > [data-master-section-panel]:not([hidden]) { display: grid !important; gap: 16px !important; }
+  & .gms-master-panel__content > [data-master-section-panel][hidden] { display: none !important; }
+  & .gms-master-panel__content > [data-master-section-panel] > header { display: grid !important; gap: 6px !important; padding: 12px 16px !important; min-height: 0 !important; height: auto !important; }
+  & .gms-master-panel__content h2 { margin: 0 !important; font-size: 26px !important; line-height: 1.2 !important; overflow-wrap: anywhere !important; }
+  & :is(.gms-master-profile-editor__head, .gms-master-character-editor__head, .gms-master-subject-registry__head, .gms-master-profile-index__head) { height: auto !important; min-height: 0 !important; gap: 12px !important; padding: 12px !important; align-items: start !important; }
+  & :is(.gms-master-profile-editor__head, .gms-master-character-editor__head) { display: grid !important; grid-template-columns: minmax(0, 1fr) auto !important; }
+  & :is(.gms-master-profile-editor__head, .gms-master-character-editor__head) strong { font-size: 22px !important; white-space: normal !important; }
+  & :is(.gms-master-profile-editor__head, .gms-master-character-editor__head) > div { min-width: 0 !important; }
+  & :is(.gms-master-profile-editor__form, .gms-master-character-editor__grid, .gms-master-profile-editor__metrics) { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 12px !important; }
+  & :is(.gms-master-profile-editor__form, .gms-master-character-editor__grid) > label { display: grid !important; gap: 6px !important; min-width: 0 !important; }
+  & :is(.gms-master-profile-editor__status, .gms-master-character-editor__status) { display: flex !important; flex-wrap: wrap !important; gap: 14px !important; }
+  & :is(.gms-master-profile-editor__status, .gms-master-character-editor__status) > label { display: flex !important; align-items: center !important; gap: 8px !important; }
+  & :is(.gms-master-profile-editor__actions, .gms-master-character-editor__actions, .gms-master-panel__bulk-actions) { display: flex !important; flex-wrap: wrap !important; align-items: center !important; gap: 10px !important; }
+  & :is(.gms-master-profile-hub, .gms-master-profile-index__head, .gms-master-subject-registry__head) { display: grid !important; grid-template-columns: minmax(0, 1fr) !important; gap: 12px !important; }
+  & .gms-master-profile-hub__actions { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  & :is(.gms-master-profile-group__summary-copy, .gms-master-profile-entry__copy) { display: grid !important; grid-template-columns: minmax(0, 1fr) !important; gap: 4px !important; }
+  & :is(.gms-master-profile-group__summary-copy, .gms-master-profile-entry__copy) :is(strong, small, em) { white-space: normal !important; overflow: visible !important; font-size: 14px !important; }
+  & .gms-master-profile-group__summary { min-height: 64px !important; height: auto !important; }
+  & .gms-master-profile-entry { height: auto !important; min-height: 68px !important; }
+  & .gms-master-profile-entry__thumb { width: 36px !important; height: 44px !important; }
+  & .gms-master-profile-group__editor { grid-template-columns: minmax(0, 1fr) auto !important; gap: 12px !important; }
+  & .gms-master-panel__subject-list article { grid-template-columns: 22px minmax(0, 1fr) auto !important; align-items: center !important; gap: 10px !important; }
+  & .gms-master-panel__subject-choice { display: grid !important; grid-template-columns: minmax(0, 1fr) auto !important; gap: 4px 8px !important; padding: 10px !important; height: auto !important; }
+  & .gms-master-panel__subject-choice :is(strong, span, small) { grid-column: 1 !important; white-space: normal !important; overflow: visible !important; text-overflow: clip !important; }
+  & .gms-master-panel__subject-choice strong { font-size: 16px !important; }
+  & .gms-master-panel__subject-choice > i { grid-column: 2 !important; grid-row: 1 / 4 !important; }
+  & .gms-master-panel__bulk-form { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 12px !important; }
+  & .gms-master-panel__bulk-reason { grid-column: 1 / -1 !important; }
+
+  & .gms-master-reputation-console { display: grid !important; grid-template-columns: minmax(0, 1fr) !important; gap: 16px !important; }
+  & .gms-master-reputation-console > section { grid-column: 1 !important; grid-row: auto !important; min-width: 0 !important; }
+  & .gms-master-reputation-console__readout { display: grid !important; grid-template-columns: minmax(0, 1fr) 104px !important; grid-template-rows: auto auto !important; gap: 8px !important; }
+  & .gms-master-reputation-console__identity { grid-column: 1 !important; grid-row: 1 !important; display: grid !important; gap: 8px !important; padding: 14px 16px !important; min-width: 0 !important; }
+  & .gms-master-reputation-console__score { grid-column: 2 !important; grid-row: 1 / 3 !important; display: grid !important; align-content: center !important; justify-items: center !important; gap: 6px !important; width: auto !important; min-width: 0 !important; padding: 12px !important; }
+  & .gms-master-reputation-console__score strong { font-size: 38px !important; line-height: 1.1 !important; }
+  & .gms-master-reputation-console__hearts { grid-column: 1 !important; grid-row: 2 !important; display: flex !important; flex-wrap: wrap !important; align-items: center !important; gap: 10px !important; padding: 8px 16px 14px !important; }
+  & .gms-master-reputation-console__hearts .gms-reputation-heart-track { display: grid !important; grid-template-columns: repeat(6, 27px) !important; grid-auto-columns: 27px !important; grid-auto-flow: row !important; gap: 5px !important; padding: 4px !important; width: auto !important; max-width: 100% !important; height: auto !important; overflow: visible !important; }
+  & .gms-master-reputation-console__hearts .gms-reputation-heart { width: 27px !important; height: 27px !important; min-width: 27px !important; min-height: 27px !important; }
+  & .gms-master-reputation-console__identity .gms-reputation-identity { display: grid !important; min-height: 0 !important; height: auto !important; max-height: none !important; }
+  & .gms-master-reputation-console__identity .gms-reputation-identity__viewport { display: grid !important; position: relative !important; height: auto !important; min-height: 0 !important; overflow: visible !important; }
+  & .gms-master-reputation-console__identity :is(.gms-reputation-identity__text, .gms-reputation-identity__ghost) { grid-area: 1 / 1 !important; position: relative !important; inset: auto !important; transform: none !important; font-size: 24px !important; line-height: 1.25 !important; white-space: normal !important; overflow-wrap: anywhere !important; overflow: visible !important; text-overflow: clip !important; }
+  & .gms-master-reputation-console__identity .gms-reputation-identity { font: 500 24px/1.25 Georgia, "Times New Roman", serif !important; }
+  & .gms-master-reputation-console__identity :is(.gms-reputation-identity__text, .gms-reputation-identity__ghost) { font-family: inherit !important; letter-spacing: .025em !important; }
+  & .gms-master-reputation-console__identity .gms-reputation-identity__band { display: block !important; position: absolute !important; inset: 0 !important; width: auto !important; height: auto !important; background: none !important; border: 0 !important; box-shadow: none !important; overflow: visible !important; }
+  & .gms-master-reputation-console__identity .gms-reputation-identity__band::before { content: attr(data-glitch-text); position: absolute; inset: 0; font: inherit; font-style: normal; letter-spacing: .025em; white-space: normal; overflow-wrap: anywhere; text-transform: uppercase; color: transparent; -webkit-text-fill-color: transparent; background: linear-gradient(90deg, transparent, var(--gms-identity-cyan) 20%, #fafbff 48%, var(--gms-identity-magenta) 78%, transparent); background-clip: text; -webkit-background-clip: text; clip-path: inset(28% 0 calc(72% - 2px) 0); }
+  & .gms-master-reputation-console__identity .gms-reputation-identity__band.is-b::before { clip-path: inset(52% 0 calc(48% - 1px) 0); }
+  & .gms-master-reputation-console__identity .gms-reputation-identity__band.is-c::before { clip-path: inset(72% 0 calc(28% - 2px) 0); }
+  & .gms-master-reputation-console__identity .gms-reputation-identity.has-reveal:is(:hover, :focus-visible) {
+    & .gms-reputation-identity__alias { animation: gms706-alias-out 480ms steps(1,end) 1 both !important; }
+    & .gms-reputation-identity__real { animation: gms706-real-in 480ms steps(1,end) 1 both !important; }
+    & .gms-reputation-identity__ghost.is-cyan { animation: gms706-ghost-cyan 480ms linear 1 both !important; }
+    & .gms-reputation-identity__ghost.is-magenta { animation: gms706-ghost-magenta 480ms linear 1 both !important; }
+    & .gms-reputation-identity__band.is-a { animation: gms706-band-a 480ms linear 1 both !important; }
+    & .gms-reputation-identity__band.is-b { animation: gms706-band-b 480ms linear 1 both !important; }
+    & .gms-reputation-identity__band.is-c { animation: gms706-band-c 480ms linear 1 both !important; }
+  }
+  & .gms-master-reputation-console__identity [data-master-relation-preview] { position: static !important; height: auto !important; min-height: 26px !important; font-size: 12px !important; white-space: normal !important; line-height: 1.3 !important; }
+  & .gms-master-reputation-console :is(.gms-master-reputation-console__editor, .gms-master-reputation-console__presets, .gms-master-reputation-console__protocols) { display: grid !important; gap: 12px !important; padding: 16px !important; }
+  & .gms-master-reputation-console :is(.gms-master-reputation-console__editor, .gms-master-reputation-console__presets, .gms-master-reputation-console__protocols) > header { display: flex !important; flex-wrap: wrap !important; align-items: start !important; justify-content: space-between !important; gap: 8px !important; height: auto !important; min-height: 0 !important; padding: 0 0 12px !important; }
+  & .gms-master-reputation-console header > div { display: grid !important; gap: 5px !important; }
+  & .gms-master-reputation-console header strong { font-size: 18px !important; }
+  & .gms-master-reputation-console__range { display: grid !important; grid-template-columns: 34px minmax(0, 1fr) 34px !important; gap: 10px !important; align-items: center !important; }
+  & .gms-master-reputation-console__range input { width: 100% !important; min-width: 0 !important; }
+  & .gms-master-reputation-console__direct { grid-template-columns: minmax(0, 1fr) auto !important; gap: 10px !important; align-items: end !important; }
+  & .gms-master-reputation-console__presets > div { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(105px, 1fr)) !important; gap: 8px !important; }
+  & .gms-master-panel__special-editor { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 12px !important; }
+  & .gms-master-panel__special-editor > :is(label, .gms-master-panel__protocol-derived) { min-width: 0 !important; min-height: 78px !important; height: auto !important; padding: 12px !important; overflow: visible !important; clip-path: none !important; }
+  & .gms-master-panel__special-editor > button { grid-column: 1 / -1 !important; }
+  & .gms-master-panel__special-readout { grid-template-columns: 52px minmax(0, 1fr) !important; gap: 12px !important; padding: 12px !important; }
+
+  & .gms-master-focal-workspace { display: grid !important; grid-template-columns: minmax(0, 1fr) !important; gap: 16px !important; }
+  & .gms-reputation-portrait-editor { display: grid !important; grid-template-columns: minmax(0, 1fr) !important; gap: 14px !important; }
+  & .gms-reputation-portrait-editor__preview { width: 100% !important; height: 240px !important; min-height: 0 !important; }
+  & .gms-reputation-portrait-editor__preview > .gms-reputation-portrait { height: 100% !important; min-height: 0 !important; }
+  & .gms-reputation-portrait-editor__source { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 10px !important; }
+  & .gms-reputation-portrait-editor__source > label { grid-column: 1 / -1 !important; display: grid !important; gap: 6px !important; }
+  & .gms-reputation-portrait-editor__calibration { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 12px !important; }
+  & .gms-reputation-portrait-editor__calibration > label { display: grid !important; grid-template-columns: minmax(0, 1fr) auto !important; gap: 8px !important; }
+  & .gms-reputation-portrait-editor__calibration input { grid-column: 1 / -1 !important; width: 100% !important; }
+  & .gms-reputation-portrait-editor__calibration > button { grid-column: 1 / -1 !important; }
+  & .gms-master-panel__history article { grid-template-columns: minmax(0, 1fr) !important; gap: 8px !important; padding: 14px !important; }
+  & .gms-history-changes { display: grid !important; gap: 8px !important; }
+  & .gms-history-changes > span { display: flex !important; flex-wrap: wrap !important; gap: 8px !important; }
+  & .gms-master-cleanup__row { grid-template-columns: minmax(0, 1fr) auto !important; gap: 12px !important; padding: 12px !important; }
+  & .gms-master-cleanup__identity { grid-column: 1 !important; min-width: 0 !important; }
+  & .gms-master-cleanup__identity :is(strong, small) { white-space: normal !important; overflow: visible !important; }
+  & .gms-master-cleanup__impact { grid-column: 1 !important; grid-row: 2 !important; justify-content: start !important; flex-wrap: wrap !important; padding-left: 43px !important; }
+  & .gms-master-cleanup__delete { grid-column: 2 !important; grid-row: 1 / 3 !important; min-width: 88px !important; align-self: center !important; }
+  & .gms-master-cleanup__toolbar { grid-template-columns: minmax(0, 1fr) !important; gap: 12px !important; }
+  & .gms-master-panel__settings > div { grid-template-columns: minmax(0, 1fr) auto !important; gap: 14px !important; padding: 10px 12px !important; }
+  & .gms-master-panel__settings :is(dt, dd) { margin: 0 !important; min-width: 0 !important; }
+  & .gms-master-panel__permission-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 12px !important; }
+}
+
+@container gms-master-panel (max-width: 850px) {
+  :is(#gms-reputation-master-panel, .gms-reputation-master-panel-app, .gms-master-panel[data-gms-visual-generation="3"]) {
+    & .gms-master-panel__selection-bus { grid-template-columns: minmax(0, 1fr) !important; }
+    & .gms-master-panel__selection-copy { display: none !important; }
+    & .gms-master-panel__nav { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+    & .gms-master-panel__content { padding: 12px !important; }
+  }
+}
+@container gms-master-panel (max-width: 650px) {
+  :is(#gms-reputation-master-panel, .gms-reputation-master-panel-app, .gms-master-panel[data-gms-visual-generation="3"]) {
+    & .gms-master-panel__selectors { grid-template-columns: minmax(0, 1fr) !important; }
+    & .gms-smart-selector__trigger { min-height: 62px !important; }
+    & .gms-smart-selector__current small { display: none !important; }
+    & .gms-master-panel__header > div > span { display: none !important; }
+    & .gms-master-panel__savebar { padding: 8px 12px !important; }
+    & .gms-master-panel__history-actions button { min-width: 72px !important; }
+    & .gms-master-panel__content > [data-master-section-panel] { padding: 12px !important; }
+    & :is(.gms-master-profile-editor__form, .gms-master-character-editor__grid, .gms-master-profile-hub__actions, .gms-master-panel__bulk-form, .gms-master-panel__permission-grid, .gms-master-panel__special-editor, .gms-reputation-portrait-editor__calibration) { grid-template-columns: minmax(0, 1fr) !important; }
+    & .gms-master-profile-group__editor { grid-template-columns: minmax(0, 1fr) !important; }
+    & .gms-master-panel__subject-list article { grid-template-columns: 20px minmax(0, 1fr) !important; }
+    & .gms-master-profile-roster-toggle { grid-column: 2 !important; }
+    & .gms-master-reputation-console__readout { grid-template-columns: minmax(0, 1fr) 80px !important; }
+    & .gms-master-reputation-console__score strong { font-size: 30px !important; }
+    & .gms-master-reputation-console__identity { padding: 12px !important; }
+    & .gms-master-reputation-console__identity :is(.gms-reputation-identity__text, .gms-reputation-identity__ghost) { font-size: 20px !important; }
+    & .gms-master-reputation-console__identity .gms-reputation-identity { font-size: 20px !important; }
+  }
+}

@@ -126,8 +126,8 @@ export function dragPortraitFrame(portrait = {}, {
 }
 
 export function getPortraitFitMode(portrait = {}) {
-  // New/reset portraits show the whole source. Cropping starts only with manual zoom.
-  return normalizePortrait(portrait).zoom <= 100 ? "contain" : "cover";
+  // Fit the complete source to the rectangle; manual zoom can still crop intentionally.
+  return normalizePortrait(portrait).zoom <= 100 ? "fill" : "cover";
 }
 
 /**

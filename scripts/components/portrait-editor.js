@@ -117,6 +117,7 @@ export function wirePortraitEditor(root, {
       frame.style.setProperty("--gms-portrait-x", `${portrait.x}%`);
       frame.style.setProperty("--gms-portrait-y", `${portrait.y}%`);
       frame.classList.toggle("is-fit-contain", getPortraitFitMode(portrait) === "contain");
+      frame.classList.toggle("is-fit-fill", getPortraitFitMode(portrait) === "fill");
       frame.classList.toggle("is-fit-cover", getPortraitFitMode(portrait) === "cover");
       frame.classList.toggle("has-image", Boolean(portrait.src));
       frame.classList.toggle("is-empty", !portrait.src);

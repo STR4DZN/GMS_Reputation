@@ -158,8 +158,8 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
     classes: ["gms-reputation-app", "gms-reputation-player-dashboard-app"],
     tag: "section",
     window: {
-      title: "GMS // Matriz de Reputação",
-      icon: "fa-solid fa-people-arrows-left-right",
+      title: "",
+      icon: "",
       resizable: true
     },
     position: { width: 940, height: 780 }

@@ -1,3 +1,10 @@
+## 1.2.0-dev.70.8 — Encaixe das mídias e organização do Mestre
+
+- Imagens e GIFs ocupam o retângulo completo no enquadramento padrão, sem recortes ou faixas laterais; o zoom manual continua disponível.
+- Remove o título redundante da janela Player, mantendo os controles de janela.
+- Unifica tamanhos de texto, espaçamentos, campos e botões em todas as áreas do Mestre.
+- Nomes longos, corações, pontuações, protocolos, listas, histórico e limpeza passam a respeitar a largura real da janela.
+
 ## 1.2.0-dev.70.7 — Apps separados para Player e GM
 
 - O app Reputação com coração abre sempre a visão dos Players, inclusive para o GM.
