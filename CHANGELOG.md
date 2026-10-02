@@ -1,3 +1,10 @@
+## 1.2.0-dev.70.5 — Alinhamento da tabela dos Players
+
+- Alinha retratos, nomes, relações, corações, selos especiais e pontuação.
+- Nomes longos passam a ocupar mais linhas sem recorte; o glitch fica nos caracteres.
+- Desenha o contorno completo dos selos Vínculo, Comunhão e Duplo Sync.
+- A tabela se adapta à largura real da janela, incluindo a estrutura de root part do Foundry.
+
 ## 1.2.0-dev.70.4 — Organização e legibilidade da navegação
 
 - Painel de largura estável, com cabeçalho integrado e sem faixa vazia ao lado do conteúdo.

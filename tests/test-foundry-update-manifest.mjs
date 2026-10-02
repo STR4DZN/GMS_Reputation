@@ -7,7 +7,7 @@ const repository = "STR4DZN/GMS_Reputation";
 const branch = "dev70-npc-right-sidebar";
 
 assert.equal(manifest.id, "gms-reputation");
-assert.equal(manifest.version, "1.2.0-dev.70.4");
+assert.equal(manifest.version, "1.2.0-dev.70.5");
 assert.equal(manifest.version, MODULE_VERSION);
 assert.equal(manifest.url, `https://github.com/${repository}`);
 assert.equal(manifest.manifest, `https://raw.githubusercontent.com/${repository}/${branch}/module.json`);
