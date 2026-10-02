@@ -90,7 +90,7 @@
                       {{#if profiles.length}}
                         {{#each profiles}}
                           <button type="button" class="gms-master-profile-entry" data-master-profile-choice="{{id}}" data-selected="{{selected}}">
-                            <span class="gms-master-profile-entry__thumb">{{#if image}}<img src="{{image}}" alt="">{{else}}<i class="fa-solid fa-user-astronaut" aria-hidden="true"></i>{{/if}}</span>
+                            <span class="gms-master-profile-entry__thumb">{{#if image}}<img data-gms-media-src="{{image}}" data-gms-media-state="dormant" alt="">{{else}}<i class="fa-solid fa-user-astronaut" aria-hidden="true"></i>{{/if}}</span>
                             <span class="gms-master-profile-entry__copy"><strong>{{focalName}}</strong><small>{{name}}</small></span>
                             <span class="gms-master-profile-entry__status">{{#if archived}}ARQUIVADO{{else}}{{#if selected}}ABERTO{{else}}{{#if active}}ATIVO{{else}}INATIVO{{/if}}{{/if}}{{/if}}</span>
                             <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>

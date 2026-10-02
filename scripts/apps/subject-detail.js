@@ -1,3 +1,4 @@
+import { wireVisiblePortraits } from "../components/visible-portraits.js";
 import { MODULE_ID } from "../constants.js";
 import { loadWorldState } from "../persistence/world-store.js";
 import { listHistory } from "../data/history-registry.js";
@@ -85,6 +86,7 @@ export class ReputationSubjectDetailApplication extends HandlebarsApplicationV2 
     this._listeners = [];
     this._accessibilityController = null;
     this._motionController = null;
+    this._mediaController = null;
     this._motionBooted = false;
     this._pendingMotion = "";
     this._syncUnsubscribe = subscribeWorldStateChanges((event) => {
@@ -103,6 +105,8 @@ export class ReputationSubjectDetailApplication extends HandlebarsApplicationV2 
 
   _onRender(context, options) {
     super._onRender?.(context, options);
+    this._mediaController?.destroy?.();
+    this._mediaController = null;
     destroyListeners(this._listeners);
     const root = appElement(this);
     const close = root?.querySelector?.("[data-subject-detail-close]");
@@ -110,6 +114,7 @@ export class ReputationSubjectDetailApplication extends HandlebarsApplicationV2 
     this._accessibilityController?.destroy?.();
     this._accessibilityController = wireApplicationAccessibility(root, { onEscape: () => this.close() });
     this._motionController?.destroy?.();
+    this._mediaController = wireVisiblePortraits(root);
     this._motionController = wireMotionSystem(root, { kind: "detail", boot: !this._motionBooted });
     this._motionBooted = true;
     if (this._pendingMotion === "relation") this._motionController.relationship?.(root.querySelector?.("[data-subject-detail-root]") ?? root);
@@ -118,6 +123,8 @@ export class ReputationSubjectDetailApplication extends HandlebarsApplicationV2 
   }
 
   async _onClose(options) {
+    this._mediaController?.destroy?.();
+    this._mediaController = null;
     destroyListeners(this._listeners);
     this._accessibilityController?.destroy?.();
     this._accessibilityController = null;

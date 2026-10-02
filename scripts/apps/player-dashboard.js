@@ -1,3 +1,4 @@
+import { wireVisiblePortraits } from "../components/visible-portraits.js";
 import { mountPlayerProfileNavigation } from "./player-profile-navigation.js";
 import { MODULE_ID } from "../constants.js";
 import { loadWorldState } from "../persistence/world-store.js";
@@ -183,6 +184,7 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
     this._liveUpdateTimer = null;
     this._accessibilityController = null;
     this._motionController = null;
+    this._mediaController = null;
     this._motionBooted = false;
     this._pendingMotion = "";
     this._profileLibraryOpen = false;
@@ -344,6 +346,8 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
 
   _onRender(context, options) {
     super._onRender?.(context, options);
+    this._mediaController?.destroy?.();
+    this._mediaController = null;
     destroyListeners(this._listeners);
     destroyListeners(this._cardListeners);
     this._accessibilityController?.destroy?.();
@@ -364,6 +368,7 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
       this._wireProfileChoices(navigation);
       this._wireProfileGroupAccordion(navigation);
     }
+    this._mediaController = wireVisiblePortraits(root, { companion: navigation });
     this._motionController = wireMotionSystem(root, { kind: "player", boot: !this._motionBooted, companion: navigation });
     this._motionBooted = true;
     if (this._pendingMotion) { this._motionController.transition?.(this._pendingMotion, root); this._pendingMotion = ""; }
@@ -371,6 +376,8 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
   }
 
   async _onClose(options) {
+    this._mediaController?.destroy?.();
+    this._mediaController = null;
     this._navigationController?.destroy();
     this._navigationController = null;
     destroyListeners(this._listeners);

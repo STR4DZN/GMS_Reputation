@@ -1,0 +1,4 @@
+/* Deferred portraits retain their original frame, including while unloaded. */
+img[data-gms-media-src]:not([data-gms-media-state="ready"]) {
+  opacity: 0 !important;
+}

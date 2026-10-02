@@ -1,3 +1,4 @@
+import { setPortraitImageSource } from "./visible-portraits.js";
 import {
   dragPortraitFrame,
   getPortraitFitMode,
@@ -123,8 +124,7 @@ export function wirePortraitEditor(root, {
       frame.classList.toggle("is-empty", !portrait.src);
       const { image, placeholder } = ensurePreviewNodes();
       if (image) {
-        if (portrait.src && image.getAttribute("src") !== portrait.src) image.setAttribute("src", portrait.src);
-        if (!portrait.src) image.removeAttribute("src");
+        setPortraitImageSource(image, portrait.src);
         image.hidden = !portrait.src;
       }
       if (placeholder) placeholder.hidden = Boolean(portrait.src);

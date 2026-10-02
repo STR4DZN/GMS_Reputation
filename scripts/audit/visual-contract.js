@@ -1,6 +1,6 @@
 export const VISUAL_GENERATION = 3;
 export const VISUAL_AUTHORITY_STYLE = "styles/gms-reputation-59.10.css";
-export const VISUAL_REQUIRED_STYLES = Object.freeze([VISUAL_AUTHORITY_STYLE]);
+export const VISUAL_REQUIRED_STYLES = Object.freeze([VISUAL_AUTHORITY_STYLE, "styles/visible-portraits.css"]);
 
 export const VISUAL_SURFACES = Object.freeze({
   PLAYER_DASHBOARD: "player-dashboard",
@@ -41,13 +41,13 @@ export const VISUAL_FORBIDDEN_PATTERNS = Object.freeze([
   "performance-motion-veto"
 ]);
 
-/** Contrato 59.10: uma única autoridade visual declarada no manifesto. */
+/** One visual authority, plus the portrait loading-state stylesheet. */
 export function auditVisualManifest(moduleJson = {}) {
   const styles = Array.isArray(moduleJson.styles) ? moduleJson.styles : [];
   const missingStyles = VISUAL_REQUIRED_STYLES.filter((path) => !styles.includes(path));
-  const unexpectedStyles = styles.filter((path) => path !== VISUAL_AUTHORITY_STYLE);
+  const unexpectedStyles = styles.filter((path) => !VISUAL_REQUIRED_STYLES.includes(path));
   return Object.freeze({
-    ok: missingStyles.length === 0 && unexpectedStyles.length === 0 && styles.length === 1,
+    ok: missingStyles.length === 0 && unexpectedStyles.length === 0 && styles.length === VISUAL_REQUIRED_STYLES.length,
     missingStyles: Object.freeze(missingStyles),
     unexpectedStyles: Object.freeze(unexpectedStyles),
     authorityStyle: VISUAL_AUTHORITY_STYLE,

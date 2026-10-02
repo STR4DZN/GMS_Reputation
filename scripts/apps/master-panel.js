@@ -1,3 +1,4 @@
+import { wireVisiblePortraits } from "../components/visible-portraits.js";
 import { DATA_SCHEMA_VERSION, MASTER_SAVE_MODE, MODULE_ID, MODULE_VERSION } from "../constants.js";
 import { loadWorldState, loadWorldStateBackup, restoreWorldStateBackup } from "../persistence/world-store.js";
 import { buildIdentityModel } from "../components/identity.js";
@@ -440,6 +441,7 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
     this._profileGroupSelectorController = null;
     this._newProfileGroupSelectorController = null;
     this._motionController = null;
+    this._mediaController = null;
     this._motionBooted = false;
     this._pendingMotion = "";
     this._permissionUnsubscribe = subscribePermissionChanges(() => this._onPermissionChanged());
@@ -1151,6 +1153,8 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
 
   _onRender(context, options) {
     super._onRender?.(context, options);
+    this._mediaController?.destroy?.();
+    this._mediaController = null;
     destroyListeners(this._listeners);
     this._portraitController?.destroy?.();
     this._portraitController = null;
@@ -1204,9 +1208,12 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
     this._applyPermissionState(root, context);
     this._accessibilityController = wireApplicationAccessibility(root, { onEscape: () => this.close(), tablistRoot: root.querySelector("[role=tablist]") ?? root });
     this._setSection(root, this.activeSection, { animate: false });
+    this._mediaController = wireVisiblePortraits(root);
   }
 
   async _onClose(options) {
+    this._mediaController?.destroy?.();
+    this._mediaController = null;
     destroyListeners(this._listeners);
     this._portraitController?.destroy?.();
     this._portraitController = null;

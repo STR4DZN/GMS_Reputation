@@ -1,4 +1,4 @@
-# Instalação — GMS // Matriz de Reputação 1.2.0-dev.70.11
+# Instalação — GMS // Matriz de Reputação 1.2.0-dev.70.12
 
 ## Alvo
 
@@ -37,6 +37,10 @@ A API fica disponível em `game.modules.get("gms-reputation").api`.
 ## Enquadramento das mídias
 
 No enquadramento padrão (100%), a imagem ou GIF completo é ajustado à largura e à altura do retângulo. No painel do Mestre, as prévias preservam a proporção original da mídia: quadro quadrado para personagens e 16:9 para perfis focais. As miniaturas continuam ocupando seus próprios quadros. Zoom acima de 100% permite recorte manual; “Resetar enquadramento” volta ao quadro completo.
+
+## Carregamento dos retratos
+
+Imagens e GIFs são solicitados apenas quando seus retratos aparecem na área visível de cada painel. Grupos, abas e seletores fechados não antecipam downloads. Cada janela permite até duas solicitações de retratos em andamento. Quando o retrato sai da área visível, sua fonte ativa é retirada; o URL persistido, o quadro e o enquadramento não mudam. GIFs podem reiniciar ao reaparecer. O navegador gerencia seus próprios caches: retirar a fonte não garante liberação imediata de toda a memória usada pela mídia.
 
 ## Verificação recomendada
 

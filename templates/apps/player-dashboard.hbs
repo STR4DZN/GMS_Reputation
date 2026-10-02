@@ -35,7 +35,7 @@
           </summary>
           <div class="gms-npc-navigation__drawer">
             <header class="gms-npc-navigation__current">
-              <span class="gms-npc-navigation__portrait">{{#if currentProfile.image}}<img src="{{currentProfile.image}}" alt="">{{else}}<i class="fa-solid fa-user" aria-hidden="true"></i>{{/if}}</span>
+              <span class="gms-npc-navigation__portrait">{{#if currentProfile.image}}<img data-gms-media-src="{{currentProfile.image}}" data-gms-media-state="dormant" alt="">{{else}}<i class="fa-solid fa-user" aria-hidden="true"></i>{{/if}}</span>
               <div><span class="gms-npc-navigation__label">Perfil atual</span><strong>{{currentProfile.focalName}}</strong></div>
             </header>
             <div class="gms-npc-navigation__list" data-player-navigation-list aria-label="Grupos e NPCs">
@@ -49,7 +49,7 @@
                   <div class="gms-npc-navigation__profiles">
                     {{#each profiles}}
                       <button type="button" class="gms-npc-navigation__profile" data-player-profile-choice="{{id}}" data-selected="{{selected}}" aria-current="{{#if selected}}true{{else}}false{{/if}}" title="{{name}}">
-                        <span class="gms-npc-navigation__portrait">{{#if image}}<img src="{{image}}" alt="" loading="lazy">{{else}}<i class="fa-solid fa-user" aria-hidden="true"></i>{{/if}}</span>
+                        <span class="gms-npc-navigation__portrait">{{#if image}}<img data-gms-media-src="{{image}}" data-gms-media-state="dormant" alt="" loading="lazy">{{else}}<i class="fa-solid fa-user" aria-hidden="true"></i>{{/if}}</span>
                         <span class="gms-npc-navigation__name">{{focalName}}</span>
                         {{#if selected}}<i class="fa-solid fa-check gms-npc-navigation__selected" aria-hidden="true"></i>{{/if}}
                       </button>

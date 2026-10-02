@@ -1,3 +1,12 @@
+## 1.2.0-dev.70.12 — Retratos carregados por visibilidade
+
+- Player, Mestre, navegação e detalhes carregam retratos apenas quando visíveis, com até duas solicitações em andamento por janela.
+- Grupos, seletores e abas recolhidos não antecipam o carregamento de GIFs.
+- Ao sair da área visível, o retrato perde sua fonte ativa; o endereço salvo e o enquadramento permanecem intactos.
+- Retratos voltam a carregar ao reaparecer; GIFs podem reiniciar a animação.
+- Edição de links, reset, troca de perfil e sincronização continuam usando a mídia original.
+- Controladores e solicitações ativas são descartados ao fechar ou renderizar novamente a janela.
+
 ## 1.2.0-dev.70.11 — Correção dos formulários de Perfis
 
 - Nome, grupo e disponibilidade do perfil ocupam linhas completas, sem colunas espremidas.
