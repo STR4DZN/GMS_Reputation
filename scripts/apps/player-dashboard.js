@@ -1,3 +1,4 @@
+import { mountPlayerProfileNavigation } from "./player-profile-navigation.js";
 import { MODULE_ID } from "../constants.js";
 import { loadWorldState } from "../persistence/world-store.js";
 import { buildPlayerCardContext } from "../components/player-card.js";
@@ -184,8 +185,10 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
     this._motionController = null;
     this._motionBooted = false;
     this._pendingMotion = "";
-    this._profileLibraryOpen = false;
+    this._profileLibraryOpen = true;
     this._focusProfileLibrary = false;
+    this._navigationController = null;
+    this._navigationScrollTop = 0;
   }
 
   async _prepareContext(options) {
@@ -263,7 +266,6 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
         const nextId = String(button.dataset.playerProfileChoice || "");
         if (!nextId || nextId === this.profileId) return;
         this.profileId = nextId;
-        this._profileLibraryOpen = false;
         this._focusProfileLibrary = true;
         this._pendingMotion = "profile";
         await this.render({ force: true });
@@ -281,12 +283,15 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
     listen(this._listeners, root, "keydown", (event) => {
       if (event.key !== "Escape" || !library.open || event.defaultPrevented) return;
       event.preventDefault();
+      event.stopPropagation();
       library.open = false;
       this._profileLibraryOpen = false;
       tab.focus?.();
     }, { capture: true });
     if (this._focusProfileLibrary) {
-      tab.focus?.();
+      const selected = library.querySelector("[data-player-profile-choice][data-selected='true']") ?? tab;
+      selected.focus?.({ preventScroll: true });
+      selected.scrollIntoView?.({ block: "nearest" });
       this._focusProfileLibrary = false;
     }
   }
@@ -294,7 +299,12 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
   _wireProfileGroupAccordion(root) {
     const groups = [...(root?.querySelectorAll?.("[data-player-profile-library] details[data-profile-group]") ?? [])];
     for (const group of groups) {
+      let wasOpen = group.open;
       listen(this._listeners, group, "toggle", () => {
+        // Native details also emit toggle after being inserted already open.
+        // That initial event must not reset the retained navigation scroll.
+        if (group.open === wasOpen) return;
+        wasOpen = group.open;
         if (!group.open) return;
         for (const other of groups) {
           if (other !== group && other.open) other.open = false;
@@ -343,16 +353,26 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
 
     const root = appElement(this);
     if (!root) return;
+    this._navigationScrollTop = this._navigationController?.scrollTop ?? this._navigationScrollTop;
+    this._navigationController?.destroy();
+    this._navigationController = mountPlayerProfileNavigation(this, root.querySelector?.("[data-player-profile-library]"));
+    const navigation = this._navigationController?.element;
+    if (navigation) {
+      const list = navigation.querySelector(".gms-profile-library__list");
+      if (list) list.scrollTop = this._navigationScrollTop;
+      this._wireProfileLibrary(navigation);
+      this._wireProfileChoices(navigation);
+      this._wireProfileGroupAccordion(navigation);
+    }
     this._motionController = wireMotionSystem(root, { kind: "player", boot: !this._motionBooted });
     this._motionBooted = true;
     if (this._pendingMotion) { this._motionController.transition?.(this._pendingMotion, root); this._pendingMotion = ""; }
-    this._wireProfileLibrary(root);
-    this._wireProfileChoices(root);
-    this._wireProfileGroupAccordion(root);
     this._wireCardDetails(root);
   }
 
   async _onClose(options) {
+    this._navigationController?.destroy();
+    this._navigationController = null;
     destroyListeners(this._listeners);
     destroyListeners(this._cardListeners);
     this._accessibilityController?.destroy?.();

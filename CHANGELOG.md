@@ -1,3 +1,10 @@
+## 1.2.0-dev.70.3 — Navegação externa dos Players
+
+- Move os grupos e perfis para um painel anexado à esquerda da janela.
+- Restaura a estrutura e os estilos da página dev.70, com a rolagem original.
+- A navegação acompanha movimento, tamanho, foco e minimização da janela e é removida ao fechar.
+- Trocar perfil mantém o painel aberto; a navegação e o dossiê rolam de forma independente.
+
 ## 1.2.0-dev.70 — Restauração da Base 60.3
 
 - restauração completa e fiel da interface original comprovada da versão 60.3;

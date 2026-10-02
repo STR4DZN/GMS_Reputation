@@ -13,26 +13,26 @@
   </header>
 
   {{#if hasProfile}}
-    <div class="gms-player-dashboard__body {{#if showProfileLibrary}}has-profile-library{{/if}}">
-      <div class="gms-player-dashboard__scroll" data-gms-v2-role="dossier-scroll">
-        <div class="gms-player-dashboard__content" data-player-matrix-content>
-        <section class="gms-player-dashboard__focal" aria-label="Perfil focal" data-gms-v2-role="focal-dossier">
-          {{> "modules/gms-reputation/templates/partials/focal-profile.hbs" focal}}
-        </section>
+    <div class="gms-player-dashboard__scroll" data-gms-v2-role="dossier-scroll">
+      <div class="gms-player-dashboard__content" data-player-matrix-content>
+      <section class="gms-player-dashboard__focal" aria-label="Perfil focal" data-gms-v2-role="focal-dossier">
+        {{> "modules/gms-reputation/templates/partials/focal-profile.hbs" focal}}
+      </section>
 
-        <section class="gms-player-dashboard__records" aria-label="Relações do perfil" data-gms-v2-role="relationship-grid">
-          {{#each cards}}
-            {{> "modules/gms-reputation/templates/partials/player-card.hbs" this}}
-          {{/each}}
-        </section>
-        </div>
+      <section class="gms-player-dashboard__records" aria-label="Relações do perfil" data-gms-v2-role="relationship-grid">
+        {{#each cards}}
+          {{> "modules/gms-reputation/templates/partials/player-card.hbs" this}}
+        {{/each}}
+      </section>
       </div>
-      {{#if showProfileLibrary}}
-        <details class="gms-profile-library gms-profile-library--sidebar" aria-label="Perfis de reputação organizados por grupo" data-player-profile-library {{#if profileLibraryOpen}}open{{/if}}>
+    </div>
+    {{#if showProfileLibrary}}
+      <div hidden data-player-navigation-mount>
+        <details class="gms-profile-library gms-profile-library--external" aria-label="Perfis de reputação organizados por grupo" data-player-profile-library {{#if profileLibraryOpen}}open{{/if}}>
           <summary class="gms-profile-library__tab" aria-label="Abrir ou recolher navegação de NPCs" title="Navegação de NPCs">
             <i class="fa-solid fa-users" aria-hidden="true"></i>
             <span>NPCs</span>
-            <i class="fa-solid fa-chevron-left gms-profile-library__tab-arrow" aria-hidden="true"></i>
+            <i class="fa-solid fa-chevron-right gms-profile-library__tab-arrow" aria-hidden="true"></i>
           </summary>
           <div class="gms-profile-library__drawer">
             <div class="gms-profile-library__trigger">
@@ -67,8 +67,8 @@
             </div>
           </div>
         </details>
-      {{/if}}
-    </div>
+      </div>
+    {{/if}}
   {{else}}
     <div class="gms-player-dashboard__empty">
       <i class="fa-solid fa-folder-open" aria-hidden="true"></i>

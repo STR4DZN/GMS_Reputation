@@ -14915,48 +14915,23 @@ grid-column: 1 !important;
   .application.gms-reputation-master-panel-app .gms-master-cleanup__delete{grid-column:1;grid-row:auto;width:100%}
 }
 
-/* dev.70: move the existing Player profile library to the right edge.
-   Match both retained template wrappers and Foundry root-part children.
-   The drawer overlays the dossier so opening it never compresses the cards. */
-:is(.gms-reputation-player-dashboard-app, .gms-player-dashboard[data-gms-visual-generation="3"]) .gms-player-dashboard__body {
+
+/* dev.70: the NPC companion is outside the application. Everything above this
+   block remains the original dev.70 stylesheet, including dossier scrolling. */
+.gms-player-profile-navigation {
+  position: fixed;
+  box-sizing: border-box;
+  color: #e9e1d5 !important;
+  font-family: "Segoe UI", sans-serif;
+  pointer-events: auto;
+}
+.gms-player-profile-navigation[hidden] { display: none !important; }
+.gms-player-profile-navigation *, .gms-player-profile-navigation *::before,
+.gms-player-profile-navigation *::after { box-sizing: border-box; }
+.gms-player-profile-navigation .gms-profile-library--external {
   position: relative !important;
-  display: grid !important;
-  flex: 1 1 0 !important;
-  grid-row: 2 !important;
-  grid-template-columns: minmax(0, 1fr) !important;
-  grid-template-rows: minmax(0, 1fr) !important;
-  width: 100% !important;
-  min-width: 0 !important;
-  min-height: 0 !important;
-  overflow: hidden !important;
-  isolation: isolate;
-  box-sizing: border-box !important;
-}
-
-:is(.gms-reputation-player-dashboard-app, .gms-player-dashboard[data-gms-visual-generation="3"]) .gms-player-dashboard__body.has-profile-library {
-  padding-right: 36px !important;
-}
-
-/* The legacy scroll rule uses row 2 for the old direct-child layout.
-   Inside the body it must occupy the only bounded row instead. */
-:is(.gms-reputation-player-dashboard-app, .gms-player-dashboard[data-gms-visual-generation="3"]) .gms-player-dashboard__body > .gms-player-dashboard__scroll {
-  grid-row: 1 !important;
-  grid-column: 1 !important;
-  align-self: stretch !important;
-  min-height: 0 !important;
-  min-width: 0 !important;
-  overflow-x: hidden !important;
-  overflow-y: auto !important;
-}
-
-:is(.gms-reputation-player-dashboard-app, .gms-player-dashboard[data-gms-visual-generation="3"]) .gms-profile-library.gms-profile-library--sidebar {
   display: block !important;
-  clip-path: none !important;
-  position: absolute !important;
-  inset: 0 0 0 auto !important;
-  z-index: 5 !important;
-  width: 36px !important;
-  max-width: 100% !important;
+  width: 100% !important;
   height: 100% !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -14964,170 +14939,223 @@ grid-column: 1 !important;
   border: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
-  box-sizing: border-box !important;
+  clip-path: none !important;
 }
-
-:is(.gms-reputation-player-dashboard-app, .gms-player-dashboard[data-gms-visual-generation="3"]) .gms-profile-library.gms-profile-library--sidebar[open] {
-  width: min(396px, 100%) !important;
-}
-
-:is(.gms-reputation-player-dashboard-app, .gms-player-dashboard[data-gms-visual-generation="3"]) .gms-profile-library--sidebar > .gms-profile-library__tab {
+.gms-player-profile-navigation .gms-profile-library__tab {
   position: absolute;
   z-index: 2;
-  inset: 14px 0 auto auto;
+  inset: 40px 0 auto auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  width: 36px;
-  min-height: 126px;
+  width: 32px;
+  min-height: 120px;
   margin: 0;
   padding: 12px 0;
-  box-sizing: border-box;
   cursor: pointer;
   list-style: none;
-  color: var(--gms56-bone, #e9e1d5);
-  background: linear-gradient(180deg, #17111e, #080b12);
-  border: 1px solid rgba(199, 170, 215, .32);
+  color: #e9e1d5 !important;
+  background: linear-gradient(180deg, #141820, #06090e);
+  border: 1px solid rgba(182,154,104,.40);
   border-right: 0;
-  border-radius: 6px 0 0 6px;
-  box-shadow: inset 2px 0 0 rgba(199, 170, 215, .35);
+  border-radius: 5px 0 0 5px;
 }
-
-:is(.gms-reputation-player-dashboard-app, .gms-player-dashboard[data-gms-visual-generation="3"]) .gms-profile-library__tab::-webkit-details-marker {
-  display: none;
-}
-
-:is(.gms-reputation-player-dashboard-app, .gms-player-dashboard[data-gms-visual-generation="3"]) .gms-profile-library__tab > span {
+.gms-player-profile-navigation .gms-profile-library__tab::-webkit-details-marker { display: none; }
+.gms-player-profile-navigation .gms-profile-library__tab > span {
   writing-mode: vertical-rl;
-  font: 800 10px/1 var(--gms56-mono, monospace);
-  letter-spacing: .16em;
+  font: 800 10px/1 "Consolas", monospace !important;
+  letter-spacing: .14em;
 }
-
-:is(.gms-reputation-player-dashboard-app, .gms-player-dashboard[data-gms-visual-generation="3"]) .gms-profile-library__tab > i {
-  font-size: 12px;
+.gms-player-profile-navigation .gms-profile-library__tab > i { font-size: 12px; }
+.gms-player-profile-navigation .gms-profile-library__tab:hover {
+  color: #fff8ec !important;
+  border-color: rgba(50,220,232,.65);
 }
-
-:is(.gms-reputation-player-dashboard-app, .gms-player-dashboard[data-gms-visual-generation="3"]) .gms-profile-library__tab:hover,
-:is(.gms-reputation-player-dashboard-app, .gms-player-dashboard[data-gms-visual-generation="3"]) .gms-profile-library--sidebar[open] > .gms-profile-library__tab {
-  color: #fff8ec;
-  background: linear-gradient(180deg, #261930, #0b1420);
-  border-color: rgba(211, 124, 199, .55);
-}
-
-:is(.gms-reputation-player-dashboard-app, .gms-player-dashboard[data-gms-visual-generation="3"]) .gms-profile-library__tab:focus-visible {
-  outline: 2px solid var(--gms56-cyan, #32dce8);
+.gms-player-profile-navigation .gms-profile-library__tab:focus-visible {
+  outline: 2px solid #32dce8;
   outline-offset: -4px;
 }
-
-:is(.gms-reputation-player-dashboard-app, .gms-player-dashboard[data-gms-visual-generation="3"]) .gms-profile-library--sidebar[open] .gms-profile-library__tab-arrow {
-  transform: rotate(180deg);
-}
-
-:is(.gms-reputation-player-dashboard-app, .gms-player-dashboard[data-gms-visual-generation="3"]) .gms-profile-library--sidebar > .gms-profile-library__drawer {
+.gms-player-profile-navigation [open] > .gms-profile-library__tab .gms-profile-library__tab-arrow { transform: rotate(180deg); }
+.gms-player-profile-navigation .gms-profile-library__drawer {
   position: absolute !important;
-  inset: 0 36px 0 0 !important;
+  inset: 0 32px 0 0 !important;
   display: grid !important;
   grid-template-rows: auto auto minmax(0, 1fr) !important;
   min-width: 0 !important;
   min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
   overflow: hidden !important;
-  background: linear-gradient(180deg, rgba(14, 12, 21, .98), rgba(5, 7, 12, .99)) !important;
-  border: 1px solid rgba(199, 170, 215, .26) !important;
-  box-shadow: -10px 0 28px rgba(0, 0, 0, .4) !important;
-  box-sizing: border-box !important;
+  color: #e9e1d5 !important;
+  background: linear-gradient(180deg, #10141b, #05070c) !important;
+  border: 1px solid rgba(182,154,104,.30) !important;
+  box-shadow: -8px 0 20px rgba(0,0,0,.3) !important;
 }
-
-:is(.gms-reputation-player-dashboard-app, .gms-player-dashboard[data-gms-visual-generation="3"]) .gms-profile-library--sidebar:not([open]) > .gms-profile-library__drawer {
-  display: none !important;
-}
-
-:is(.gms-reputation-player-dashboard-app, .gms-player-dashboard[data-gms-visual-generation="3"]) .gms-profile-library--sidebar .gms-profile-library__trigger {
+.gms-player-profile-navigation .gms-profile-library--external:not([open]) > .gms-profile-library__drawer { display: none !important; }
+.gms-player-profile-navigation .gms-profile-library__trigger {
   display: grid !important;
-  grid-template-columns: 34px minmax(0, 1fr) !important;
+  grid-template-columns: 28px minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: 7px !important;
   min-height: 64px !important;
-  padding: 9px !important;
+  margin: 0 !important;
+  padding: 8px !important;
   cursor: default !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(182,154,104,.20) !important;
+  background: rgba(255,255,255,.025) !important;
 }
-
-:is(.gms-reputation-player-dashboard-app, .gms-player-dashboard[data-gms-visual-generation="3"]) .gms-profile-library--sidebar .gms-profile-library__current-copy {
-  grid-template-columns: minmax(0, 1fr) !important;
-  gap: 3px !important;
-}
-
-:is(.gms-reputation-player-dashboard-app, .gms-player-dashboard[data-gms-visual-generation="3"]) .gms-profile-library--sidebar .gms-profile-library__summary-meta {
-  display: none !important;
-}
-
-:is(.gms-reputation-player-dashboard-app, .gms-player-dashboard[data-gms-visual-generation="3"]) .gms-profile-library--sidebar .gms-profile-library__masthead {
-  align-items: start !important;
-  flex-direction: column !important;
-  gap: 6px !important;
-  padding: 10px !important;
-}
-
-:is(.gms-reputation-player-dashboard-app, .gms-player-dashboard[data-gms-visual-generation="3"]) .gms-profile-library--sidebar .gms-profile-library__masthead > div {
-  grid-template-columns: minmax(0, 1fr) !important;
-  gap: 5px !important;
-}
-
-:is(.gms-reputation-player-dashboard-app, .gms-player-dashboard[data-gms-visual-generation="3"]) .gms-profile-library--sidebar .gms-profile-library__list {
+.gms-player-profile-navigation .gms-profile-library__current-copy {
   display: grid !important;
-  align-content: start !important;
+  gap: 4px !important;
+  min-width: 0 !important;
+}
+.gms-player-profile-navigation .gms-profile-library__current-copy small {
+  color: #b69a68 !important;
+  font: 800 8px/1.3 "Consolas", monospace !important;
+  overflow-wrap: anywhere;
+}
+.gms-player-profile-navigation .gms-profile-library__current-copy strong {
+  color: #e9e1d5 !important;
+  font: 900 13px/1.2 "Segoe UI", sans-serif !important;
+  overflow-wrap: anywhere;
+}
+.gms-player-profile-navigation .gms-profile-library__current-copy em {
+  color: #93a0aa !important;
+  font: 600 9px/1.25 "Segoe UI", sans-serif !important;
+  overflow-wrap: anywhere;
+}
+.gms-player-profile-navigation .gms-profile-library__summary-meta { display: none !important; }
+.gms-player-profile-navigation .gms-profile-library__masthead {
+  display: grid !important;
+  gap: 5px !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 8px !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(182,154,104,.15) !important;
+  background: transparent !important;
+}
+.gms-player-profile-navigation .gms-profile-library__masthead > div { display: grid; gap: 4px; min-width: 0; }
+.gms-player-profile-navigation .gms-profile-library__masthead small { color: #b69a68 !important; font: 800 8px/1.3 "Consolas", monospace !important; }
+.gms-player-profile-navigation .gms-profile-library__masthead strong { color: #e9e1d5 !important; font: 900 13px/1.2 "Segoe UI", sans-serif !important; }
+.gms-player-profile-navigation .gms-profile-library__masthead p { margin: 0; color: #93a0aa !important; font: 600 10px/1.35 "Segoe UI", sans-serif !important; }
+.gms-player-profile-navigation .gms-profile-library__masthead > span { color: #9fb7a1 !important; font: 800 8px/1.2 "Consolas", monospace !important; }
+.gms-player-profile-navigation .gms-profile-library__list {
+  display: grid !important;
   grid-template-columns: minmax(0, 1fr) !important;
   grid-auto-rows: max-content !important;
+  align-content: start !important;
   min-height: 0 !important;
   max-height: none !important;
+  width: 100% !important;
   gap: 5px !important;
-  padding: 6px !important;
+  margin: 0 !important;
+  padding: 5px !important;
   overflow-x: hidden !important;
   overflow-y: auto !important;
   overscroll-behavior: contain;
-  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(182,154,104,.50) #05070c;
 }
-
-:is(.gms-reputation-player-dashboard-app, .gms-player-dashboard[data-gms-visual-generation="3"]) .gms-profile-library--sidebar .gms-profile-library__group > summary {
+.gms-player-profile-navigation .gms-profile-library__group {
+  display: block !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(182,154,104,.20) !important;
+  background: #070b10 !important;
+  clip-path: none !important;
+}
+.gms-player-profile-navigation .gms-profile-library__group > summary {
+  display: grid !important;
+  grid-template-columns: 3px minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 6px !important;
   height: auto !important;
   min-height: 42px !important;
   padding: 7px !important;
+  cursor: pointer;
+  list-style: none;
+  border: 0 !important;
+  background: transparent !important;
 }
-
-:is(.gms-reputation-player-dashboard-app, .gms-player-dashboard[data-gms-visual-generation="3"]) .gms-profile-library--sidebar .gms-profile-library__group-copy strong {
+.gms-player-profile-navigation .gms-profile-library__group > summary::-webkit-details-marker { display: none; }
+.gms-player-profile-navigation .gms-profile-library__group > summary > i { display: none; }
+.gms-player-profile-navigation .gms-profile-library__group-mark { align-self: stretch; background: #b69a68; }
+.gms-player-profile-navigation .gms-profile-library__group-copy strong {
+  color: #e9e1d5 !important;
+  font: 800 11px/1.3 "Segoe UI", sans-serif !important;
   white-space: normal !important;
   overflow-wrap: anywhere;
-  line-height: 1.25 !important;
 }
-
-:is(.gms-reputation-player-dashboard-app, .gms-player-dashboard[data-gms-visual-generation="3"]) .gms-profile-library--sidebar .gms-profile-library__profiles {
+.gms-player-profile-navigation .gms-profile-library__group-count { display: grid; justify-items: center; gap: 2px; }
+.gms-player-profile-navigation .gms-profile-library__group-count b { color: #b69a68 !important; font: 900 12px/1 "Consolas", monospace !important; }
+.gms-player-profile-navigation .gms-profile-library__group-count small { color: #93a0aa !important; font: 700 6px/1 "Consolas", monospace !important; }
+.gms-player-profile-navigation .gms-profile-library__profiles {
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) !important;
+  gap: 3px !important;
   max-height: none !important;
+  margin: 0 !important;
+  padding: 4px !important;
   overflow: visible !important;
 }
-
-:is(.gms-reputation-player-dashboard-app, .gms-player-dashboard[data-gms-visual-generation="3"]) .gms-profile-library--sidebar .gms-profile-library__profile {
+.gms-player-profile-navigation .gms-profile-library__profile {
   display: grid !important;
+  grid-template-columns: 26px minmax(0, 1fr) !important;
   align-items: center !important;
-  grid-template-columns: 22px 26px minmax(0, 1fr) auto !important;
-  min-height: 42px !important;
-}
-
-:is(.gms-reputation-player-dashboard-app, .gms-player-dashboard[data-gms-visual-generation="3"]) .gms-profile-library--sidebar .gms-profile-library__profile::before {
-  font-size: 9px;
-}
-
-:is(.gms-reputation-player-dashboard-app, .gms-player-dashboard[data-gms-visual-generation="3"]) .gms-profile-library--sidebar .gms-profile-library__identity {
-  justify-items: start !important;
+  gap: 6px !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 46px !important;
+  margin: 0 !important;
+  padding: 5px !important;
+  color: #e9e1d5 !important;
   text-align: left !important;
+  cursor: pointer;
+  border: 1px solid rgba(147,160,170,.18) !important;
+  border-radius: 0 !important;
+  background: linear-gradient(135deg, #11161d, #080b10) !important;
+  box-shadow: none !important;
+  clip-path: none !important;
 }
-
-:is(.gms-reputation-player-dashboard-app, .gms-player-dashboard[data-gms-visual-generation="3"]) .gms-profile-library--sidebar .gms-profile-library__thumb {
+.gms-player-profile-navigation .gms-profile-library__profile::before { display: none !important; }
+.gms-player-profile-navigation .gms-profile-library__profile > i { display: none; }
+.gms-player-profile-navigation .gms-profile-library__profile[data-selected="true"] { border-color: rgba(50,220,232,.55) !important; }
+.gms-player-profile-navigation .gms-profile-library__profile:hover,
+.gms-player-profile-navigation .gms-profile-library__profile:focus-visible { outline: 1px solid #32dce8; outline-offset: -1px; }
+.gms-player-profile-navigation .gms-profile-library__identity { display: grid !important; gap: 3px !important; min-width: 0 !important; }
+.gms-player-profile-navigation .gms-profile-library__identity strong {
+  color: #e9e1d5 !important;
+  font: 800 11px/1.25 "Segoe UI", sans-serif !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+}
+.gms-player-profile-navigation .gms-profile-library__identity small {
+  color: #93a0aa !important;
+  font: 600 8px/1.25 "Segoe UI", sans-serif !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+}
+.gms-player-profile-navigation .gms-profile-library__active { grid-column: 2; color: #32dce8 !important; font: 800 7px/1 "Consolas", monospace !important; }
+.gms-player-profile-navigation :is(.gms-profile-library__thumb, .gms-profile-library__current-thumb) {
+  display: grid !important;
+  place-items: center;
   width: 26px !important;
   height: 26px !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(182,154,104,.30) !important;
 }
-
-:is(.gms-reputation-player-dashboard-app, .gms-player-dashboard[data-gms-visual-generation="3"]) .gms-profile-library--sidebar .gms-profile-library__current-thumb {
-  width: 34px !important;
-  height: 34px !important;
+.gms-player-profile-navigation :is(.gms-profile-library__thumb, .gms-profile-library__current-thumb) img {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  border: 0 !important;
+  object-fit: cover;
 }
