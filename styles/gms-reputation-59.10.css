@@ -15700,3 +15700,70 @@ grid-column: 1 !important;
     & [data-master-section-panel="portrait"] { grid-column: 2 !important; grid-row: 1 !important; }
   }
 }
+
+/* dev.70.10 — console choreography. Geometry and identity glitch stay independent.
+   Native effects own entrances; rails and focus states use short CSS transitions. */
+:is(#gms-reputation-master-panel, #gms-reputation-player-dashboard, #gms-reputation-subject-detail, .gms-reputation-app, .gms-player-profile-navigation)[data-gms-motion-edition="70.10"] {
+  --gms-motion-fast: 160ms;
+  --gms-motion-ease: cubic-bezier(.2, 0, .38, .9);
+  --gms-motion-accent: #45e7f3;
+  --gms-motion-violet: #8d78ff;
+
+  /* Retire overlapping historical shell effects without touching glyph effects. */
+  & :is(.gms-player-dashboard, .gms-master-panel, .gms-subject-detail, .gms-player-dashboard__records, .gms-master-panel__content, .gms-player-dashboard__scroll, [data-gms-motion-managed]) {
+    animation: none !important;
+  }
+  &.is-gms-motion-sync { animation: none !important; }
+
+  & :is(button, summary, [data-player-card][tabindex]) {
+    position: relative;
+    transition: transform var(--gms-motion-fast) var(--gms-motion-ease), border-color var(--gms-motion-fast) var(--gms-motion-ease), background-color var(--gms-motion-fast) var(--gms-motion-ease), color var(--gms-motion-fast) var(--gms-motion-ease), box-shadow var(--gms-motion-fast) var(--gms-motion-ease) !important;
+  }
+  & :is(button, summary, [data-player-card][tabindex]):focus-visible {
+    outline: 2px solid var(--gms-motion-accent) !important;
+    outline-offset: -3px !important;
+  }
+  & :is(input:not([type="range"]):not([type="hidden"]), textarea, select) {
+    transition: border-color var(--gms-motion-fast) var(--gms-motion-ease), background-color var(--gms-motion-fast) var(--gms-motion-ease), box-shadow var(--gms-motion-fast) var(--gms-motion-ease) !important;
+  }
+  & :is(input:not([type="hidden"]), textarea, select):focus-visible {
+    border-color: rgba(69, 231, 243, .7) !important;
+    box-shadow: inset 3px 0 0 rgba(69, 231, 243, .55), 0 0 0 1px rgba(69, 231, 243, .16) !important;
+  }
+  & .gms-motion-control-rail {
+    position: absolute !important;
+    z-index: 3 !important;
+    inset: auto 8px 1px !important;
+    height: 2px !important;
+    width: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    pointer-events: none !important;
+    background: linear-gradient(90deg, transparent, var(--gms-motion-accent) 24%, var(--gms-motion-violet) 76%, transparent) !important;
+    opacity: 0;
+    transform: scaleX(.35);
+    transform-origin: center;
+    transition: transform 240ms var(--gms-motion-ease), opacity var(--gms-motion-fast) ease-out !important;
+  }
+  & :is(button, summary, [data-player-card][tabindex]):is(:hover, :focus-visible) > .gms-motion-control-rail {
+    opacity: .8;
+    transform: scaleX(1);
+  }
+  & button:disabled > .gms-motion-control-rail { opacity: 0 !important; }
+  & :is(.gms-npc-navigation__arrow, .gms-npc-navigation__group > summary > i, .gms-smart-selector__trigger > i:last-child) {
+    transition: transform 240ms var(--gms-motion-ease) !important;
+  }
+  & .gms-reputation-player-card:is(:hover, :focus-within) {
+    border-color: color-mix(in srgb, var(--gms596-band, #45e7f3) 68%, transparent) !important;
+    box-shadow: inset 3px 0 0 color-mix(in srgb, var(--gms596-band, #45e7f3) 62%, transparent), 0 0 14px rgba(69, 231, 243, .08) !important;
+  }
+  & :is(.gms-master-panel__nav button, .gms-master-profile-entry, .gms-npc-navigation__profile, .gms-master-panel__subject-choice):active {
+    background-color: rgba(69, 231, 243, .14) !important;
+  }
+  & .gms-reputation-portrait-editor__preview:focus-within {
+    outline: 2px solid rgba(69, 231, 243, .65) !important;
+    outline-offset: -2px;
+  }
+}

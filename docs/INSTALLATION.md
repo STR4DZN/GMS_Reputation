@@ -1,4 +1,4 @@
-# Instalação — GMS // Matriz de Reputação 1.2.0-dev.70.9
+# Instalação — GMS // Matriz de Reputação 1.2.0-dev.70.10
 
 ## Alvo
 
@@ -39,6 +39,8 @@ A API fica disponível em `game.modules.get("gms-reputation").api`.
 No enquadramento padrão (100%), a imagem ou GIF completo é ajustado à largura e à altura do retângulo. No painel do Mestre, as prévias preservam a proporção original da mídia: quadro quadrado para personagens e 16:9 para perfis focais. As miniaturas continuam ocupando seus próprios quadros. Zoom acima de 100% permite recorte manual; “Resetar enquadramento” volta ao quadro completo.
 
 ## Verificação recomendada
+
+As animações do Player e do Mestre são locais, sem dependência de CDN. A pesquisa, as referências e a cobertura estão em [MOTION_DESIGN.md](MOTION_DESIGN.md).
 
 Antes de usar em sessão, em uma cópia/backup do World:
 

@@ -1,3 +1,13 @@
+## 1.2.0-dev.70.10 — Motion integrado para Player e Mestre
+
+- Entradas coordenadas e revelação progressiva de cards, perfis, personagens, histórico e limpeza.
+- Navegação de NPCs, grupos, detalhes e seletores recebem transições curtas.
+- Botões e teclado têm trilhos luminosos; campos indicam foco sem alterar seu tamanho.
+- Mudanças de reputação animam valor e corações; protocolos e sincronização têm feedback próprio.
+- Animações nativas canceláveis, com atraso limitado em listas grandes e descarte ao fechar.
+- Preserva proporções do editor, encaixe das mídias e o glitch de identidade.
+- Pesquisa e decisões registradas em `docs/MOTION_DESIGN.md`.
+
 ## 1.2.0-dev.70.9 — Proporções do editor e remoção do cabeçalho
 
 - Remove a faixa “MATRIZ SOCIAL” do painel do Mestre e libera sua altura para o conteúdo.

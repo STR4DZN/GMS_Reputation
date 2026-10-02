@@ -364,7 +364,7 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
       this._wireProfileChoices(navigation);
       this._wireProfileGroupAccordion(navigation);
     }
-    this._motionController = wireMotionSystem(root, { kind: "player", boot: !this._motionBooted });
+    this._motionController = wireMotionSystem(root, { kind: "player", boot: !this._motionBooted, companion: navigation });
     this._motionBooted = true;
     if (this._pendingMotion) { this._motionController.transition?.(this._pendingMotion, root); this._pendingMotion = ""; }
     this._wireCardDetails(root);
