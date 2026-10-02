@@ -1,4 +1,4 @@
-# Instalação — GMS // Matriz de Reputação 1.2.0-dev.70.6
+# Instalação — GMS // Matriz de Reputação 1.2.0-dev.70.7
 
 ## Alvo
 
@@ -19,10 +19,10 @@
 
 ## Como abrir
 
-Ative o **HoloSuite Core** e abra o app **Reputação**, identificado pelo coração.
+Ative o **HoloSuite Core**. A Reputação oferece dois apps:
 
-- Funções com permissão de controle abrem o painel de edição.
-- Players abrem a Matriz de Reputação somente para leitura.
+- **Reputação** (coração): abre a Matriz de Reputação dos Players, inclusive quando o GM usa esse app.
+- **Gerenciar Reputação** (escudo): abre o painel de edição e fica oculto para Players. O acesso exige uma conta GM com permissão de controle.
 - Os atalhos antigos não são mais adicionados aos controles de token.
 
 O HoloSuite Core é recomendado para abrir o app. A API de Reputação também continua disponível para macros:

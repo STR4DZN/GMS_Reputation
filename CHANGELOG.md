@@ -1,3 +1,9 @@
+## 1.2.0-dev.70.7 — Apps separados para Player e GM
+
+- O app Reputação com coração abre sempre a visão dos Players, inclusive para o GM.
+- Novo app Gerenciar Reputação com escudo abre o painel de edição e fica oculto para Players.
+- O acesso ao app de edição verifica a conta GM e as permissões ao clicar.
+
 ## 1.2.0-dev.70.6 — Glitch completo, retratos e app HoloSuite
 
 - Recupera as camadas cromáticas, fragmentos e três faixas animadas do glitch original, desenhadas somente nos caracteres.

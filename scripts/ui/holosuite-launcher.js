@@ -11,11 +11,9 @@ function reportFailure(error) {
   notify("error", `Reputação não pôde ser aberta. ${String(error?.message || error || "erro desconhecido")}`);
 }
 
-export function openReputationApp() {
-  const user = globalThis.game?.user;
-  if (!canUser(user, MODULE_CAPABILITY.READ)) return null;
+function openApp(open) {
   try {
-    const app = canOpenMasterPanel(user) ? openMasterPanel() : openPlayerDashboard();
+    const app = open();
     if (typeof app?.then === "function") app.catch(reportFailure);
     return app;
   } catch (error) {
@@ -24,14 +22,25 @@ export function openReputationApp() {
   }
 }
 
-/** Public HoloSuite Core registerApp contract; repeated IDs replace the tile. */
+export function openReputationApp() {
+  if (!canUser(globalThis.game?.user, MODULE_CAPABILITY.READ)) return null;
+  return openApp(openPlayerDashboard);
+}
+
+export function openMasterReputationApp() {
+  const user = globalThis.game?.user;
+  if (user?.isGM !== true || !canOpenMasterPanel(user)) return null;
+  return openApp(openMasterPanel);
+}
+
+/** Public HoloSuite Core registerApp contract; repeated IDs replace the tiles. */
 export function registerReputationApp(api = null) {
   const core = globalThis.game?.modules?.get?.("holosuite-core");
   if (core?.active === false) return false;
   const host = api ?? core?.api ?? globalThis.game?.holosuite;
   if (typeof host?.registerApp !== "function") return false;
   try {
-    const result = host.registerApp({
+    const apps = [{
       id: MODULE_ID,
       title: "Reputação",
       icon: "fa-solid fa-heart",
@@ -40,8 +49,22 @@ export function registerReputationApp(api = null) {
       description: "Relações, vínculos e reputação dos personagens.",
       featureId: MODULE_ID,
       open: openReputationApp
-    });
-    return result !== null && result !== false;
+    }, {
+      id: `${MODULE_ID}-gm`,
+      title: "Gerenciar Reputação",
+      icon: "fa-solid fa-shield-halved",
+      premium: false,
+      playerVisible: false,
+      description: "Edição da Matriz de Reputação para o GM.",
+      featureId: MODULE_ID,
+      open: openMasterReputationApp
+    }];
+    let success = true;
+    for (const app of apps) {
+      const result = host.registerApp(app);
+      if (result === null || result === false) success = false;
+    }
+    return success;
   } catch (error) {
     console.error("GMS Reputation | Falha ao registrar o app no HoloSuite.", error);
     return false;

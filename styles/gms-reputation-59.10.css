@@ -15437,9 +15437,9 @@ grid-column: 1 !important;
 }
 
 /* HoloSuite's device themes replace unknown app icons with a generic mask.
-   Supply a heart for this registered app only, in every device theme. */
-.holosuite-app-icon[data-holosuite-app-icon="gms-reputation"] i { display: none !important; }
-.holosuite-app-icon[data-holosuite-app-icon="gms-reputation"]::before {
+   Supply the Reputation heart and GM shield in every device theme. */
+.holosuite-app-icon:is([data-holosuite-app-icon="gms-reputation"], [data-holosuite-app-icon="gms-reputation-gm"]) i { display: none !important; }
+.holosuite-app-icon:is([data-holosuite-app-icon="gms-reputation"], [data-holosuite-app-icon="gms-reputation-gm"])::before {
   content: "";
   display: block !important;
   background: currentColor !important;
@@ -15451,4 +15451,8 @@ grid-column: 1 !important;
   -webkit-mask-position: center;
   mask-repeat: no-repeat;
   -webkit-mask-repeat: no-repeat;
+}
+.holosuite-app-icon[data-holosuite-app-icon="gms-reputation-gm"]::before {
+  mask-image: url("../assets/icons/reputation-shield.svg") !important;
+  -webkit-mask-image: url("../assets/icons/reputation-shield.svg") !important;
 }
