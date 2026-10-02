@@ -1,3 +1,13 @@
+## 1.2.0-dev.70.11 — Correção dos formulários de Perfis
+
+- Nome, grupo e disponibilidade do perfil ocupam linhas completas, sem colunas espremidas.
+- Nomes dos grupos ficam visíveis por inteiro, com contagens alinhadas e rolagem própria.
+- Editor focal organiza nome, descrição, imagem e controles em uma coluna legível.
+- Botões de mídia se adaptam à largura do editor, sem quebra de texto letra por letra.
+- Prévia para os Players fica disponível em um bloco recolhível, junto ao editor focal.
+- Criação e edição de grupos seguem a mesma organização dos campos.
+- Em janelas maiores, a biblioteca de grupos permanece visível e tem rolagem própria.
+
 ## 1.2.0-dev.70.10 — Motion integrado para Player e Mestre
 
 - Entradas coordenadas e revelação progressiva de cards, perfis, personagens, histórico e limpeza.

@@ -15767,3 +15767,137 @@ grid-column: 1 !important;
     outline-offset: -2px;
   }
 }
+
+/* dev.70.11 — profile forms size themselves to the editor, never to the window.
+   Every field occupies a real row; names and media controls remain readable. */
+:is(#gms-reputation-master-panel, .gms-reputation-master-panel-app, .gms-master-panel[data-gms-visual-generation="3"]) {
+  & :is(.gms-master-profile-editor__form, .gms-master-focal-workspace__editor) {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-auto-rows: max-content !important;
+    align-content: start !important;
+    gap: 16px !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+  & :is(.gms-master-profile-editor__form, .gms-master-focal-workspace__editor) > * {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    align-self: start !important;
+  }
+  & .gms-master-profile-editor__groups { margin: 0 !important; padding: 12px !important; }
+  & :is(.gms-master-profile-editor__groups, .gms-master-group-choice) > div {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)) !important;
+    gap: 8px !important;
+    max-height: 260px !important;
+    overflow: auto !important;
+    scrollbar-gutter: stable;
+  }
+  & :is(.gms-master-profile-editor__groups, .gms-master-group-choice) button {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 10px 12px !important;
+    height: auto !important;
+    min-height: 52px !important;
+    text-align: left !important;
+  }
+  & :is(.gms-master-profile-editor__groups, .gms-master-group-choice) button > span {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    overflow-wrap: break-word !important;
+    line-height: 1.4 !important;
+  }
+  & :is(.gms-master-profile-editor__groups, .gms-master-group-choice) button > small { white-space: nowrap !important; }
+  & .gms-master-profile-editor__status {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)) !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+  & .gms-master-profile-editor__status > label {
+    display: grid !important;
+    grid-template-columns: 18px minmax(0, 1fr) !important;
+    align-items: start !important;
+    gap: 10px !important;
+    width: 100% !important;
+    padding: 12px !important;
+    min-height: 74px !important;
+  }
+  & .gms-master-profile-editor__status input[type="checkbox"] { width: 18px !important; height: 18px !important; margin: 2px 0 0 !important; }
+  & .gms-master-profile-editor__status :is(b, small) { line-height: 1.4 !important; }
+  & .gms-master-profile-editor__actions { align-items: stretch !important; }
+  & .gms-master-profile-editor__actions > button { flex: 1 1 160px !important; }
+  & .gms-master-profile-editor__order { display: flex !important; flex-wrap: wrap !important; flex: 1 1 260px !important; gap: 8px !important; }
+  & .gms-master-profile-editor__order > button { flex: 1 1 120px !important; }
+  & [data-master-section-panel="subjects"] > header h2 { font-size: 22px !important; }
+  & .gms-master-profile-groups { height: auto !important; max-height: none !important; overflow: visible !important; }
+  & .gms-master-profile-hub__actions { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  & .gms-master-profile-hub__actions:has(details[open]) { grid-template-columns: minmax(0, 1fr) !important; }
+  & .gms-master-create-composer__body {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-auto-rows: max-content !important;
+    gap: 12px !important;
+  }
+  & .gms-master-create-composer__body > * { grid-column: 1 !important; grid-row: auto !important; min-width: 0 !important; }
+  & .gms-master-profile-group__editor { grid-template-columns: minmax(0, 1fr) !important; }
+  & .gms-master-profile-group__actions { display: flex !important; flex-wrap: wrap !important; gap: 8px !important; }
+  & .gms-master-profile-group__actions > [data-master-group-save] { flex: 1 1 130px !important; }
+  & .gms-master-focal-workspace__copy { grid-template-columns: minmax(0, 1fr) !important; gap: 12px !important; }
+  & .gms-master-focal-workspace__copy label { display: grid !important; gap: 6px !important; }
+  & .gms-master-focal-workspace__copy textarea { min-height: 150px !important; }
+  & .gms-master-focal-workspace__editor .gms-reputation-portrait-editor { min-width: 0 !important; }
+  & .gms-master-focal-workspace__editor .gms-reputation-portrait-editor__source {
+    grid-template-columns: repeat(auto-fit, minmax(min(160px, 100%), 1fr)) !important;
+  }
+  & .gms-master-focal-workspace__editor .gms-reputation-portrait-editor__source button {
+    padding: 10px 12px !important;
+    min-height: 42px !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+  }
+  & .gms-master-focal-workspace__save { width: 100% !important; justify-self: stretch !important; min-height: 42px !important; }
+  & .gms-master-focal-workspace__preview {
+    display: block !important;
+    width: 100% !important;
+    padding: 0 !important;
+    min-width: 0 !important;
+  }
+  & .gms-master-focal-workspace__preview > summary {
+    display: grid !important;
+    grid-template-columns: 20px minmax(0, 1fr) 16px !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 12px 16px !important;
+    min-height: 48px !important;
+    cursor: pointer;
+    list-style: none;
+  }
+  & .gms-master-focal-workspace__preview > summary::marker { content: ""; }
+  & .gms-master-focal-workspace__preview > summary > i:last-child { transition: transform 240ms ease-out; }
+  & .gms-master-focal-workspace__preview[open] > summary > i:last-child { transform: rotate(180deg); }
+  & .gms-master-focal-workspace__preview-body { padding: 12px !important; min-width: 0 !important; }
+  & .gms-master-focal-workspace__preview:not([open]) > .gms-master-focal-workspace__preview-body { display: none !important; }
+}
+
+@container gms-master-panel (min-width: 1000px) {
+  :is(#gms-reputation-master-panel, .application.gms-reputation-master-panel-app)[data-master-active-section="profiles"] {
+    & .gms-master-panel__content { container: gms-profile-workspace / size; }
+    & [data-master-section-panel="subjects"] {
+      position: sticky !important;
+      top: 0 !important;
+      height: fit-content !important;
+      min-height: 0 !important;
+      max-height: 100cqh !important;
+      overflow: auto !important;
+      scrollbar-gutter: stable;
+    }
+  }
+}

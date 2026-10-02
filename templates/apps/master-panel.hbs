@@ -38,10 +38,9 @@
 
       <main class="gms-master-panel__content" data-gms-v2-role="command-workspace">
         <section data-master-section-panel="subjects" data-gms-v2-bay="subject-registry-bay">
-          <header><small>ORGANIZAÇÃO CENTRAL</small><h2>Matrizes, perfis e grupos</h2></header>
+          <header><small>ORGANIZAÇÃO CENTRAL</small><h2>Grupos e Perfis</h2></header>
 
           <section class="gms-master-profile-hub" data-master-subject-admin>
-            <div class="gms-master-profile-hub__intro"><small>BIBLIOTECA DE PERSPECTIVAS</small><strong>Grupos organizam perfis; cada perfil define uma matriz de relações.</strong><p>Navegue pela lista compacta e abra os formulários somente ao criar algo.</p></div>
             <div class="gms-master-profile-hub__actions">
               <details class="gms-master-create-composer">
                 <summary><i class="fa-solid fa-folder-plus" aria-hidden="true"></i><span><small>ORGANIZAÇÃO</small><strong>Novo grupo</strong></span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary>
@@ -266,7 +265,10 @@
           <header><small>APRESENTAÇÃO AO JOGADOR</small><h2>Identidade do perfil</h2></header>
           {{#if focal}}
             <div class="gms-master-focal-workspace">
-              <div class="gms-master-focal-workspace__preview">{{> "modules/gms-reputation/templates/partials/focal-profile.hbs" focal}}</div>
+              <details class="gms-master-focal-workspace__preview">
+                <summary><i class="fa-solid fa-eye" aria-hidden="true"></i><span>Prévia para os Players</span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary>
+                <div class="gms-master-focal-workspace__preview-body">{{> "modules/gms-reputation/templates/partials/focal-profile.hbs" focal}}</div>
+              </details>
               <div class="gms-master-focal-workspace__editor" data-master-focal-editor>
                 <div class="gms-master-focal-workspace__copy">
                   <label><span>Nome focal</span><input type="text" data-master-focal-name maxlength="240" value="{{focalName}}"></label>

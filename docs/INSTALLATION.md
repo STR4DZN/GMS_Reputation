@@ -1,4 +1,4 @@
-# Instalação — GMS // Matriz de Reputação 1.2.0-dev.70.10
+# Instalação — GMS // Matriz de Reputação 1.2.0-dev.70.11
 
 ## Alvo
 
