@@ -15457,7 +15457,7 @@ grid-column: 1 !important;
   -webkit-mask-image: url("../assets/icons/reputation-shield.svg") !important;
 }
 
-/* dev.70.8 — shared media framing and readable, responsive GM workspaces.
+/* dev.70.9 — shared media framing and readable, responsive GM workspaces.
    The ID in the scope intentionally outranks the historical theme layers.
    Both Foundry root parts and nested template containers are supported. */
 
@@ -15500,7 +15500,7 @@ grid-column: 1 !important;
 .gms-master-panel[data-gms-visual-generation="3"] {
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) !important;
-  grid-template-rows: auto auto auto minmax(0, 1fr) !important;
+  grid-template-rows: auto auto minmax(0, 1fr) !important;
   min-width: 0 !important;
   min-height: 0 !important;
   height: 100% !important;
@@ -15559,7 +15559,7 @@ grid-column: 1 !important;
   & .gms-master-panel__nav small { font-size: 11px !important; }
   & .gms-master-panel__content { display: grid !important; grid-template-columns: minmax(0, 1fr) !important; grid-auto-rows: max-content !important; align-content: start !important; gap: 16px !important; padding: 16px !important; height: 100% !important; min-height: 0 !important; overflow: auto !important; }
   & .gms-master-panel__content > [data-master-section-panel] { grid-column: 1 !important; grid-row: auto !important; padding: 16px !important; min-width: 0 !important; max-width: 100% !important; }
-  & .gms-master-panel__content > [data-master-section-panel]:not([hidden]) { display: grid !important; gap: 16px !important; }
+  & .gms-master-panel__content > [data-master-section-panel]:not([hidden]) { display: grid !important; grid-auto-rows: max-content !important; align-content: start !important; align-self: start !important; gap: 16px !important; }
   & .gms-master-panel__content > [data-master-section-panel][hidden] { display: none !important; }
   & .gms-master-panel__content > [data-master-section-panel] > header { display: grid !important; gap: 6px !important; padding: 12px 16px !important; min-height: 0 !important; height: auto !important; }
   & .gms-master-panel__content h2 { margin: 0 !important; font-size: 26px !important; line-height: 1.2 !important; overflow-wrap: anywhere !important; }
@@ -15630,12 +15630,15 @@ grid-column: 1 !important;
   & .gms-master-panel__special-readout { grid-template-columns: 52px minmax(0, 1fr) !important; gap: 12px !important; padding: 12px !important; }
 
   & .gms-master-focal-workspace { display: grid !important; grid-template-columns: minmax(0, 1fr) !important; gap: 16px !important; }
-  & .gms-reputation-portrait-editor { display: grid !important; grid-template-columns: minmax(0, 1fr) !important; gap: 14px !important; }
-  & .gms-reputation-portrait-editor__preview { width: 100% !important; height: 240px !important; min-height: 0 !important; }
+  & .gms-reputation-portrait-editor { display: grid !important; grid-template-columns: minmax(0, 1fr) !important; grid-auto-rows: max-content !important; align-content: start !important; gap: 14px !important; }
+  & .gms-reputation-portrait-editor > * { grid-column: 1 !important; grid-row: auto !important; }
+  & .gms-reputation-portrait-editor__preview { width: 100% !important; max-width: 360px !important; height: auto !important; min-height: 0 !important; max-height: none !important; aspect-ratio: 1 !important; margin-inline: auto !important; }
+  & .gms-reputation-portrait-editor[data-portrait-kind="focal"] .gms-reputation-portrait-editor__preview { max-width: 640px !important; aspect-ratio: 16 / 9 !important; }
+  & .gms-reputation-portrait.is-fit-fill .gms-reputation-portrait__image { object-fit: contain !important; }
   & .gms-reputation-portrait-editor__preview > .gms-reputation-portrait { height: 100% !important; min-height: 0 !important; }
   & .gms-reputation-portrait-editor__source { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 10px !important; }
   & .gms-reputation-portrait-editor__source > label { grid-column: 1 / -1 !important; display: grid !important; gap: 6px !important; }
-  & .gms-reputation-portrait-editor__calibration { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 12px !important; }
+  & .gms-reputation-portrait-editor__calibration { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important; gap: 12px !important; }
   & .gms-reputation-portrait-editor__calibration > label { display: grid !important; grid-template-columns: minmax(0, 1fr) auto !important; gap: 8px !important; }
   & .gms-reputation-portrait-editor__calibration input { grid-column: 1 / -1 !important; width: 100% !important; }
   & .gms-reputation-portrait-editor__calibration > button { grid-column: 1 / -1 !important; }
@@ -15679,5 +15682,21 @@ grid-column: 1 !important;
     & .gms-master-reputation-console__identity { padding: 12px !important; }
     & .gms-master-reputation-console__identity :is(.gms-reputation-identity__text, .gms-reputation-identity__ghost) { font-size: 20px !important; }
     & .gms-master-reputation-console__identity .gms-reputation-identity { font-size: 20px !important; }
+  }
+}
+
+/* Restore the GM's compact side-by-side editors when the window has room.
+   Smaller windows retain the stacked layout and independently sized previews. */
+@container gms-master-panel (min-width: 1000px) {
+  :is(#gms-reputation-master-panel, .application.gms-reputation-master-panel-app)[data-master-active-section="profiles"] {
+    & .gms-master-panel__content { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) !important; }
+    & [data-master-section-panel="subjects"] { grid-column: 1 !important; grid-row: 1 / 3 !important; }
+    & [data-master-section-panel="profile"] { grid-column: 2 !important; grid-row: 1 !important; }
+    & [data-master-section-panel="focal"] { grid-column: 2 !important; grid-row: 2 !important; }
+  }
+  :is(#gms-reputation-master-panel, .application.gms-reputation-master-panel-app)[data-master-active-section="characters"] {
+    & .gms-master-panel__content { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) !important; }
+    & [data-master-section-panel="characters"] { grid-column: 1 !important; grid-row: 1 !important; }
+    & [data-master-section-panel="portrait"] { grid-column: 2 !important; grid-row: 1 !important; }
   }
 }

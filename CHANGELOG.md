@@ -1,3 +1,10 @@
+## 1.2.0-dev.70.9 — Proporções do editor e remoção do cabeçalho
+
+- Remove a faixa “MATRIZ SOCIAL” do painel do Mestre e libera sua altura para o conteúdo.
+- Restaura os editores lado a lado nas janelas maiores.
+- Prévia de personagem volta a um quadro compacto quadrado; a prévia focal usa 16:9.
+- Imagens e GIFs nas prévias do Mestre preservam suas proporções, sem achatamento.
+
 ## 1.2.0-dev.70.8 — Encaixe das mídias e organização do Mestre
 
 - Imagens e GIFs ocupam o retângulo completo no enquadramento padrão, sem recortes ou faixas laterais; o zoom manual continua disponível.
