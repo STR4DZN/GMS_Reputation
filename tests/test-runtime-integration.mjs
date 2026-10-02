@@ -28,6 +28,9 @@ const registeredSettings = new Map();
 const settingValues = new Map();
 const settingKey = (moduleId, key) => `${moduleId}.${key}`;
 const moduleRecord = {};
+const holoRecord = { active: true };
+const holoApps = new Map();
+let holoRegistrationCount = 0;
 const socketListeners = new Map();
 const socketEmits = [];
 let controlsRenderCount = 0;
@@ -37,7 +40,7 @@ globalThis.game = {
   users: userMap,
   version: '13.351',
   release: { version: '13.351' },
-  modules: { get: (id) => id === 'gms-reputation' ? moduleRecord : null },
+  modules: { get: (id) => id === 'gms-reputation' ? moduleRecord : id === 'holosuite-core' ? holoRecord : null },
   settings: {
     register(moduleId, key, config) {
       const sk = settingKey(moduleId, key);
@@ -88,7 +91,10 @@ assert.equal(registeredSettings.size, 5, 'runtime deve registrar exatamente os 5
 for (const key of Object.values(SETTINGS)) {
   assert.ok(registeredSettings.has(settingKey(MODULE_ID, key)), `setting ausente: ${key}`);
 }
-assert.equal((onHandlers.get('getSceneControlButtons') ?? []).length, 1, 'launcher de Scene Controls deve registrar um hook');
+assert.equal((onHandlers.get('getSceneControlButtons') ?? []).length, 0, 'Reputação não deve adicionar atalhos aos controles de token');
+assert.equal((onHandlers.get('holosuite-core.apiReady') ?? []).length, 1, 'launcher deve escutar a API oficial do HoloSuite');
+holoRecord.api = { registerApp(app) { holoRegistrationCount += 1; holoApps.set(app.id, app); return app; } };
+for (const fn of onHandlers.get('holosuite-core.apiReady')) fn(holoRecord.api);
 assert.equal((onHandlers.get('gmsReputationPermissionsChanged') ?? []).length, 1, 'refresh de permissões deve registrar um hook');
 
 await onceHandlers.get('ready')();
@@ -110,27 +116,42 @@ assert.equal(initializedState.schemaVersion, DATA_SCHEMA_VERSION);
 assert.equal(initializedState.revision, 0);
 assert.ok(initializedState.metadata?.createdAt > 0, 'bootstrap deve criar metadata temporal');
 
-// Cross-check do SceneControl: instala no host token e respeita a permissão do usuário atual.
-const sceneHook = (onHandlers.get('getSceneControlButtons') ?? [])[0];
-const gmControls = { tokens: { visible: true, tools: { select: { order: 1 } } } };
-sceneHook(gmControls);
-assert.ok(gmControls.tokens.tools.gmsReputationPlayer, 'GM deve receber botão Player');
-assert.ok(gmControls.tokens.tools.gmsReputationMaster, 'GM deve receber botão Mestre');
-assert.equal(gmControls.tokens.tools.gmsReputationPlayer.button, true);
-assert.equal(typeof gmControls.tokens.tools.gmsReputationPlayer.onChange, 'function');
-assert.ok(gmControls.tokens.tools.gmsReputationMaster.order > gmControls.tokens.tools.gmsReputationPlayer.order);
+// One official HoloSuite tile; evaluate permissions at click time, not registration.
+assert.equal(holoApps.size, 1);
+const tile = holoApps.get(MODULE_ID);
+assert.equal(tile.title, 'Reputação');
+assert.equal(tile.icon, 'fa-solid fa-heart');
+assert.equal(tile.playerVisible, true);
+assert.equal(tile.premium, false);
+assert.equal(tile.featureId, MODULE_ID);
+assert.equal(tile.open().constructor.name, 'ReputationMasterPanelApplication');
 
 game.user = player;
-const playerControls = { tokens: { visible: true, tools: {} } };
-sceneHook(playerControls);
-assert.ok(playerControls.tokens.tools.gmsReputationPlayer, 'Player deve receber o botão da Matriz');
-assert.equal(playerControls.tokens.tools.gmsReputationMaster, undefined, 'Player não deve receber botão Mestre');
-
-const permissionRefresh = (onHandlers.get('gmsReputationPermissionsChanged') ?? [])[0];
-permissionRefresh();
-assert.equal(controlsRenderCount, 1, 'mudança de permissões deve redesenhar Scene Controls');
-
+assert.equal(tile.open().constructor.name, 'ReputationPlayerDashboardApplication');
+game.user = null;
+assert.equal(tile.open(), null, 'sem usuário não há acesso');
 game.user = gm;
+for (const fn of onHandlers.get('holosuite-core.apiReady')) fn(holoRecord.api);
+assert.equal(holoApps.size, 1, 'init/ready repetidos não duplicam o app');
+const countBeforeRefresh = holoRegistrationCount;
+(onHandlers.get('gmsReputationPermissionsChanged') ?? [])[0]();
+assert.equal(controlsRenderCount, 0, 'permissões não recriam atalhos de token');
+assert.equal(holoRegistrationCount, countBeforeRefresh + 1, 'permissões atualizam o app registrado');
+(onHandlers.get('hotReload') ?? [])[0]({ packageId: 'another-module' });
+assert.equal(holoRegistrationCount, countBeforeRefresh + 1);
+(onHandlers.get('hotReload') ?? [])[0]({ packageId: MODULE_ID });
+assert.equal(holoRegistrationCount, countBeforeRefresh + 2);
+const { registerReputationApp } = await import('../scripts/ui/holosuite-launcher.js');
+holoRecord.active = false;
+assert.equal(registerReputationApp(), false, 'Core inativo não deve registrar');
+holoRecord.active = true;
+const host = holoRecord.api;
+delete holoRecord.api;
+assert.equal(registerReputationApp(), false, 'sem Core, o runtime permanece funcional');
+game.holosuite = host;
+assert.equal(registerReputationApp(), true, 'suporta o fallback oficial game.holosuite');
+delete game.holosuite;
+holoRecord.api = host;
 
 // API de auditoria deve reconhecer o estado bootstrap como íntegro no Foundry v13 alvo.
 const audit = moduleRecord.api.systemAudit.runSystemAudit({ state: initializedState, foundryVersion: '13.351' });
@@ -226,4 +247,4 @@ assert.ok(parseInt(element.style.height, 10) <= 720);
 AuthorityBroker.shutdownAuthorityBroker();
 assert.equal(socketListeners.size, 0, 'shutdown deve soltar listener do socket');
 
-console.log('OK runtime-integration | lifecycle + SceneControls + FilePicker + accessibility + audit + window recovery');
+console.log('OK runtime-integration | lifecycle + HoloSuite role routing + no token controls + FilePicker + accessibility + audit + window recovery');

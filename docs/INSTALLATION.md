@@ -1,4 +1,4 @@
-# Instalação — GMS // Matriz de Reputação 1.2.0-dev.60.1
+# Instalação — GMS // Matriz de Reputação 1.2.0-dev.70.6
 
 ## Alvo
 
@@ -19,10 +19,18 @@
 
 ## Como abrir
 
-Nos Scene Controls do Foundry:
+Ative o **HoloSuite Core** e abra o app **Reputação**, identificado pelo coração.
 
-- **Matriz de Reputação** abre a visão Player;
-- **Controle de Reputação** abre o Command Deck para funções autorizadas.
+- Funções com permissão de controle abrem o painel de edição.
+- Players abrem a Matriz de Reputação somente para leitura.
+- Os atalhos antigos não são mais adicionados aos controles de token.
+
+O HoloSuite Core é recomendado para abrir o app. A API de Reputação também continua disponível para macros:
+
+```js
+game.modules.get("gms-reputation").api.playerDashboard.openPlayerDashboard();
+game.modules.get("gms-reputation").api.masterPanel.openMasterPanel();
+```
 
 A API fica disponível em `game.modules.get("gms-reputation").api`.
 
@@ -43,7 +51,6 @@ Antes de usar em sessão, em uma cópia/backup do World:
 
 No Foundry, use este URL de manifesto ao instalar o módulo:
 
-`https://raw.githubusercontent.com/STR4DZN/GMS_Reputation/main/module.json`
+`https://raw.githubusercontent.com/STR4DZN/GMS_Reputation/dev70-npc-right-sidebar/module.json`
 
-Depois de instalado por esse manifesto, o Foundry usa os campos `manifest` e `download` para consultar e baixar releases futuras. Ao publicar uma nova versão, atualize `version` e `download` no `module.json`, envie esse manifesto para a branch `main`, crie a tag `v<versão>` e anexe o ZIP `GMS_Reputation_<versão>.zip` à release.
-
+Depois de instalado por esse manifesto, o Foundry usa os campos `manifest` e `download` para consultar e baixar as atualizações desta branch de teste.

@@ -4,7 +4,7 @@ import { createLegacyPublicApi } from "./compatibility/public-api.js";
 import * as Permissions from "./persistence/permissions.js";
 import * as AuthorityBroker from "./persistence/authority-broker.js";
 import * as WorldSync from "./events/world-sync.js";
-import * as SceneControls from "./ui/scene-controls.js";
+import { registerHoloSuiteLauncher, registerReputationApp } from "./ui/holosuite-launcher.js";
 import * as Store from "./persistence/world-store.js";
 import { registerPersistenceSettings } from "./persistence/settings.js";
 import * as Migration from "./migration/legacy-migration.js";
@@ -12,7 +12,7 @@ import * as Migration from "./migration/legacy-migration.js";
 Hooks.once("init", () => {
   assertArchitectureContracts();
   registerPersistenceSettings();
-  SceneControls.registerSceneControlLauncher();
+  registerHoloSuiteLauncher();
   console.info(`${MODULE_TITLE} | Inicializando ${MODULE_VERSION} | schema ${DATA_SCHEMA_VERSION}`);
 });
 
@@ -23,6 +23,7 @@ Hooks.once("ready", async () => {
   // Public API stays byte-for-byte compatible in shape while Architecture 60
   // reorganizes internals behind this facade.
   module.api = createLegacyPublicApi();
+  registerReputationApp();
 
   AuthorityBroker.initializeAuthorityBroker({ handler: Store.handleDelegatedSaveRequest });
   WorldSync.primeWorldStateSync(Store.loadWorldState());

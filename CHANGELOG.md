@@ -1,3 +1,11 @@
+## 1.2.0-dev.70.6 — Glitch completo, retratos e app HoloSuite
+
+- Recupera as camadas cromáticas, fragmentos e três faixas animadas do glitch original, desenhadas somente nos caracteres.
+- Imagens e GIFs inteiros no enquadramento padrão; mantém o zoom manual para recortes intencionais.
+- Miniaturas dos NPCs e seletores passam a mostrar a imagem inteira.
+- Remove os dois atalhos dos controles de token e registra um único app Reputação com coração no HoloSuite.
+- O app abre os controles para funções autorizadas e a matriz de leitura para Players, inclusive após alterações de permissão.
+
 ## 1.2.0-dev.70.5 — Alinhamento da tabela dos Players
 
 - Alinha retratos, nomes, relações, corações, selos especiais e pontuação.
