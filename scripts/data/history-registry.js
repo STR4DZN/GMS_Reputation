@@ -55,6 +55,7 @@ export function portraitSnapshot(portrait = {}) {
   const normalized = normalizePortrait(portrait);
   return Object.freeze({
     src: normalized.src,
+    fit: normalized.fit,
     zoom: normalized.zoom,
     x: normalized.x,
     y: normalized.y
@@ -148,6 +149,10 @@ export function describeHistoryEvent(event = {}) {
   } else if (event.type === "portrait") {
     const sourceChanged = String(before.src || "") !== String(after.src || "");
     if (sourceChanged) changes.push({ key: "portrait-src", label: "Imagem", before: before.src ? "DEFINIDA" : "VAZIA", after: after.src ? "DEFINIDA" : "VAZIA" });
+    if (normalizePortrait(before).fit !== normalizePortrait(after).fit) {
+      const fitLabel = (fit) => fit === "cover" ? "PREENCHER" : "IMAGEM INTEIRA";
+      changes.push({ key: "portrait-fit", label: "Enquadramento", before: fitLabel(before.fit), after: fitLabel(after.fit) });
+    }
     if (Number(before.zoom) !== Number(after.zoom)) changes.push({ key: "portrait-zoom", label: "Zoom", before: `${Number(before.zoom) || 100}%`, after: `${Number(after.zoom) || 100}%` });
     if (Number(before.x) !== Number(after.x) || Number(before.y) !== Number(after.y)) {
       changes.push({ key: "portrait-position", label: "Posição", before: `${Number(before.x) || 50}/${Number(before.y) || 50}`, after: `${Number(after.x) || 50}/${Number(after.y) || 50}` });

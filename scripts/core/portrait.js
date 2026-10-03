@@ -14,7 +14,7 @@ function clampRange(value, minimum, maximum, fallback) {
 }
 
 export function emptyPortrait() {
-  return { src: "", zoom: 100, x: 50, y: 50 };
+  return { src: "", fit: "contain", zoom: 100, x: 50, y: 50 };
 }
 
 export function normalizePortraitSource(value) {
@@ -64,6 +64,7 @@ export function portraitSourceMeta(value) {
 export function normalizePortrait(value = {}) {
   return Object.freeze({
     src: normalizePortraitSource(value?.src),
+    fit: value?.fit === "cover" ? "cover" : "contain",
     zoom: clampRange(value?.zoom, 50, 300, 100),
     x: clampRange(value?.x, 0, 100, 50),
     y: clampRange(value?.y, 0, 100, 50)
@@ -73,7 +74,7 @@ export function normalizePortrait(value = {}) {
 export function portraitEquals(left, right) {
   const a = normalizePortrait(left);
   const b = normalizePortrait(right);
-  return a.src === b.src && a.zoom === b.zoom && a.x === b.x && a.y === b.y;
+  return a.src === b.src && a.fit === b.fit && a.zoom === b.zoom && a.x === b.x && a.y === b.y;
 }
 
 export function resetPortraitFrame(portrait = {}) {
@@ -89,6 +90,7 @@ export function adjustPortraitFrame(portrait = {}, patch = {}) {
   const current = normalizePortrait(portrait);
   return normalizePortrait({
     src: patch.src === undefined ? current.src : patch.src,
+    fit: patch.fit === undefined ? current.fit : patch.fit,
     zoom: patch.zoom === undefined ? current.zoom : patch.zoom,
     x: patch.x === undefined ? current.x : patch.x,
     y: patch.y === undefined ? current.y : patch.y
@@ -126,8 +128,8 @@ export function dragPortraitFrame(portrait = {}, {
 }
 
 export function getPortraitFitMode(portrait = {}) {
-  // Fit the complete source to the rectangle; manual zoom can still crop intentionally.
-  return normalizePortrait(portrait).zoom <= 100 ? "fill" : "cover";
+  // Fitting and uniform zoom are independent. Never stretch source proportions.
+  return normalizePortrait(portrait).fit;
 }
 
 /**

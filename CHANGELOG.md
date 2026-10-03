@@ -1,3 +1,12 @@
+## 1.2.0-dev.70.13 — Retratos sem achatamento
+
+- Imagens e GIFs usam a proporção original em Player, Mestre, detalhes e miniaturas.
+- Enquadramento padrão mostra a imagem inteira; margens acomodam fontes verticais, quadradas ou panorâmicas.
+- Editor permite escolher imagem inteira ou preenchimento com recorte, ambos sem deformação.
+- Zoom deixa de trocar automaticamente o modo de encaixe ao passar de 100%.
+- Enquadramento é salvo por retrato e preservado na sincronização, no histórico e em undo/redo.
+- Reset retorna à imagem inteira centralizada; carregamento por visibilidade permanece ativo.
+
 ## 1.2.0-dev.70.12 — Retratos carregados por visibilidade
 
 - Player, Mestre, navegação e detalhes carregam retratos apenas quando visíveis, com até duas solicitações em andamento por janela.

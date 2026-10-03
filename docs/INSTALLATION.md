@@ -1,4 +1,4 @@
-# Instalação — GMS // Matriz de Reputação 1.2.0-dev.70.12
+# Instalação — GMS // Matriz de Reputação 1.2.0-dev.70.13
 
 ## Alvo
 
@@ -36,7 +36,7 @@ A API fica disponível em `game.modules.get("gms-reputation").api`.
 
 ## Enquadramento das mídias
 
-No enquadramento padrão (100%), a imagem ou GIF completo é ajustado à largura e à altura do retângulo. No painel do Mestre, as prévias preservam a proporção original da mídia: quadro quadrado para personagens e 16:9 para perfis focais. As miniaturas continuam ocupando seus próprios quadros. Zoom acima de 100% permite recorte manual; “Resetar enquadramento” volta ao quadro completo.
+O padrão “Imagem inteira” preserva a proporção original e mostra a mídia completa em 100%, deixando margens quando a proporção da imagem difere do quadro. “Preencher quadro” preserva a proporção, mas recorta as bordas para ocupar o retângulo. Ambos os modos valem para imagens e GIFs e são salvos por retrato. Zoom amplia uniformemente e não altera o modo escolhido. “Resetar enquadramento” volta à imagem inteira, centralizada em 100%. Miniaturas mostram a fonte inteira, sem achatamento.
 
 ## Carregamento dos retratos
 

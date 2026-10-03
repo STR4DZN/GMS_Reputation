@@ -33,6 +33,10 @@ export function buildPortraitEditorContext(portrait = {}, {
     label: String(label || "Retrato"),
     kind: kind === "focal" ? "focal" : "subject",
     fit: getPortraitFitMode(normalized),
+    fitOptions: Object.freeze([
+      Object.freeze({ value: "contain", label: "Imagem inteira — sem cortes", selected: normalized.fit === "contain" }),
+      Object.freeze({ value: "cover", label: "Preencher quadro — com recorte", selected: normalized.fit === "cover" })
+    ]),
     hasImage: Boolean(normalized.src),
     source: Object.freeze({
       origin: /^https?:\/\//i.test(normalized.src) ? "remote" : normalized.src ? "foundry" : "none",
@@ -57,6 +61,7 @@ export function wirePortraitEditor(root, {
   const sourceInput = root.querySelector('input[name="portraitSrc"]');
   const urlInput = root.querySelector('input[name="portraitUrl"]');
   const zoomInput = root.querySelector('input[name="portraitZoom"]');
+  const fitInput = root.querySelector('select[name="portraitFit"]');
   const xInput = root.querySelector('input[name="portraitX"]');
   const yInput = root.querySelector('input[name="portraitY"]');
   const preview = root.querySelector("[data-portrait-preview]");
@@ -64,6 +69,7 @@ export function wirePortraitEditor(root, {
   const listeners = [];
   let portrait = normalizePortrait(initialPortrait?.src !== undefined ? initialPortrait : {
     src: sourceInput?.value,
+    fit: fitInput?.value,
     zoom: zoomInput?.value,
     x: xInput?.value,
     y: yInput?.value
@@ -106,6 +112,7 @@ export function wirePortraitEditor(root, {
   const apply = (next, { emitChange = true } = {}) => {
     portrait = normalizePortrait(next);
     if (sourceInput) sourceInput.value = portrait.src;
+    if (fitInput) fitInput.value = portrait.fit;
     if (zoomInput) zoomInput.value = String(portrait.zoom);
     if (xInput) xInput.value = String(portrait.x);
     if (yInput) yInput.value = String(portrait.y);
@@ -153,6 +160,7 @@ export function wirePortraitEditor(root, {
       y: readNumber(yInput, portrait.y)
     });
   }));
+  listen(fitInput, "change", () => apply({ ...portrait, fit: fitInput.value }));
 
   const useUrlButton = root.querySelector('[data-action="usePortraitUrl"]');
   listen(useUrlButton, "click", () => applySource(urlInput?.value));
