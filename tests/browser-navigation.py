@@ -135,6 +135,17 @@ with sync_playwright() as p:
     assert joao.locator('[data-player-binding-subject]').input_value()=='s1'
     navigate(page,activeSection='history');navigate(page,activeSection='settings')
     assert joao.locator('[data-player-binding-subject]').input_value()=='s1'
+    # Retained nodes from a replaced settings surface must no longer alter application drafts.
+    page.evaluate("""async () => {
+      window.retiredBinding=document.querySelector('[data-player-binding-user="joao"] [data-player-binding-subject]');
+      window.retiredSettingsTab=document.querySelector('[data-master-settings-tab="general"]');
+      await previewApp.render({force:true});
+      retiredBinding.value='s2'; retiredBinding.dispatchEvent(new Event('change',{bubbles:true}));
+      retiredSettingsTab.click();
+    }""")
+    assert page.evaluate("previewApp._bindingDrafts.get('joao').subjectId")=='s1'
+    assert page.evaluate("previewApp._settingsTab")=='players'
+    assert joao.locator('[data-player-binding-subject]').input_value()=='s1'
     joao.locator('[data-player-binding-subject]').select_option('s2')
     # Reduced motion suppresses both legacy decorations and new animations.
     assert page.locator(".application").evaluate("e=>[...e.querySelectorAll('*')].every(x=>getComputedStyle(x).animationName==='none')")

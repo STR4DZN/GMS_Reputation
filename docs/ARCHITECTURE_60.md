@@ -40,12 +40,43 @@ Nenhuma camada antiga é removida no mesmo bloco em que sua substituta nasce. O 
 4. manter adapter de compatibilidade;
 5. remover código antigo somente quando não houver mais consumidores e todos os testes de Golden State continuarem verdes.
 
+## Divisão do painel do Mestre
+
+O arquivo principal passou de 1.570 para 1.180 linhas nesta etapa, sem mudar templates, CSS, schema ou regras. A divisão é por responsabilidade:
+
+| Arquivo | Responsabilidade |
+| --- | --- |
+| `scripts/apps/master/context.js` | Montar dados para os templates, seletores, histórico, permissões e status de backup |
+| `scripts/apps/master/workspaces.js` | Definir áreas, painéis e aliases antigos de navegação |
+| `scripts/apps/master/player-bindings.js` | Controlar abas de Sistema e eventos dos vínculos de jogadores |
+| `scripts/apps/master-panel.js` | Coordenar ciclo de vida, navegação, rascunhos e ações de edição |
+| `scripts/apps/master/save-controller.js` | Serializar as operações de salvamento, como antes |
+
+`buildMasterPanelContext` continua exportado de `scripts/apps/master-panel.js`, com a mesma referência da implementação em `master/context.js`. Os exports da aplicação e da API pública permanecem iguais. A montagem do contexto não grava dados nem modifica o estado recebido.
+
+O controlador de vínculos recebe a autorização, a aba ativa, o mapa de rascunhos e callbacks de integração. O mapa continua pertencendo à aplicação para sobreviver às renderizações. O controlador remove seus próprios eventos de mouse, teclado e formulário ao ser destruído. Cada salvamento usa um snapshot; uma confirmação não elimina escolhas mais novas nem rascunhos de outro usuário. A persistência de flags continua revalidando a permissão de GM e não altera a revisão do WorldState.
+
+### Validação da extração
+
+- Comparação de **3.234 contextos** antes/depois, com cinco Golden WorldStates, GM/Assistant/Player, IDs existentes/ausentes, áreas atuais e aliases antigos, e ambas as abas de Sistema: resultados idênticos, exports iguais e nenhuma escrita/mutação de estado.
+- Teste específico do controlador: teclado, correspondência por nome, rascunhos concorrentes, falhas de gravação, permissão revogada, remoção de vínculo e limpeza de listeners.
+- Integração no navegador: controles retidos de uma renderização antiga não alteram rascunhos ou a aba ativa depois de serem substituídos; navegação, salvamento e retratos continuam cobertos pelos testes existentes.
+
+Para reproduzir a comparação usando o commit imediatamente anterior à extração:
+
+```sh
+git worktree add --detach ../gms-master-baseline b9e0ed65c69ac197c44647f5dcec9b26091f0560
+node tools/compare-master-context.mjs ../gms-master-baseline
+```
+
+A ferramenta usa dados e serviços simulados em um processo Node separado. A suíte normal continua sendo executada com `npm test`; a prévia não substitui a validação em um mundo Foundry.
+
 ## Próximas fases
 
 - B: Queries por seção do Mestre e índices compartilhados;
-- C: Controllers por seção, reduzindo o `master-panel.js`;
+- C: continuar a separação dos controllers de cadastro, limpeza e edição, após contexto e vínculos;
 - D: Commands passam a centralizar mutations/transações;
 - E: templates Mestre divididos em partials mantendo DOM equivalente;
-- F: CSS source modular + build para uma única folha final;
+- F: consolidar regras legadas depois da separação das fontes CSS e geração de uma única folha final, já implementadas;
 - G: limpeza de legacy interno comprovadamente sem consumidores;
 - H: schema 6 somente se existir necessidade funcional real e com migração explícita.

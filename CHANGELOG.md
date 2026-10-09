@@ -1,3 +1,9 @@
+## Em desenvolvimento — Divisão do painel do Mestre
+
+- Contexto dos templates, definição das áreas e controles dos vínculos de jogadores extraídos para módulos próprios; arquivo principal reduzido de 1.570 para 1.180 linhas.
+- API pública, rascunhos, autorização e persistência preservados; contexto comparado antes/depois em 3.234 cenários.
+- Novos testes de concorrência, falhas e limpeza dos eventos de vínculos, incluindo controles antigos após renderização. [Estrutura e validação](docs/ARCHITECTURE_60.md).
+
 ## Em desenvolvimento — Organização dos estilos
 
 - Fontes dos componentes recentes separadas em navegação, feedback, transições, responsividade, acessibilidade, layout, reputação pessoal e visibilidade de retratos.

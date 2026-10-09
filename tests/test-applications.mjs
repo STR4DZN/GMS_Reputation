@@ -43,6 +43,8 @@ storage.set(`${MODULE_ID}.${SETTINGS.WORLD_STATE_BACKUP}`, {});
 const Detail = await import("../scripts/apps/subject-detail.js");
 const Player = await import("../scripts/apps/player-dashboard.js");
 const Master = await import("../scripts/apps/master-panel.js");
+const MasterContext = await import("../scripts/apps/master/context.js");
+assert.equal(Master.buildMasterPanelContext, MasterContext.buildMasterPanelContext, "The existing public import keeps the canonical context builder");
 
 const detail = Detail.buildSubjectDetailContext({ profileId: "p1", subjectId: "s1" });
 assert.equal(detail.found, true);
