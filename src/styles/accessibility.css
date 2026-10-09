@@ -1,0 +1,7 @@
+@layer gms-accessibility {
+@media (prefers-reduced-motion: reduce) {
+  .application.gms-reputation-app *, .gms-feedback-card, .gms-navigation-palette { animation: none !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
+  .gms-motion-scanner { display: none !important; }
+}
+}
+

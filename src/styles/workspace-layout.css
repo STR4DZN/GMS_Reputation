@@ -1,0 +1,50 @@
+/* Explicit grid placement avoids inherited dossier row positions. */
+:is(.application.gms-reputation-app [data-gms-navigation="enhanced"],.application.gms-reputation-app[data-gms-navigation="enhanced"]) .gms-player-dashboard__header { grid-row: 1 !important; }
+:is(.application.gms-reputation-app [data-gms-navigation="enhanced"],.application.gms-reputation-app[data-gms-navigation="enhanced"]) .gms-player-navigation { grid-row: 2 !important; position: relative !important; z-index: 3; }
+:is(.application.gms-reputation-app [data-gms-navigation="enhanced"],.application.gms-reputation-app[data-gms-navigation="enhanced"]) .gms-player-dashboard__scroll, :is(.application.gms-reputation-app [data-gms-navigation="enhanced"],.application.gms-reputation-app[data-gms-navigation="enhanced"]) .gms-player-dashboard__empty { grid-row: 3 !important; }
+:is(.application.gms-reputation-app [data-gms-navigation="enhanced"],.application.gms-reputation-app[data-gms-navigation="enhanced"]) .gms-master-panel__nav { height: 100% !important; max-height: none !important; align-self: stretch !important; }
+:is(.application.gms-reputation-app [data-gms-navigation="enhanced"],.application.gms-reputation-app[data-gms-navigation="enhanced"]) .gms-smart-selector__copy { min-width: 0 !important; width: auto !important; flex: 1 !important; }
+:is(.application.gms-reputation-app [data-gms-navigation="enhanced"],.application.gms-reputation-app[data-gms-navigation="enhanced"]) .gms-smart-selector__trigger { grid-template-columns: 42px minmax(0,1fr) auto !important; }
+@container gms-window (max-width: 900px) { :is(.application.gms-reputation-app [data-gms-navigation="enhanced"],.application.gms-reputation-app[data-gms-navigation="enhanced"]) .gms-master-panel__nav { height: auto !important; } }
+:is(.application.gms-reputation-app [data-gms-navigation="enhanced"],.application.gms-reputation-app[data-gms-navigation="enhanced"]) .gms-smart-selector__current { min-width: 0 !important; width: auto !important; }
+:is(.application.gms-reputation-app [data-gms-navigation="enhanced"],.application.gms-reputation-app[data-gms-navigation="enhanced"]) .gms-master-panel__nav-copy { min-width: 0 !important; }
+@container gms-window (max-width: 600px) {
+  :is(.application.gms-reputation-app [data-gms-navigation="enhanced"],.application.gms-reputation-app[data-gms-navigation="enhanced"]) .gms-master-panel__savebar { display: grid !important; grid-template-columns: 1fr 1fr !important; grid-template-rows: auto auto !important; }
+  :is(.application.gms-reputation-app [data-gms-navigation="enhanced"],.application.gms-reputation-app[data-gms-navigation="enhanced"]) .gms-master-panel__save-state { grid-column: 1/-1 !important; min-height: 30px !important; }
+  :is(.application.gms-reputation-app [data-gms-navigation="enhanced"],.application.gms-reputation-app[data-gms-navigation="enhanced"]) .gms-master-panel__history-actions { grid-column: 1 !important; grid-row: 2 !important; align-items: center !important; }
+  :is(.application.gms-reputation-app [data-gms-navigation="enhanced"],.application.gms-reputation-app[data-gms-navigation="enhanced"]) .gms-master-panel__save-actions { grid-column: 2 !important; grid-row: 2 !important; flex-direction: row !important; }
+  :is(.application.gms-reputation-app [data-gms-navigation="enhanced"],.application.gms-reputation-app[data-gms-navigation="enhanced"]) .gms-master-panel__savebar button { height: 32px !important; min-height: 32px !important; width: auto !important; flex: 1 !important; }
+  :is(.application.gms-reputation-app [data-gms-navigation="enhanced"],.application.gms-reputation-app[data-gms-navigation="enhanced"]) .gms-master-panel__nav .gms-navigation-count { display: none !important; }
+  :is(.application.gms-reputation-app [data-gms-navigation="enhanced"],.application.gms-reputation-app[data-gms-navigation="enhanced"]) .gms-master-panel__nav button { grid-template-columns: minmax(0,1fr) !important; min-width: 108px !important; }
+  :is(.application.gms-reputation-app [data-gms-navigation="enhanced"],.application.gms-reputation-app[data-gms-navigation="enhanced"]) .gms-master-panel__nav button > i { display: none !important; }
+}
+@container gms-window (max-width: 600px) {
+  :is(.application.gms-reputation-app [data-gms-navigation="enhanced"],.application.gms-reputation-app[data-gms-navigation="enhanced"]) .gms-reputation-heart-track { display: grid !important; grid-auto-flow: column !important; grid-auto-columns: minmax(0,18px) !important; gap: 2px !important; width: fit-content !important; max-width: 100% !important; min-width: 0 !important; padding: 3px !important; min-height: 27px !important; }
+  :is(.application.gms-reputation-app [data-gms-navigation="enhanced"],.application.gms-reputation-app[data-gms-navigation="enhanced"]) .gms-reputation-heart { width: 100% !important; min-width: 0 !important; max-width: 18px !important; height: 20px !important; min-height: 20px !important; }
+  :is(.application.gms-reputation-app [data-gms-navigation="enhanced"],.application.gms-reputation-app[data-gms-navigation="enhanced"]) .gms-reputation-player-card__hearts { padding-right: 0 !important; }
+  :is(.application.gms-reputation-app [data-gms-navigation="enhanced"],.application.gms-reputation-app[data-gms-navigation="enhanced"]) .gms-master-reputation-console__hearts { display: flex !important; flex-direction: column !important; align-items: flex-start !important; gap: 7px !important; }
+  :is(.application.gms-reputation-app [data-gms-navigation="enhanced"],.application.gms-reputation-app[data-gms-navigation="enhanced"]) .gms-reputation-focal-profile__visual { min-width: 0 !important; min-height: 0 !important; }
+}
+@container gms-window (max-width: 600px) {
+  :is(.application.gms-reputation-app .gms-player-dashboard[data-gms-navigation="enhanced"],.application.gms-reputation-app.gms-player-dashboard[data-gms-navigation="enhanced"]) .gms-reputation-player-card__hearts { grid-area: hearts !important; padding: 0 !important; }
+  :is(.application.gms-reputation-app .gms-player-dashboard[data-gms-navigation="enhanced"],.application.gms-reputation-app.gms-player-dashboard[data-gms-navigation="enhanced"]) .gms-reputation-player-card__heading { grid-area: heading !important; padding: 0 !important; }
+  :is(.application.gms-reputation-app .gms-player-dashboard[data-gms-navigation="enhanced"],.application.gms-reputation-app.gms-player-dashboard[data-gms-navigation="enhanced"]) .gms-reputation-player-card__score { grid-area: score !important; }
+  :is(.application.gms-reputation-app [data-gms-navigation="enhanced"],.application.gms-reputation-app[data-gms-navigation="enhanced"]) .gms-reputation-focal-profile__visual .gms-reputation-portrait { width: 100% !important; height: 100% !important; }
+}
+@container gms-window (max-width: 600px) {
+  :is(.application.gms-reputation-app .gms-player-dashboard[data-gms-navigation="enhanced"],.application.gms-reputation-app.gms-player-dashboard[data-gms-navigation="enhanced"]) .gms-reputation-player-card { grid-template-rows: auto auto auto auto !important; }
+  :is(.application.gms-reputation-app .gms-player-dashboard[data-gms-navigation="enhanced"],.application.gms-reputation-app.gms-player-dashboard[data-gms-navigation="enhanced"]) .gms-reputation-player-card__score { width: 54px !important; min-width: 0 !important; max-width: 54px !important; }
+  :is(.application.gms-reputation-app .gms-player-dashboard[data-gms-navigation="enhanced"],.application.gms-reputation-app.gms-player-dashboard[data-gms-navigation="enhanced"]) .gms-reputation-player-card__score strong { font-size: 27px !important; }
+  :is(.application.gms-reputation-app .gms-player-dashboard[data-gms-navigation="enhanced"],.application.gms-reputation-app.gms-player-dashboard[data-gms-navigation="enhanced"]) :is(.gms-reputation-player-card__serial,.gms-reputation-player-card__vector-mark) { position: absolute !important; bottom: 5px !important; }
+  :is(.application.gms-reputation-app .gms-player-dashboard[data-gms-navigation="enhanced"],.application.gms-reputation-app.gms-player-dashboard[data-gms-navigation="enhanced"]) .gms-reputation-player-card__special { margin: 0 !important; }
+}
+:is(.application.gms-reputation-app [data-gms-navigation="enhanced"],.application.gms-reputation-app[data-gms-navigation="enhanced"]) .gms-master-panel__nav-copy strong { overflow: visible !important; text-overflow: clip !important; }
+/* Workspaces grow with their forms; the parent is the single scroll owner. */
+:is(.application.gms-reputation-app [data-gms-navigation="enhanced"],.application.gms-reputation-app[data-gms-navigation="enhanced"]) .gms-master-panel__content { display: block !important; }
+:is(.application.gms-reputation-app [data-gms-navigation="enhanced"],.application.gms-reputation-app[data-gms-navigation="enhanced"]) [data-master-section-panel] { height: auto !important; margin-bottom: 14px !important; }
+.gms-feedback-comparison strong em { font: 9px/1 sans-serif; color: #8cafac; font-style: normal; white-space: nowrap; }
+@container gms-window (max-width: 600px) {
+  :is(.application.gms-reputation-app .gms-player-dashboard[data-gms-navigation="enhanced"],.application.gms-reputation-app.gms-player-dashboard[data-gms-navigation="enhanced"]) .gms-reputation-player-card__special strong { position: static !important; width: auto !important; height: auto !important; clip: auto !important; clip-path: none !important; overflow: visible !important; white-space: nowrap !important; font-size: 10px !important; }
+  :is(.application.gms-reputation-app .gms-player-dashboard[data-gms-navigation="enhanced"],.application.gms-reputation-app.gms-player-dashboard[data-gms-navigation="enhanced"]) .gms-reputation-player-card__special { display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: center !important; gap: 8px !important; }
+}
+

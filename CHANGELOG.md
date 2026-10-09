@@ -1,3 +1,9 @@
+## Em desenvolvimento — Organização dos estilos
+
+- Fontes dos componentes recentes separadas em navegação, feedback, transições, responsividade, acessibilidade, layout, reputação pessoal e visibilidade de retratos.
+- Geração determinística da única folha carregada no Foundry, inicialmente idêntica à anterior; ordem da cascata e caminhos de assets preservados.
+- Verificação automática impede empacotar uma folha desatualizada em relação às fontes. [Como editar e validar](docs/STYLES.md).
+
 ## Em desenvolvimento — Retratos pela área visível
 
 - Carregamento de retratos restrito à área visível em cards, seletores, perfis, detalhes, editores e avisos.
