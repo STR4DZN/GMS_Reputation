@@ -1,15 +1,8 @@
 import { MASTER_SAVE_MODE, MODULE_ID } from "../constants.js";
 import { loadWorldState, restoreWorldStateBackup } from "../persistence/world-store.js";
-import { wirePortraitEditor } from "../components/portrait-editor.js";
 import { wirePortraitVisibility } from "../components/portrait-visibility.js";
-import { getSemanticBand } from "../core/semantic-bands.js";
 import { computeRelationshipCandidate, updateRelationship } from "../data/reputation-registry.js";
 import { setSubjectPortrait } from "../data/portrait-registry.js";
-import { createNewSubject, updateSubject, moveSubjectOneStep } from "../data/subject-registry.js";
-import { createNewProfile, setProfileSubjectIncluded, updateFocalProfile, updateProfile, moveProfileOneStep } from "../data/profile-registry.js";
-import { createNewGroup, renameGroup, moveGroup } from "../data/group-registry.js";
-import { deleteGroupPermanently, deleteProfilePermanently, deleteSubjectPermanently } from "../data/destructive-operations.js";
-import { applyBulkRelationshipChanges, bulkArchiveSubjects, bulkSetSubjectsActive, moveSubjects } from "../data/bulk-operations.js";
 import { buildUndoRedoState, redoLastTransaction, undoLastTransaction } from "../data/undo-redo.js";
 import {
   getMasterAutoSaveDelay,
@@ -35,9 +28,16 @@ import { wireSmartSelector } from "../components/smart-selector.js";
 import { NavigationTrail, adjacentId, wireNavigationPalette } from "../ui/navigation.js";
 import { registerReputationFeedbackSurface, unregisterReputationFeedbackSurface } from "../ui/reputation-feedback.js";
 import { openPlayerDashboard } from "./player-dashboard.js";
-import { buildMasterPanelContext, normalizeUiSearch } from "./master/context.js";
+import { buildMasterPanelContext } from "./master/context.js";
 import { SECTIONS, WORKSPACE_PANELS, normalizeWorkspace } from "./master/workspaces.js";
 import { wireMasterPlayerBindings } from "./master/player-bindings.js";
+
+import { confirmMasterAction } from "./master/confirmation.js";
+import { wireMasterRegistryControls } from "./master/registry-controls.js";
+import { wireMasterCleanupControls } from "./master/cleanup-controls.js";
+import { wireMasterBulkControls } from "./master/bulk-controls.js";
+import { wireMasterRelationshipControls } from "./master/relationship-controls.js";
+import { wireMasterPortraitControls, wireMasterFocalControls } from "./master/portrait-controls.js";
 
 // Keep the public module path and exported builder identity stable.
 export { buildMasterPanelContext } from "./master/context.js";
@@ -52,28 +52,6 @@ const PARTIALS = [
   `modules/${MODULE_ID}/templates/partials/focal-profile.hbs`,
   `modules/${MODULE_ID}/templates/partials/smart-selector.hbs`
 ];
-
-function escapeHTML(value) {
-  return String(value ?? "").replace(/[&<>"']/g, (character) => ({
-    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-  })[character]);
-}
-
-async function confirmMasterAction({ title, message, confirmLabel = "Confirmar" } = {}) {
-  const DialogV2 = globalThis.foundry?.applications?.api?.DialogV2;
-  if (typeof DialogV2?.confirm === "function") {
-    return DialogV2.confirm({
-      window: { title: String(title || "Confirmar operação"), icon: "fa-solid fa-triangle-exclamation" },
-      content: `<p>${escapeHTML(message)}</p>`,
-      yes: { label: String(confirmLabel || "Confirmar"), icon: "fa-solid fa-check" },
-      no: { label: "Cancelar", icon: "fa-solid fa-xmark" },
-      rejectClose: false,
-      modal: true
-    });
-  }
-  if (typeof globalThis.confirm === "function") return globalThis.confirm(String(message || title || "Confirmar?"));
-  return true;
-}
 
 export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
   static DEFAULT_OPTIONS = {
@@ -100,6 +78,7 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
     this.activeSection = normalizeWorkspace(activeSection);
     this.newProfileGroupId = String(newProfileGroupId || "");
     this._listeners = [];
+    this._controlControllers = [];
     this._portraitController = null;
     this._focalPortraitController = null;
     this._accessibilityController = null;
@@ -535,111 +514,20 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
   }
 
   _wireQuickEdit(root) {
-    const scoreInput = root.querySelector("[data-master-score-input]");
-    const scoreRange = root.querySelector("[data-master-score-range]");
-    const bondInput = root.querySelector("[data-master-bond]");
-    const communionInput = root.querySelector("[data-master-communion]");
-
-    const updatePreview = (value, { animate = true } = {}) => {
-      const expanded = Boolean(bondInput?.checked || communionInput?.checked);
-      const limit = expanded ? 12 : 10;
-      const numeric = Math.min(limit, Math.max(-10, Math.round((Number(value) || 0) * 2) / 2));
-      const scoreText = Number.isInteger(numeric) ? String(numeric) : String(numeric).replace(".", ",");
-      const band = getSemanticBand(numeric, { bond: expanded });
-      const scorePreview = root.querySelector("[data-master-score-preview]");
-      if (scorePreview) { scorePreview.textContent = scoreText; scorePreview.closest?.("[data-master-relation-console]")?.setAttribute?.("data-relation-band", band.id); }
-      const relationPreview = root.querySelector("[data-master-relation-preview]");
-      if (relationPreview) relationPreview.textContent = band.label;
-      const limitPreview = root.querySelector("[data-master-score-limit-preview]");
-      if (limitPreview) limitPreview.textContent = String(limit);
-      const track = root.querySelector(".gms-master-reputation-console .gms-reputation-heart-track");
-      if (track) {
-        for (const id of ["hostile","caution","neutral","contact","trusted","ally","extreme"]) track.classList.remove(`is-band-${id}`);
-        track.classList.add(`is-band-${band.id}`);
-        track.dataset.heartBand = band.id;
-        const magnitude = Math.abs(numeric);
-        const full = Math.floor(magnitude);
-        const half = magnitude - full >= .5;
-        for (const heart of track.querySelectorAll("[data-heart-ordinal]")) {
-          const index = Number(heart.dataset.heartOrdinal) - 1;
-          heart.dataset.heartState = index < full ? "full" : (index === full && half ? "half" : "empty");
-        }
-      }
-      if (animate) this._motionController?.relationship?.(root.querySelector?.("[data-master-relation-console]"));
-      return numeric;
-    };
-
-    const setScoreDraft = (value) => {
-      if (!scoreInput) return;
-      const numeric = updatePreview(value);
-      const expanded = Boolean(bondInput?.checked || communionInput?.checked);
-      const limit = expanded ? 12 : 10;
-      scoreInput.max = String(limit);
-      scoreInput.value = String(numeric);
-      if (scoreRange) { scoreRange.max = String(limit); scoreRange.value = String(numeric); }
-      this._queueRelationshipDraft(root);
-    };
-
-    for (const button of root.querySelectorAll("[data-master-score-delta]")) {
-      listen(this._listeners, button, "click", () => setScoreDraft(Number(scoreInput?.value || 0) + Number(button.dataset.masterScoreDelta)));
-    }
-    for (const button of root.querySelectorAll("[data-master-score-preset]")) {
-      listen(this._listeners, button, "click", () => setScoreDraft(Number(button.dataset.masterScorePreset)));
-    }
-    listen(this._listeners, scoreInput, "input", () => { if (scoreRange) scoreRange.value = scoreInput.value; updatePreview(scoreInput.value); this._queueRelationshipDraft(root); });
-    listen(this._listeners, scoreRange, "input", () => { if (scoreInput) scoreInput.value = scoreRange.value; updatePreview(scoreRange.value); this._queueRelationshipDraft(root); });
-    listen(this._listeners, bondInput, "change", () => {
-      this._motionController?.protocol?.(root.querySelector?.(".gms-master-reputation-console__protocols"));
-      if (scoreInput) scoreInput.max = String(bondInput.checked || communionInput?.checked ? 12 : 10);
-      if (scoreRange) scoreRange.max = String(bondInput.checked || communionInput?.checked ? 12 : 10);
-      updatePreview(scoreInput?.value, { animate: false });
-      this._queueRelationshipDraft(root);
-    });
-    listen(this._listeners, communionInput, "change", () => {
-      this._motionController?.protocol?.(root.querySelector?.(".gms-master-reputation-console__protocols"));
-      if (scoreInput) scoreInput.max = String(communionInput.checked || bondInput?.checked ? 12 : 10);
-      if (scoreRange) scoreRange.max = String(communionInput.checked || bondInput?.checked ? 12 : 10);
-      updatePreview(scoreInput?.value, { animate: false });
-      this._queueRelationshipDraft(root);
-    });
-
-    updatePreview(scoreInput?.value, { animate: false });
-
-    listen(this._listeners, root.querySelector("[data-master-apply-score]"), "click", async () => {
-      this._queueRelationshipDraft(root);
-      await this._flushPending("Reputação sincronizada.");
-    });
-    listen(this._listeners, root.querySelector("[data-master-apply-specials]"), "click", async () => {
-      this._queueRelationshipDraft(root);
-      await this._flushPending("Protocolos especiais sincronizados.");
-    });
+    this._controlControllers.push(wireMasterRelationshipControls(root, {
+      getMotionController: () => this._motionController,
+      queueDraft: () => this._queueRelationshipDraft(root),
+      flushPending: (message) => this._flushPending(message)
+    }));
   }
 
   _wirePortrait(root, context) {
-    if (!canUser(globalThis.game?.user, MODULE_CAPABILITY.PORTRAITS)) return;
     this._portraitController?.destroy?.();
-    this._portraitController = null;
-    const editorRoot = root.querySelector("[data-master-portrait-editor] [data-portrait-editor]");
-    if (!editorRoot || !context?.selection?.portraitEditor) return;
-    let draftPortrait = context.selection.portraitEditor.portrait;
-    const { profileId } = this._contextIds(root);
-    const { subjectId } = this._contextIds(root);
-    this._portraitController = wirePortraitEditor(editorRoot, {
-      deferImages: true,
-      initialPortrait: draftPortrait,
-      onChange: (portrait) => {
-        draftPortrait = portrait;
-        const reason = this._reason(root);
-        const snapshot = { ...portrait };
-        this._queuePortraitDraft(subjectId, snapshot, profileId, reason);
-      },
-      onError: (error) => notify("warn", error?.message || "Fonte de retrato inválida.")
-    });
-    listen(this._listeners, root.querySelector("[data-master-save-portrait]"), "click", async () => {
-      const reason = this._reason(root);
-      const snapshot = { ...draftPortrait };
-      this._queuePortraitDraft(subjectId, snapshot, profileId, reason);
-      await this._flushPending("Retrato sincronizado.");
+    this._portraitController = wireMasterPortraitControls(root, context, {
+      contextIds: () => this._contextIds(root),
+      getReason: () => this._reason(root),
+      queueDraft: (...args) => this._queuePortraitDraft(...args),
+      flushPending: (message) => this._flushPending(message)
     });
   }
 
@@ -653,206 +541,28 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
   }
 
   _wireFocal(root, context) {
-    if (!canUser(globalThis.game?.user, MODULE_CAPABILITY.FOCAL)) return;
     this._focalPortraitController?.destroy?.();
-    this._focalPortraitController = null;
-    const editorRoot = root.querySelector("[data-master-focal-editor] [data-portrait-editor]");
-    if (!editorRoot || !context?.focalEditor || !this.profileId) return;
-    let draftPortrait = context.focalEditor.portrait;
-    const focalProfileId = context.profileId;
-    this._focalPortraitController = wirePortraitEditor(editorRoot, {
-      deferImages: true,
-      initialPortrait: draftPortrait,
-      onChange: (portrait) => { draftPortrait = portrait; this._focalPortraitDrafts.set(focalProfileId, portrait); },
-      onError: (error) => notify("warn", error?.message || "Fonte de retrato focal inválida.")
-    });
-    listen(this._listeners, root.querySelector("[data-master-save-focal]"), "click", async () => {
-      const name = String(root.querySelector("[data-master-focal-name]")?.value || "").trim();
-      const description = String(root.querySelector("[data-master-focal-description]")?.value || "");
-      const { profileId } = this._contextIds(root);
-      const portrait = { ...draftPortrait };
-      await this._runMutation(
-        this._saveFormDrafts("focal", profileId, () => updateFocalProfile(profileId, { name, description, portrait })),
-        "Perfil focal atualizado."
-      );
+    this._focalPortraitController = wireMasterFocalControls(root, context, {
+      hasProfile: () => Boolean(this.profileId),
+      contextIds: () => this._contextIds(root),
+      onPortraitChange: (id, portrait) => this._focalPortraitDrafts.set(id, portrait),
+      runMutation: (action, message) => this._runMutation(action, message),
+      saveFormDrafts: (scope, id, action) => this._saveFormDrafts(scope, id, action)
     });
   }
 
   _wireRegistry(root) {
-    if (!canUser(globalThis.game?.user, MODULE_CAPABILITY.SUBJECTS)) return;
-
-    const profileListSearch = root.querySelector("[data-master-profile-list-search]");
-    listen(this._listeners, profileListSearch, "input", () => {
-      const query = normalizeUiSearch(profileListSearch?.value);
-      for (const group of root.querySelectorAll(".gms-master-profile-group")) {
-        const groupLabel = normalizeUiSearch(group.querySelector(".gms-master-profile-group__summary-copy")?.textContent || "");
-        let visible = 0;
-        for (const entry of group.querySelectorAll("[data-master-profile-choice]")) {
-          const match = !query || groupLabel.includes(query) || normalizeUiSearch(entry.textContent).includes(query);
-          entry.hidden = !match;
-          if (match) visible += 1;
-        }
-        group.hidden = Boolean(query) && visible === 0;
-        if (query && visible > 0) group.open = true;
-      }
-    });
-
-    const characterListSearch = root.querySelector("[data-master-character-list-search]");
-    listen(this._listeners, characterListSearch, "input", () => {
-      const query = normalizeUiSearch(characterListSearch?.value);
-      for (const row of root.querySelectorAll(".gms-master-subject-registry__list > article")) {
-        row.hidden = Boolean(query) && !normalizeUiSearch(row.textContent).includes(query);
-      }
-    });
-
-    const groupName = root.querySelector("[data-master-new-group-name]");
-    const createGroupButton = root.querySelector("[data-master-create-group]");
-    const createGroupAction = async () => {
-      const name = String(groupName?.value || "").trim();
-      if (!name) { notify("warn", "Informe o nome do novo grupo de perfis."); return; }
-      const result = await this._runMutation(() => createNewGroup({ name }), `Grupo de perfis “${name}” criado.`);
-      const created = Object.values(result?.groups ?? {}).find((entry) => String(entry.name || "").localeCompare(name, "pt-BR", { sensitivity: "base" }) === 0);
-      if (created?.id) { this.newProfileGroupId = created.id; if (this.rendered) await this.render({ force: true }); }
-    };
-    listen(this._listeners, createGroupButton, "click", createGroupAction);
-    listen(this._listeners, groupName, "keydown", (event) => { if (event.key === "Enter") { event.preventDefault(); createGroupAction(); } });
-
-    const profileNameInput = root.querySelector("[data-master-new-profile-name]");
-    const focalNameInput = root.querySelector("[data-master-new-profile-focal-name]");
-    const createProfileButton = root.querySelector("[data-master-create-profile]");
-    const createProfileAction = async () => {
-      const name = String(profileNameInput?.value || "").trim();
-      const focalName = String(focalNameInput?.value || "").trim();
-      if (!name) { notify("warn", "Informe o nome do novo perfil de reputação."); return; }
-      const groupId = this.newProfileGroupId === "__ungrouped__" ? null : this.newProfileGroupId;
-      const result = await this._runMutation(() => createNewProfile({ name, focalName: focalName || name, groupId }), `Perfil “${name}” criado.`);
-      const created = Object.values(result?.profiles ?? {}).find((entry) => String(entry.name || "").localeCompare(name, "pt-BR", { sensitivity: "base" }) === 0);
-      if (created?.id) { this.profileId = created.id; if (this.rendered) await this.render({ force: true }); }
-    };
-    listen(this._listeners, createProfileButton, "click", createProfileAction);
-
-    const aliasInput = root.querySelector("[data-master-new-subject-alias]");
-    const realNameInput = root.querySelector("[data-master-new-subject-real-name]");
-    const createSubjectButton = root.querySelector("[data-master-create-subject]");
-    const createSubjectAction = async () => {
-      const alias = String(aliasInput?.value || "").trim();
-      const realName = String(realNameInput?.value || "").trim();
-      if (!alias && !realName) { notify("warn", "Informe ao menos o apelido ou o nome real do personagem."); return; }
-      await this._runMutation(() => createNewSubject({ alias, realName }), `Personagem “${alias || realName}” criado.`);
-    };
-    listen(this._listeners, createSubjectButton, "click", createSubjectAction);
-
-    const profileEditorGroupButtons = [...root.querySelectorAll("[data-master-profile-editor-group-choice]")];
-    for (const button of profileEditorGroupButtons) {
-      listen(this._listeners, button, "click", () => {
-        for (const peer of profileEditorGroupButtons) {
-          const active = peer === button;
-          peer.dataset.active = String(active);
-          peer.setAttribute("aria-pressed", String(active));
-        }
-      });
-    }
-
-    listen(this._listeners, root.querySelector("[data-master-save-profile-editor]"), "click", async () => {
-      if (!this.profileId) return;
-      const name = String(root.querySelector("[data-master-profile-editor-name]")?.value || "").trim();
-      const active = Boolean(root.querySelector("[data-master-profile-editor-active]")?.checked);
-      const archived = Boolean(root.querySelector("[data-master-profile-editor-archived]")?.checked);
-      const selectedGroup = profileEditorGroupButtons.find((button) => button.getAttribute("aria-pressed") === "true");
-      const groupId = String(selectedGroup?.dataset.masterProfileEditorGroupChoice || "__ungrouped__");
-      if (!name) { notify("warn", "Informe o nome da matriz."); return; }
-      const { profileId } = this._contextIds(root);
-      await this._runMutation(
-        this._saveFormDrafts("profile-editor", profileId, () => updateProfile(profileId, { name, groupId, active, archived })),
-        "Perfil atualizado."
-      );
-    });
-
-    for (const button of root.querySelectorAll("[data-master-profile-move]")) {
-      listen(this._listeners, button, "click", async () => {
-        if (!this.profileId) return;
-        const { profileId } = this._contextIds(root);
-        await this._runMutation(
-          () => moveProfileOneStep(profileId, button.dataset.masterProfileMove),
-          "Ordem do perfil atualizada."
-        );
-      });
-    }
-
-    for (const button of root.querySelectorAll("[data-master-new-profile-group-choice]")) {
-      listen(this._listeners, button, "click", () => {
-        this.newProfileGroupId = String(button.dataset.masterNewProfileGroupChoice || "__ungrouped__");
-        for (const peer of root.querySelectorAll("[data-master-new-profile-group-choice]")) {
-          const active = String(peer.dataset.masterNewProfileGroupChoice || "") === this.newProfileGroupId;
-          peer.dataset.active = String(active);
-          peer.setAttribute("aria-pressed", String(active));
-        }
-      });
-    }
-
-    for (const button of root.querySelectorAll("[data-master-profile-roster-toggle]")) {
-      listen(this._listeners, button, "click", async (event) => {
-        event.stopPropagation?.();
-        if (!this.profileId) return;
-        const subjectId = String(button.dataset.masterProfileRosterToggle || "");
-        const included = String(button.dataset.inProfile) !== "true";
-        const { profileId } = this._contextIds(root);
-        await this._runMutation(
-          () => setProfileSubjectIncluded(profileId, subjectId, included),
-          included ? "Personagem adicionado ao perfil." : "Personagem removido do perfil."
-        );
-      });
-    }
-
-    for (const button of root.querySelectorAll("[data-master-group-save]")) {
-      listen(this._listeners, button, "click", async () => {
-        const row = button.closest("[data-master-group]");
-        const id = String(row?.dataset.masterGroup || "");
-        const input = row?.querySelector?.("[data-master-group-name]");
-        await this._runMutation(() => renameGroup(id, input?.value), "Nome do grupo de perfis atualizado.");
-      });
-    }
-    for (const button of root.querySelectorAll("[data-master-group-move]")) {
-      listen(this._listeners, button, "click", async () => {
-        const row = button.closest("[data-master-group]");
-        await this._runMutation(() => moveGroup(row?.dataset.masterGroup, button.dataset.masterGroupMove), "Ordem dos grupos de perfis atualizada.");
-      });
-    }
-    for (const button of root.querySelectorAll("[data-master-profile-choice]")) {
-      listen(this._listeners, button, "click", async () => {
-        const id = String(button.dataset.masterProfileChoice || "");
-        if (!id || id === this.profileId) return;
-        await this._navigate({ profileId: id });
-      });
-    }
-
-    listen(this._listeners, root.querySelector("[data-master-save-subject]"), "click", async () => {
-      if (!this.subjectId) return;
-      const alias = String(root.querySelector("[data-master-subject-alias]")?.value || "").trim();
-      const realName = String(root.querySelector("[data-master-subject-real-name]")?.value || "").trim();
-      const description = String(root.querySelector("[data-master-subject-description]")?.value || "");
-      const tags = String(root.querySelector("[data-master-subject-tags]")?.value || "")
-        .split(/[,;\n]+/).map((value) => value.trim()).filter(Boolean);
-      const active = Boolean(root.querySelector("[data-master-subject-active]")?.checked);
-      const archived = Boolean(root.querySelector("[data-master-subject-archived]")?.checked);
-      if (!alias && !realName) { notify("warn", "Informe ao menos o apelido ou o nome real do personagem."); return; }
-      const { subjectId } = this._contextIds(root);
-      await this._runMutation(
-        this._saveFormDrafts("subject", subjectId, () => updateSubject(subjectId, { alias, realName, description, active, archived, metadata: { tags } }, { reason: "Cadastro editado no Command Deck" })),
-        "Cadastro do personagem atualizado."
-      );
-    });
-
-    for (const button of root.querySelectorAll("[data-master-subject-move]")) {
-      listen(this._listeners, button, "click", async () => {
-        if (!this.subjectId) return;
-        const { subjectId } = this._contextIds(root);
-        await this._runMutation(
-          () => moveSubjectOneStep(subjectId, button.dataset.masterSubjectMove),
-          "Ordem dos personagens atualizada."
-        );
-      });
-    }
+    this._controlControllers.push(wireMasterRegistryControls(root, {
+      getSelection: () => ({ profileId: this.profileId, subjectId: this.subjectId, newProfileGroupId: this.newProfileGroupId }),
+      contextIds: () => this._contextIds(root),
+      navigate: (target) => this._navigate(target),
+      runMutation: (action, message) => this._runMutation(action, message),
+      saveFormDrafts: (scope, id, action) => this._saveFormDrafts(scope, id, action),
+      onProfileChange: (id) => { this.profileId = id; },
+      onNewProfileGroupChange: (id) => { this.newProfileGroupId = id; },
+      isRendered: () => this.rendered,
+      render: (options) => this.render(options)
+    }));
   }
 
   _wirePlayerBindings(root, context) {
@@ -869,106 +579,19 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
   }
 
   _wireCleanup(root, context) {
-    const cleanupRoot = root.querySelector("[data-master-cleanup-root]");
-    if (!cleanupRoot || !context?.permissions?.isFullGM) return;
-
-    const unlock = cleanupRoot.querySelector("[data-master-cleanup-unlock]");
-    const refreshDeleteState = () => {
-      const enabled = Boolean(unlock?.checked);
-      cleanupRoot.dataset.cleanupUnlocked = String(enabled);
-      for (const button of cleanupRoot.querySelectorAll("[data-master-cleanup-delete]")) button.disabled = !enabled;
-    };
-    listen(this._listeners, unlock, "change", refreshDeleteState);
-    refreshDeleteState();
-
-    const search = cleanupRoot.querySelector("[data-master-cleanup-search]");
-    listen(this._listeners, search, "input", () => {
-      const query = normalizeUiSearch(search?.value);
-      for (const row of cleanupRoot.querySelectorAll("[data-master-cleanup-row]")) {
-        const haystack = normalizeUiSearch(row.dataset.cleanupSearchText || row.textContent || "");
-        row.hidden = Boolean(query) && !haystack.includes(query);
-      }
-      for (const section of cleanupRoot.querySelectorAll("[data-master-cleanup-section]")) {
-        const visible = [...section.querySelectorAll("[data-master-cleanup-row]")].some((row) => !row.hidden);
-        section.dataset.hasVisibleRows = String(visible);
-      }
-    });
-
-    for (const button of cleanupRoot.querySelectorAll("[data-master-cleanup-delete]")) {
-      listen(this._listeners, button, "click", async () => {
-        if (!unlock?.checked) return;
-        const kind = String(button.dataset.masterCleanupDelete || "");
-        const id = String(button.dataset.cleanupId || "");
-        const name = String(button.dataset.cleanupName || "registro");
-        const impactA = Number(button.dataset.cleanupImpactA || 0);
-        const impactB = Number(button.dataset.cleanupImpactB || 0);
-        let title = "Confirmar exclusão permanente";
-        let message = "";
-        let action = null;
-
-        if (kind === "subject") {
-          message = `Apagar permanentemente o personagem “${name}”? Ele será removido de ${impactA} relação(ões) e ${impactB} roster(s) de perfil. O backup automático preservará o estado anterior, mas esta ação não entra no Undo/Redo.`;
-          action = () => deleteSubjectPermanently(id, { reason: "Exclusão permanente pelo Gerenciador de Limpeza" });
-        } else if (kind === "profile") {
-          message = `Apagar permanentemente o perfil “${name}”? Serão removidas ${impactA} relação(ões) armazenadas dentro deste perfil. Os personagens não serão apagados. O backup automático preservará o estado anterior.`;
-          action = () => deleteProfilePermanently(id, { reason: "Exclusão permanente pelo Gerenciador de Limpeza" });
-        } else if (kind === "group") {
-          message = `Apagar o grupo “${name}”? Os ${impactA} perfil(is) vinculados serão preservados e movidos para “Sem Grupo”. O grupo em si será removido permanentemente.`;
-          action = () => deleteGroupPermanently(id, { reason: "Exclusão permanente pelo Gerenciador de Limpeza" });
-        }
-        if (!action) return;
-        const confirmed = await confirmMasterAction({ title, message, confirmLabel: "Apagar permanentemente" });
-        if (!confirmed) return;
-
-        await this._runMutation(action, `${name} removido com sucesso.`);
-      });
-    }
+    this._controlControllers.push(wireMasterCleanupControls(root, {
+      isFullGM: context?.permissions?.isFullGM,
+      runMutation: (action, message) => this._runMutation(action, message)
+    }));
   }
 
   _wireBulk(root) {
-    if (!canUser(globalThis.game?.user, MODULE_CAPABILITY.BULK)) return;
-    const selectAll = root.querySelector("[data-master-bulk-select-all]");
-    listen(this._listeners, selectAll, "change", () => {
-      for (const input of root.querySelectorAll("[data-master-bulk-subject]")) input.checked = Boolean(selectAll.checked);
-    });
-
-    const applyRelation = root.querySelector("[data-master-bulk-apply-relationship]");
-    listen(this._listeners, applyRelation, "click", () => {
-      const ids = this._selectedBulkIds(root);
-      const scoreMode = String(root.querySelector("[data-master-bulk-score-mode]")?.value || "keep");
-      const scoreValue = Number(root.querySelector("[data-master-bulk-score-value]")?.value || 0);
-      const bond = String(root.querySelector("[data-master-bulk-bond]")?.value || "keep");
-      const communion = String(root.querySelector("[data-master-bulk-communion]")?.value || "keep");
-      const { profileId } = this._contextIds(root);
-      const reason = this._reason(root, "bulk");
-      return this._runMutation(
-        () => applyBulkRelationshipChanges(profileId, ids, { scoreMode, scoreValue, bond, communion }, { reason }),
-        `${ids.length} registro(s) processado(s) em massa.`
-      );
-    });
-
-    const actions = {
-      archive: () => bulkArchiveSubjects(this._selectedBulkIds(root), true, { reason: this._reason(root, "bulk") }),
-      restore: () => bulkArchiveSubjects(this._selectedBulkIds(root), false, { reason: this._reason(root, "bulk") }),
-      activate: () => bulkSetSubjectsActive(this._selectedBulkIds(root), true, { reason: this._reason(root, "bulk") }),
-      deactivate: () => bulkSetSubjectsActive(this._selectedBulkIds(root), false, { reason: this._reason(root, "bulk") }),
-      top: () => moveSubjects(this._selectedBulkIds(root), "top", { reason: this._reason(root, "bulk") }),
-      bottom: () => moveSubjects(this._selectedBulkIds(root), "bottom", { reason: this._reason(root, "bulk") })
-    };
-    const destructiveMessages = {
-      archive: "Arquivar os personagens selecionados? Os dados serão preservados, mas eles sairão das consultas normais.",
-      deactivate: "Desativar os personagens selecionados? Eles permanecerão cadastrados, porém ficarão fora das consultas ativas."
-    };
-    for (const [action, callback] of Object.entries(actions)) {
-      listen(this._listeners, root.querySelector(`[data-master-bulk-action="${action}"]`), "click", async () => {
-        const warning = destructiveMessages[action];
-        if (warning) {
-          const confirmed = await confirmMasterAction({ title: "Confirmar operação em massa", message: warning, confirmLabel: "Continuar" });
-          if (!confirmed) return;
-        }
-        await this._runMutation(callback, "Operação em massa concluída.");
-      });
-    }
+    this._controlControllers.push(wireMasterBulkControls(root, {
+      selectedIds: () => this._selectedBulkIds(root),
+      contextIds: () => this._contextIds(root),
+      getReason: () => this._reason(root, "bulk"),
+      runMutation: (action, message) => this._runMutation(action, message)
+    }));
   }
 
   async _runUndoRedo(direction, target) {
@@ -1035,6 +658,7 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
     super._onRender?.(context, options);
     this._portraitVisibilityController?.destroy?.();
     this._portraitVisibilityController = null;
+    for (const controller of this._controlControllers.splice(0)) controller?.destroy();
     destroyListeners(this._listeners);
     this._portraitController?.destroy?.();
     this._portraitController = null;
@@ -1115,6 +739,7 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
     this._settingsTabController?.destroy?.(); this._settingsTabController = null;
     this._navigationController?.destroy?.(); this._navigationController = null;
     unregisterReputationFeedbackSurface(this);
+    for (const controller of this._controlControllers.splice(0)) controller?.destroy();
     destroyListeners(this._listeners);
     this._portraitController?.destroy?.();
     this._portraitController = null;

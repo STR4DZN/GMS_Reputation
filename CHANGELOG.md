@@ -1,3 +1,10 @@
+## Em desenvolvimento — Controles do Mestre por responsabilidade
+
+- Cadastro, edição de reputação, retratos/focal, operações em massa e limpeza extraídos em controladores próprios, com descarte dos eventos ao renderizar/fechar.
+- Arquivo principal reduzido de 1.180 para 805 linhas; aplicação continua dona dos rascunhos, contexto e fila de salvamento.
+- 13 checkpoints de fluxos reais no navegador idênticos à versão anterior; 28 arquivos de testes Node e três integrações no navegador passaram.
+- Exclusões verificadas com bloqueio, cancelamento, permissão revogada durante a confirmação, remoção de referências e backup. [Estrutura e reprodução](docs/ARCHITECTURE_60.md).
+
 ## Em desenvolvimento — Divisão do painel do Mestre
 
 - Contexto dos templates, definição das áreas e controles dos vínculos de jogadores extraídos para módulos próprios; arquivo principal reduzido de 1.570 para 1.180 linhas.
