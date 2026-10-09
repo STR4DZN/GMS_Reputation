@@ -1,3 +1,10 @@
+## Em desenvolvimento — Consultas e índices do contexto do Mestre
+
+- Contexto dividido em cadastro, reputação/focal, navegação/histórico e Sistema; compositor público reduzido de 338 para 71 linhas, preservando as 41 propriedades e sua ordem.
+- Índices de IDs, grupos e posições compartilhados dentro de cada montagem; reconstrução por snapshot preserva rascunhos na mesma revisão, fallback, arquivados, grupos ausentes e rosters legados.
+- Contexto completo mantido para a troca de áreas sem renderização; nenhuma mudança de templates, CSS, schema ou API pública.
+- 4.854 contextos equivalentes antes/depois, 29 arquivos de testes Node e três integrações no navegador passaram; 13 checkpoints dos fluxos de edição/limpeza continuam idênticos. [Estrutura e reprodução](docs/ARCHITECTURE_60.md).
+
 ## Em desenvolvimento — Controles do Mestre por responsabilidade
 
 - Cadastro, edição de reputação, retratos/focal, operações em massa e limpeza extraídos em controladores próprios, com descarte dos eventos ao renderizar/fechar.
