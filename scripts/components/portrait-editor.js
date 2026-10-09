@@ -7,6 +7,7 @@ import {
   resetPortraitFrame
 } from "../core/portrait.js";
 import { openPortraitFilePicker } from "../utils/file-picker.js";
+import { setPortraitImageSource } from "./portrait-visibility.js";
 
 function readNumber(input, fallback) {
   const value = Number(input?.value);
@@ -49,6 +50,7 @@ export function wirePortraitEditor(root, {
   initialPortrait = {},
   onChange = null,
   onError = null,
+  deferImages = false,
   filePicker = openPortraitFilePicker
 } = {}) {
   if (!root?.querySelector) throw new TypeError("Portrait editor root element is required.");
@@ -122,8 +124,13 @@ export function wirePortraitEditor(root, {
       frame.classList.toggle("is-empty", !portrait.src);
       const { image, placeholder } = ensurePreviewNodes();
       if (image) {
-        if (portrait.src && image.getAttribute("src") !== portrait.src) image.setAttribute("src", portrait.src);
-        if (!portrait.src) image.removeAttribute("src");
+        if (deferImages) setPortraitImageSource(image, portrait.src);
+        else {
+          // Standalone public editors retain their immediate preview behavior.
+          if (portrait.src && image.getAttribute("src") !== portrait.src) image.setAttribute("src", portrait.src);
+          if (!portrait.src) image.removeAttribute("src");
+          image.setAttribute("data-gms-portrait-state", portrait.src ? "active" : "suspended");
+        }
         image.hidden = !portrait.src;
       }
       if (placeholder) placeholder.hidden = Boolean(portrait.src);

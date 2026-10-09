@@ -12,7 +12,7 @@
     aria-expanded="false"
   >
     <span class="gms-smart-selector__eyebrow">{{label}}</span>
-    {{#if current.image}}<img data-smart-selector-current-image src="{{current.image}}" alt="" aria-hidden="true">{{else}}<img data-smart-selector-current-image hidden alt="" aria-hidden="true">{{/if}}
+    {{#if current.image}}<img data-smart-selector-current-image data-gms-portrait-src="{{current.image}}" data-gms-portrait-state="suspended" alt="" aria-hidden="true">{{else}}<img data-smart-selector-current-image data-gms-portrait-src="" data-gms-portrait-state="suspended" hidden alt="" aria-hidden="true">{{/if}}
     <span class="gms-smart-selector__current">
       <strong data-smart-selector-current-primary>{{current.primary}}</strong>
       <small data-smart-selector-current-secondary {{#if current.secondary}}{{else}}hidden{{/if}}>{{current.secondary}}</small>
@@ -43,7 +43,7 @@
           aria-selected="{{selected}}"
           {{#if disabled}}aria-disabled="true" disabled{{/if}}
         >
-          {{#if image}}<img src="{{image}}" alt="" aria-hidden="true" loading="lazy" decoding="async">{{else}}<span class="gms-smart-selector__placeholder" aria-hidden="true"><i class="fa-solid fa-user"></i></span>{{/if}}
+          {{#if image}}<img data-gms-portrait-src="{{image}}" data-gms-portrait-state="suspended" alt="" aria-hidden="true" decoding="async">{{else}}<span class="gms-smart-selector__placeholder" aria-hidden="true"><i class="fa-solid fa-user"></i></span>{{/if}}
           <span class="gms-smart-selector__option-copy">
             <strong data-smart-selector-option-primary>{{primary}}</strong>
             {{#if secondary}}<small data-smart-selector-option-secondary>{{secondary}}</small>{{else}}<small data-smart-selector-option-secondary hidden></small>{{/if}}

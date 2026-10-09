@@ -4,6 +4,8 @@
 
 **Foundry VTT:** v13 — mínimo `13.341`, verificado para `13.351`.
 
+Em desenvolvimento: [retratos carregados pela área visível e validação de desempenho](docs/PORTRAIT_PERFORMANCE.md).
+
 Módulo de reputação social com interfaces separadas para Player e Mestre, perfis/matrizes, personagens, retratos, reputação em passos de 0,5, Vínculo, Comunhão, Duplo//Sinc derivado, histórico, Undo/Redo, backup, permissões, sincronização e migração da macro legada.
 
 ## Navegação e feedback de reputação

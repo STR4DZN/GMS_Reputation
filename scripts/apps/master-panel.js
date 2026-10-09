@@ -3,6 +3,7 @@ import { loadWorldState, loadWorldStateBackup, restoreWorldStateBackup } from ".
 import { buildIdentityModel } from "../components/identity.js";
 import { buildPortraitFrameModel } from "../components/portrait-frame.js";
 import { buildPortraitEditorContext, wirePortraitEditor } from "../components/portrait-editor.js";
+import { wirePortraitVisibility } from "../components/portrait-visibility.js";
 import { buildHeartTrackModel } from "../components/heart-track.js";
 import { buildFocalProfileContext } from "../components/focal-profile.js";
 import { getReputationView } from "../core/reputation-engine.js";
@@ -976,6 +977,7 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
     const { profileId } = this._contextIds(root);
     const { subjectId } = this._contextIds(root);
     this._portraitController = wirePortraitEditor(editorRoot, {
+      deferImages: true,
       initialPortrait: draftPortrait,
       onChange: (portrait) => {
         draftPortrait = portrait;
@@ -1011,6 +1013,7 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
     let draftPortrait = context.focalEditor.portrait;
     const focalProfileId = context.profileId;
     this._focalPortraitController = wirePortraitEditor(editorRoot, {
+      deferImages: true,
       initialPortrait: draftPortrait,
       onChange: (portrait) => { draftPortrait = portrait; this._focalPortraitDrafts.set(focalProfileId, portrait); },
       onError: (error) => notify("warn", error?.message || "Fonte de retrato focal inválida.")
@@ -1420,6 +1423,8 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
 
   _onRender(context, options) {
     super._onRender?.(context, options);
+    this._portraitVisibilityController?.destroy?.();
+    this._portraitVisibilityController = null;
     destroyListeners(this._listeners);
     this._portraitController?.destroy?.();
     this._portraitController = null;
@@ -1476,6 +1481,7 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
     this._applyPermissionState(root, context);
     this._accessibilityController = wireApplicationAccessibility(root, { onEscape: () => this.close(), tablistRoot: root.querySelector("[role=tablist]") ?? root });
     this._setSection(root, this.activeSection, { animate: false });
+    this._portraitVisibilityController = wirePortraitVisibility(root);
     registerReputationFeedbackSurface(this, { kind: "master", profileId: () => this.profileId, onInspect: (target) => this._navigate({ ...target, activeSection: "relationship" }) });
   }
 
@@ -1495,6 +1501,7 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
   }
 
   async _onClose(options) {
+    this._portraitVisibilityController?.destroy?.(); this._portraitVisibilityController = null;
     this._settingsTabController?.destroy?.(); this._settingsTabController = null;
     this._navigationController?.destroy?.(); this._navigationController = null;
     unregisterReputationFeedbackSurface(this);

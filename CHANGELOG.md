@@ -1,3 +1,10 @@
+## Em desenvolvimento — Retratos pela área visível
+
+- Carregamento de retratos restrito à área visível em cards, seletores, perfis, detalhes, editores e avisos.
+- Liberação das fontes fora da área visível, em seções ocultas e em abas do navegador em segundo plano; limpeza ao fechar e renderizar novamente.
+- Enquadramento e comportamento dos renderers/editores públicos preservados; testes de rolagem, troca de fonte e salvamento com 30 personagens e 25 GIFs.
+- [Implementação, comparação e validação](docs/PORTRAIT_PERFORMANCE.md). Ainda sem nova release.
+
 ## 1.2.0-dev.72 — Navegação, Motion e reputação pessoal
 
 - Navegação com histórico, atalhos, menu rápido e troca de contexto no Mestre/Player.

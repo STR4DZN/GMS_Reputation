@@ -8,7 +8,7 @@
   style="--gms-portrait-zoom:{{portraitScale}};--gms-portrait-x:{{portrait.x}}%;--gms-portrait-y:{{portrait.y}}%;"
 >
   {{#if hasImage}}
-    <img class="gms-reputation-portrait__image" src="{{portrait.src}}" alt="" aria-hidden="true" draggable="false" decoding="async" loading="lazy">
+    <img class="gms-reputation-portrait__image" data-gms-portrait-src="{{portrait.src}}" data-gms-portrait-state="suspended" alt="" aria-hidden="true" draggable="false" decoding="async">
   {{else}}
     <span class="gms-reputation-portrait__placeholder" aria-hidden="true"><i></i><b>SEM IMG</b></span>
   {{/if}}

@@ -1,4 +1,5 @@
 import { MODULE_ID } from "../constants.js";
+import { wirePortraitVisibility } from "../components/portrait-visibility.js";
 import { loadWorldState } from "../persistence/world-store.js";
 import { buildPlayerCardContext } from "../components/player-card.js";
 import { buildFocalProfileContext } from "../components/focal-profile.js";
@@ -295,6 +296,7 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
   }
 
   _rewireCardSurface(root) {
+    this._portraitVisibilityController?.refresh?.();
     destroyListeners(this._cardListeners);
     this._wireCardDetails(root);
     this._accessibilityController?.destroy?.();
@@ -353,6 +355,8 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
 
   _onRender(context, options) {
     super._onRender?.(context, options);
+    this._portraitVisibilityController?.destroy?.();
+    this._portraitVisibilityController = null;
     destroyListeners(this._listeners);
     destroyListeners(this._cardListeners);
     this._accessibilityController?.destroy?.();
@@ -372,10 +376,12 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
     this._wireNavigation(root, context);
     this._accessibilityController = wireApplicationAccessibility(root, { onEscape: () => this.close() });
     this._motionController?.reveal?.(root.querySelectorAll("[data-player-card]"));
+    this._portraitVisibilityController = wirePortraitVisibility(root);
     registerReputationFeedbackSurface(this, { kind: "player", profileId: () => this.profileId, onInspect: openSubjectDetail });
   }
 
   async _onClose(options) {
+    this._portraitVisibilityController?.destroy?.(); this._portraitVisibilityController = null;
     this._navigationController?.destroy?.(); this._navigationController = null;
     unregisterReputationFeedbackSurface(this);
     destroyListeners(this._listeners);

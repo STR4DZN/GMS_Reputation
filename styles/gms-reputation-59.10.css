@@ -15159,3 +15159,8 @@ grid-column: 1 !important;
   .gms-navigation-bar:has([data-personal-reputation-open]) { flex-wrap: wrap; }
   .gms-navigation-bar [data-personal-reputation-open] { flex: 1 1 100%; }
 }
+
+/* Keep portrait geometry while its source is released outside the viewport. */
+img[data-gms-portrait-src][data-gms-portrait-state="suspended"] {
+  visibility: hidden;
+}

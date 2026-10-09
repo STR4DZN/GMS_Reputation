@@ -27,7 +27,7 @@
       {{#if showProfileLibrary}}
         <details class="gms-profile-library" aria-label="Perfis de reputação organizados por grupo" data-player-profile-library>
           <summary class="gms-profile-library__trigger" aria-label="Abrir lista de perfis">
-            <span class="gms-profile-library__current-thumb">{{#if currentProfile.image}}<img src="{{currentProfile.image}}" alt="">{{else}}<i class="fa-solid fa-user-astronaut" aria-hidden="true"></i>{{/if}}</span>
+            <span class="gms-profile-library__current-thumb">{{#if currentProfile.image}}<img data-gms-portrait-src="{{currentProfile.image}}" data-gms-portrait-state="suspended" alt="">{{else}}<i class="fa-solid fa-user-astronaut" aria-hidden="true"></i>{{/if}}</span>
             <span class="gms-profile-library__current-copy"><small>PERFIL ATIVO // {{currentProfile.groupName}}</small><strong>{{currentProfile.focalName}}</strong><em>{{currentProfile.name}}</em></span>
             <span class="gms-profile-library__summary-meta"><small>{{profileGroups.length}} GRUPOS</small><strong>Trocar perfil</strong></span>
             <i class="fa-solid fa-chevron-down gms-profile-library__chevron" aria-hidden="true"></i>
@@ -50,7 +50,7 @@
                   <div class="gms-profile-library__profiles">
                     {{#each profiles}}
                       <button type="button" class="gms-profile-library__profile" data-player-profile-choice="{{id}}" data-selected="{{selected}}" aria-current="{{#if selected}}true{{else}}false{{/if}}">
-                        <span class="gms-profile-library__thumb">{{#if image}}<img src="{{image}}" alt="" loading="lazy">{{else}}<i class="fa-solid fa-user-astronaut" aria-hidden="true"></i>{{/if}}</span>
+                        <span class="gms-profile-library__thumb">{{#if image}}<img data-gms-portrait-src="{{image}}" data-gms-portrait-state="suspended" alt="">{{else}}<i class="fa-solid fa-user-astronaut" aria-hidden="true"></i>{{/if}}</span>
                         <span class="gms-profile-library__identity"><strong>{{focalName}}</strong><small>{{name}}</small></span>
                         {{#if selected}}<span class="gms-profile-library__active">EM USO</span>{{else}}<i class="fa-solid fa-chevron-right" aria-hidden="true"></i>{{/if}}
                       </button>
