@@ -18,7 +18,18 @@ O Foundry e todos os visualizadores continuam carregando somente `styles/gms-rep
 
 | Fonte | Responsabilidade |
 | --- | --- |
-| `legacy.css` | Base visual e sobreposições históricas, ainda preservadas |
+| `legacy-foundation.css` | Tokens, componentes fundamentais e apresentação inicial |
+| `legacy-master-layout.css` | Estrutura inicial do Mestre e seus controles |
+| `legacy-library-and-profiles.css` | Bibliotecas, grupos e perfis |
+| `legacy-reputation-console.css` | Consoles e apresentação da reputação |
+| `legacy-motion-and-controls.css` | Feedback de movimento e controles compartilhados |
+| `legacy-surface-theme.css` | Superfícies, inputs e cores comuns |
+| `legacy-generation-layout.css` | Layout da geração visual atual |
+| `legacy-foundry-layout.css` | Ajustes para os seletores das janelas Foundry |
+| `detail-dossier.css`, `player-matrix.css` | Ajustes finais de Detalhes e Player |
+| `botanical-art.css`, `motion-feedback.css` | Arte vetorial e feedback de movimento |
+| `player-readability.css`, `player-card-stability.css` | Legibilidade e geometria dos cards |
+| `control-theme.css`, `cleanup.css` | Linguagem de controles e Gerenciador de Limpeza |
 | `navigation.css` | Navegação, contexto ativo e menu de comandos |
 | `feedback.css` | Cartões, comparação, corações e paginação dos avisos |
 | `transitions.css` | Entradas e transição entre áreas |
@@ -38,4 +49,8 @@ O modo `--check` é somente leitura e falha se uma fonte mudou sem regenerar a f
 
 `src/` e `tools/` são arquivos de desenvolvimento. Os workflows atuais incluem `styles/` no ZIP e deixam essas duas pastas fora, evitando duplicar a folha CSS no módulo instalado.
 
-Esta etapa organiza as fontes dos componentes recentes. A base em `legacy.css` ainda tem 14.917 linhas; consolidar suas regras repetidas exige comparar cada superfície antes e depois. A extração não remove `!important`, não muda o visual e não reduz por si só o custo de renderização.
+A base de 14.917 linhas foi dividida em 16 trechos contínuos, totalizando 24 fontes. Foram removidas 62 declarações antigas quando a mesma propriedade, valor e importância aparecem depois sob o seletor raiz exato. Valores diferentes continuam presentes para preservar fallbacks; blocos condicionais, keyframes e regras mantêm sua ordem. At-rules desconhecidas são barreiras conservadoras. A ferramenta `style-contracts.mjs` é somente de desenvolvimento.
+
+O bundle passou de 574.894 para **573.185 bytes**; SHA-256 `cc1f36022dfb9ca912c3e2e728d708989f703d4c9713220b08cc03265dd4e1d8`. `test-style-contracts.mjs` mantém uma assinatura da estrutura revisada; mudanças visuais intencionais devem atualizar essa assinatura depois de verificar o resultado. A comparação com um checkout anterior usa `node tools/compare-styles.mjs /caminho/do/baseline`.
+
+O teste `browser-style-equivalence.py` compara todas as propriedades calculadas, pseudo-elementos, retângulos e pixels do mesmo DOM com a folha anterior e a atual, em quatro larguras. A organização e essa pequena remoção de redundância não demonstram redução de CPU/RAM. Sobreposições necessárias para o visual atual continuam preservadas.

@@ -1,3 +1,4 @@
+import { expandMasterTemplate } from "../tools/template-sources.mjs";
 import assert from "node:assert/strict";
 import { readFile, access } from "node:fs/promises";
 import { constants as fsConstants } from "node:fs";
@@ -14,7 +15,7 @@ for (const retiredCss of ["gms-reputation.css", "gms-reputation-59.4.css", "gms-
 
 const css = await readFile(new URL("../styles/gms-reputation-59.10.css", import.meta.url), "utf8");
 const playerTemplate = await readFile(new URL("../templates/apps/player-dashboard.hbs", import.meta.url), "utf8");
-const masterTemplate = await readFile(new URL("../templates/apps/master-panel.hbs", import.meta.url), "utf8");
+const masterTemplate = await expandMasterTemplate();
 const playerApp = await readFile(new URL("../scripts/apps/player-dashboard.js", import.meta.url), "utf8");
 const masterApp = await readFile(new URL("../scripts/apps/master-panel.js", import.meta.url), "utf8");
 

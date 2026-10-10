@@ -1,0 +1,351 @@
+
+
+.gms-master-profile-editor__status b {
+color: #f0ece3;
+  font: 800 11px/1.1 var(--gms-v2-font-ui);
+}
+
+.gms-master-profile-editor__status small {
+color: #89979f;
+  font: 600 9px/1.35 var(--gms-v2-font-ui);
+}
+
+.gms-master-profile-editor__actions {
+display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 2px;
+}
+
+.gms-master-profile-editor__order {
+display: flex;
+  gap: 7px;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.gms-master-profile-editor__actions button {
+min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px 12px;
+  border: 1px solid rgba(89,111,124,.38);
+  background: linear-gradient(180deg,#0d151a,#070b0e);
+  color: #c9d2d6;
+  font: 800 10px/1 var(--gms-v2-font-ui);
+}
+
+.gms-master-profile-editor__actions button.is-primary {
+min-width: 170px;
+  color: #061017;
+  border-color: #63b8ff;
+  background: linear-gradient(115deg,#63b8ff,#79e7ff 56%,#9bffcf);
+}
+
+.gms-master-profile-editor__actions button:disabled {
+opacity: .34;
+  filter: saturate(.45);
+}
+
+@container (max-width: 760px) {
+.gms-master-profile-editor__metrics {
+grid-template-columns: repeat(2,minmax(0,1fr));
+}
+
+.gms-master-profile-editor__status {
+grid-template-columns: 1fr;
+}
+
+.gms-master-profile-editor__actions {
+align-items: stretch;
+    flex-direction: column;
+}
+
+.gms-master-profile-editor__actions button.is-primary {
+width: 100%;
+    min-width: 0;
+}
+}
+
+@container (max-width: 480px) {
+.gms-master-profile-editor {
+padding: 10px;
+}
+
+.gms-master-profile-editor__head {
+grid-template-columns: 1fr;
+}
+
+.gms-master-profile-editor__head > span {
+justify-self: start;
+}
+
+.gms-master-profile-editor__metrics {
+grid-template-columns: 1fr;
+}
+
+.gms-master-profile-editor__groups > div {
+grid-template-columns: 1fr;
+}
+}
+
+:where(.gms-player-dashboard,.gms-master-panel,.gms-subject-detail) {
+position: relative;
+  isolation: isolate;
+  --gms54-scan: #27f3ff;
+  --gms54-scan-secondary: #28f0d0;
+}
+
+.gms-master-panel {
+--gms54-scan-secondary: #bca475;
+}
+
+.gms-subject-detail {
+--gms54-scan-secondary: #ff2bd6;
+}
+
+.gms-reputation-app[data-gms-motion-kind] {
+--gms54-scan: #27f3ff;
+  --gms54-scan-secondary: #28f0d0;
+}
+
+.gms-reputation-app[data-gms-motion-kind="master"] {
+--gms54-scan-secondary: #bca475;
+}
+
+.gms-reputation-app[data-gms-motion-kind="detail"] {
+--gms54-scan-secondary: #ff2bd6;
+}
+
+.gms-motion-scanner {
+position: absolute;
+  z-index: 40;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none !important;
+  opacity: 0;
+
+}
+
+.gms-motion-scanner::before,
+.gms-motion-scanner::after {
+content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -42px;
+  pointer-events: none;
+  transform: translate3d(0,0,0);
+
+}
+
+.gms-motion-scanner::before {
+height: 1px;
+}
+
+.gms-motion-scanner::after {
+height: 30px;
+}
+
+.gms-motion-scanner.is-active {
+opacity: 1;
+}
+
+.gms-motion-scanner.is-active::before,
+.gms-motion-scanner.is-active::after {
+animation: gms54-scanner-pass var(--gms54-scan-duration, 1580ms) cubic-bezier(.18,.72,.22,1) 1 both;
+}
+
+.gms-motion-scanner[data-variant="sync"]::before {
+opacity: .7;
+}
+
+.gms-motion-scanner[data-variant="sync"]::after {
+opacity: .55;
+}
+
+.gms-motion-scanner[data-variant="profile"]::before {
+filter: saturate(1.12);
+}
+
+:where( .gms-reputation-player-card__portrait, .gms-subject-detail__portrait, .gms-reputation-focal-profile__visual, .gms-master-focal-workspace__preview, .gms-reputation-portrait-editor__preview ) {
+position: relative;
+  z-index: 45;
+  isolation: isolate;
+}
+
+:where(.gms-player-dashboard,.gms-master-panel,.gms-subject-detail).is-gms-motion-booting,
+.gms-reputation-app.is-gms-motion-booting :where(.gms-player-dashboard,.gms-master-panel,.gms-subject-detail) {
+animation: gms54-shell-boot 720ms cubic-bezier(.18,.72,.22,1) 1 both;
+}
+
+.is-gms-motion-profile-change :where( .gms-profile-library__current, .gms-player-dashboard__focal, .gms-player-dashboard__records, .gms-master-panel__control-well, .gms-master-panel__content ) {
+animation: gms54-profile-lock 420ms var(--gms-v2-ease-mechanical) 1 both;
+}
+
+.is-gms-motion-subject-change :where( .gms-master-panel__control-well, [data-master-section-panel]:not([hidden]) ) {
+animation: gms54-subject-lock 360ms var(--gms-v2-ease-mechanical) 1 both;
+}
+
+.is-gms-motion-focal-change .gms-reputation-focal-profile {
+animation: gms54-profile-lock 420ms var(--gms-v2-ease-mechanical) 1 both;
+}
+
+.gms-master-panel__content > [data-master-section-panel].is-gms-motion-section-change:not([hidden]) {
+animation: gms54-bay-enter 290ms var(--gms-v2-ease-mechanical) 1 both;
+}
+
+.is-gms-motion-relation-change :where( .gms-reputation-player-card__score > strong, [data-master-score-preview], .gms-subject-detail__score > strong ) {
+animation: gms54-data-tick 360ms var(--gms-v2-ease-sharp) 1 both;
+}
+
+.is-gms-motion-relation-change :where( .gms-reputation-player-card__relation, [data-master-relation-preview], .gms-subject-detail__relation ) {
+animation: gms54-relation-signal 400ms ease-out 1 both;
+}
+
+.gms-reputation-heart-track.is-gms-motion-heart-change .gms-reputation-heart[data-heart-state="full"] > i,
+.gms-reputation-heart-track.is-gms-motion-heart-change .gms-reputation-heart[data-heart-state="half"] > i {
+animation: gms54-heart-charge 390ms var(--gms-v2-ease-sharp) 1 both;
+}
+
+.is-gms-motion-protocol-change :where( .gms-reputation-player-card__special-sigil, .gms-subject-detail__special-sigil, .gms-master-panel__special-readout img, .gms-master-panel__special-placeholder, .gms-master-panel__special-editor label:has(input:checked) ) {
+animation: gms54-protocol-lock 560ms var(--gms-v2-ease-sharp) 1 both;
+}
+
+.gms-reputation-app details.is-gms-motion-accordion-open > :where( .gms-profile-library__profiles, .gms-master-profile-group__body ) {
+animation: gms54-accordion-reveal 280ms var(--gms-v2-ease-interface) 1 both;
+}
+
+.gms-reputation-app details.is-gms-motion-accordion-open > summary > i:last-child {
+animation: gms54-chevron-lock 240ms var(--gms-v2-ease-interface) 1 both;
+}
+
+.gms-smart-selector.is-gms-motion-selector-open .gms-smart-selector__popover {
+animation: gms54-selector-open 220ms var(--gms-v2-ease-mechanical) 1 both;
+}
+
+.gms-master-panel__savebar {
+position: relative;
+  overflow: hidden;
+}
+
+.gms-master-panel__savebar::after {
+content: "";
+  position: absolute;
+  z-index: 0;
+  inset: 0 auto 0 -38%;
+  width: 34%;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(90deg, transparent, rgba(39,243,255,.07), transparent);
+  transform: skewX(-16deg);
+}
+
+.gms-master-panel__savebar[data-master-save-state="saving"]::after {
+animation: gms54-save-transmit 820ms ease-out 1 both;
+}
+
+.gms-master-panel__savebar > * {
+position: relative;
+  z-index: 1;
+}
+
+.gms-reputation-app .gms-player-dashboard__live-update.is-gms-motion-sync {
+animation: gms54-sync-badge 500ms ease-out 1 both;
+}
+
+.gms-reputation-player-card[data-detail-enabled="true"]:hover .gms-reputation-player-card__trace {
+animation: gms54-card-trace 260ms ease-out 1 both;
+}
+
+.gms-reputation-portrait-editor__preview:active {
+animation: gms54-optics-grab 180ms ease-out 1 both;
+}
+
+@keyframes gms54-scanner-pass {0% { transform: translate3d(0,-42px,0); opacity: 0; }
+  8% { opacity: .72; }
+  70% { opacity: .62; }
+  100% { transform: translate3d(0,var(--gms54-scan-distance,900px),0); opacity: 0; }}
+
+@keyframes gms54-shell-boot {0% { opacity: .88; box-shadow: inset 0 0 0 1px rgba(39,243,255,0); }
+  34% { opacity: 1; box-shadow: inset 0 0 0 1px rgba(39,243,255,.16), inset 0 0 42px rgba(39,243,255,.018); }
+  100% { opacity: 1; box-shadow: inset 0 0 0 1px rgba(39,243,255,0); }}
+
+@keyframes gms54-profile-lock {0% { opacity: .72; transform: translateY(3px); }
+  58% { opacity: 1; transform: translateY(-1px); }
+  100% { opacity: 1; transform: translateY(0); }}
+
+@keyframes gms54-subject-lock {0% { opacity: .76; transform: translateX(3px); }
+  100% { opacity: 1; transform: translateX(0); }}
+
+@keyframes gms54-bay-enter {0% { opacity: .56; transform: translateX(5px); clip-path: inset(0 4% 0 0); }
+  62% { opacity: 1; transform: translateX(-1px); clip-path: inset(0 0 0 0); }
+  100% { opacity: 1; transform: translateX(0); clip-path: inset(0 0 0 0); }}
+
+@keyframes gms54-data-tick {0% { transform: translateY(2px) scale(.92); opacity: .62; }
+  54% { transform: translateY(-1px) scale(1.06); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }}
+
+@keyframes gms54-relation-signal {0% { opacity: .5; text-shadow: 0 0 0 currentColor; }
+  45% { opacity: 1; text-shadow: 0 0 10px currentColor; }
+  100% { opacity: 1; text-shadow: 0 0 0 transparent; }}
+
+@keyframes gms54-heart-charge {0% { opacity: .32; transform: scale(.72); }
+  56% { opacity: 1; transform: scale(1.12); filter: brightness(1.25); }
+  100% { opacity: 1; transform: scale(1); filter: none; }}
+
+@keyframes gms54-protocol-lock {0% { opacity: .3; transform: scale(.74) rotate(-4deg); filter: brightness(.75); }
+  42% { opacity: 1; transform: scale(1.12) rotate(2deg); filter: brightness(1.35); }
+  72% { transform: scale(.98) rotate(0); }
+  100% { opacity: 1; transform: scale(1); filter: none; }}
+
+@keyframes gms54-accordion-reveal {0% { opacity: 0; transform: translateY(-4px); clip-path: inset(0 0 18% 0); }
+  100% { opacity: 1; transform: translateY(0); clip-path: inset(0 0 0 0); }}
+
+@keyframes gms54-chevron-lock {0% { transform: rotate(0deg); }
+  58% { transform: rotate(195deg); }
+  100% { transform: rotate(180deg); }}
+
+@keyframes gms54-selector-open {0% { opacity: 0; transform: translateY(-5px) scaleY(.98); }
+  100% { opacity: 1; transform: translateY(0) scaleY(1); }}
+
+@keyframes gms54-save-transmit {0% { left: -38%; opacity: 0; }
+  18% { opacity: 1; }
+  100% { left: 112%; opacity: 0; }}
+
+@keyframes gms54-sync-badge {0% { opacity: .4; letter-spacing: .04em; }
+  48% { opacity: 1; letter-spacing: .1em; }
+  100% { opacity: 1; letter-spacing: .06em; }}
+
+@keyframes gms54-card-trace {0% { opacity: .18; filter: brightness(.7); }
+  100% { opacity: .72; filter: brightness(1.1); }}
+
+@keyframes gms54-optics-grab {0% { box-shadow: 0 0 0 rgba(39,243,255,0); }
+  50% { box-shadow: 0 0 0 2px rgba(39,243,255,.12); }
+  100% { box-shadow: 0 0 0 rgba(39,243,255,0); }}
+
+.gms-player-dashboard :where( .gms-profile-library__group-count small, .gms-profile-library__active, .gms-profile-library__identity small, .gms-reputation-player-card__score small ) {
+font-size: 9px !important;
+  line-height: 1.15 !important;
+}
+
+.gms-player-dashboard .gms-reputation-player-card__relation {
+font-size: 10px !important;
+  line-height: 1.1 !important;
+}
+
+.gms-master-panel :where( .gms-master-panel__save-state small, .gms-master-panel__subject-list small, .gms-master-panel__presets span, .gms-master-panel__bulk > header small, .gms-master-panel__bulk-grid label, .gms-master-panel__history time, .gms-master-panel__history article > div:nth-child(2) small, .gms-history-changes b, .gms-master-panel__settings dt, .gms-master-panel__save-settings label small ) {
+font-size: 9px !important;
+  line-height: 1.2 !important;
+}
+
+.gms-reputation-app :where( .gms-profile-library__group-count small, .gms-master-panel__settings dt, .gms-history-changes b ) {
+color: color-mix(in srgb, currentColor 82%, var(--gms-final-bone, #e9e1d2) 18%);
+}
+
+.gms-reputation-app :where( [data-player-card][hidden], [data-master-section-panel][hidden] ) {
+display: none !important;
+}

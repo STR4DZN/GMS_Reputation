@@ -172,11 +172,14 @@ function applyEventSnapshot(draft, event, snapshot, now) {
   touch(subject, now);
 }
 
-async function applyHistoryDirection(direction = "undo", { reason = "" } = {}) {
+async function applyHistoryDirection(direction = "undo", { reason = "", expectedTransactionId } = {}) {
   if (!canUser(globalThis.game?.user, MODULE_CAPABILITY.HISTORY)) throw new Error("Sua função atual não possui permissão para desfazer/refazer alterações.");
   const state = loadWorldState();
   const stack = buildUndoRedoState(state);
   const target = direction === "redo" ? stack.redoTarget : stack.undoTarget;
+  if (expectedTransactionId !== undefined && String(expectedTransactionId) !== target?.transactionId) {
+    throw new Error("O histórico mudou durante a confirmação. Revise a alteração atual antes de desfazer/refazer.");
+  }
   if (!target?.transactionId) return state;
   const targetId = target.transactionId;
   const events = state.history.filter((event) => REVERSIBLE_TYPES.has(event?.type) && transactionKey(event) === targetId);
@@ -209,14 +212,12 @@ async function applyHistoryDirection(direction = "undo", { reason = "" } = {}) {
 }
 
 export async function undoLastTransaction(options = {}) {
-  const stack = buildUndoRedoState();
-  if (!stack.canUndo) return loadWorldState();
+  if (options.expectedTransactionId === undefined && !buildUndoRedoState().canUndo) return loadWorldState();
   return applyHistoryDirection("undo", options);
 }
 
 export async function redoLastTransaction(options = {}) {
-  const stack = buildUndoRedoState();
-  if (!stack.canRedo) return loadWorldState();
+  if (options.expectedTransactionId === undefined && !buildUndoRedoState().canRedo) return loadWorldState();
   return applyHistoryDirection("redo", options);
 }
 

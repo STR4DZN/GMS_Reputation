@@ -1,3 +1,4 @@
+import { expandMasterTemplate } from "../tools/template-sources.mjs";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
@@ -150,7 +151,7 @@ assert.equal(context.savePreferences.idleDelay, 2.5);
 assert.equal(context.savePreferences.modeOptions.length, 3);
 assert.equal(typeof context.undoRedo.canUndo, "boolean");
 
-const template = await readFile(new URL("../templates/apps/master-panel.hbs", import.meta.url), "utf8");
+const template = await expandMasterTemplate();
 assert.match(template, /data-master-undo/);
 assert.match(template, /data-master-redo/);
 assert.match(template, /data-master-save-state/);

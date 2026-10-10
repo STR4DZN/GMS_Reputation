@@ -1,3 +1,12 @@
+## Em desenvolvimento — Conclusão da organização da interface
+
+- Mestre: navegação/seleção, salvamento, histórico, permissões e rollback separados em controladores; arquivo principal com 590 linhas, mantendo a fila e os mapas de rascunhos na aplicação.
+- Template principal reduzido de 456 para 24 linhas com 12 partials pré-carregados pelo Foundry; 270 renderizações com HTML idêntico.
+- Base CSS de 14.917 linhas dividida em 16 fontes contínuas; 24 fontes no total. Removidas 62 declarações repetidas, preservando fallbacks, condições, keyframes, importância e ordem da cascata.
+- Backup e Undo/Redo revalidam rascunhos após confirmação; confirmação antiga de histórico não pode atingir uma transação mais nova. Superfícies descartadas revogam confirmações abertas.
+- 32 arquivos de testes Node, quatro integrações de navegador, comparação de 4.854 contextos e verificações estruturais do CSS. Empacotamento reproduzível verifica dependências, partials e assets; CI do PR executa testes e gera ZIP de revisão.
+- Schema/API existentes preservados. Validação numa instância Foundry v13 continua pendente; sem nova versão/release. [Reprodução e limites](docs/VALIDATION.md).
+
 ## Em desenvolvimento — Consultas e índices do contexto do Mestre
 
 - Contexto dividido em cadastro, reputação/focal, navegação/histórico e Sistema; compositor público reduzido de 338 para 71 linhas, preservando as 41 propriedades e sua ordem.

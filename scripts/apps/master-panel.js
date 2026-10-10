@@ -1,35 +1,25 @@
-import { MASTER_SAVE_MODE, MODULE_ID } from "../constants.js";
-import { loadWorldState, restoreWorldStateBackup } from "../persistence/world-store.js";
+import { MODULE_ID } from "../constants.js";
+import { loadWorldState } from "../persistence/world-store.js";
 import { wirePortraitVisibility } from "../components/portrait-visibility.js";
 import { computeRelationshipCandidate, updateRelationship } from "../data/reputation-registry.js";
 import { setSubjectPortrait } from "../data/portrait-registry.js";
-import { buildUndoRedoState, redoLastTransaction, undoLastTransaction } from "../data/undo-redo.js";
-import {
-  getMasterAutoSaveDelay,
-  getMasterSaveMode,
-  setMasterAutoSaveDelay,
-  setMasterSaveMode
-} from "../persistence/master-preferences.js";
+import { getMasterAutoSaveDelay, getMasterSaveMode } from "../persistence/master-preferences.js";
 import { MasterSaveController } from "./master/save-controller.js";
-import { HandlebarsApplicationV2, appElement, destroyListeners, listen, notify, renderApplicationSafely } from "./application-compat.js";
+import { HandlebarsApplicationV2, appElement, notify, renderApplicationSafely } from "./application-compat.js";
 import {
   MODULE_CAPABILITY,
   canOpenMasterPanel,
   canUser,
-  getPermissionConfig,
   permissionContext,
-  setPermissionConfig,
   subscribePermissionChanges
 } from "../persistence/permissions.js";
 import { subscribeWorldStateChanges } from "../events/world-sync.js";
 import { wireApplicationAccessibility } from "../utils/accessibility.js";
 import { wireMotionSystem } from "../motion/motion-system.js";
-import { wireSmartSelector } from "../components/smart-selector.js";
-import { NavigationTrail, adjacentId, wireNavigationPalette } from "../ui/navigation.js";
+import { NavigationTrail } from "../ui/navigation.js";
 import { registerReputationFeedbackSurface, unregisterReputationFeedbackSurface } from "../ui/reputation-feedback.js";
-import { openPlayerDashboard } from "./player-dashboard.js";
 import { buildMasterPanelContext } from "./master/context.js";
-import { SECTIONS, WORKSPACE_PANELS, normalizeWorkspace } from "./master/workspaces.js";
+import { normalizeWorkspace } from "./master/workspaces.js";
 import { wireMasterPlayerBindings } from "./master/player-bindings.js";
 
 import { confirmMasterAction } from "./master/confirmation.js";
@@ -38,6 +28,12 @@ import { wireMasterCleanupControls } from "./master/cleanup-controls.js";
 import { wireMasterBulkControls } from "./master/bulk-controls.js";
 import { wireMasterRelationshipControls } from "./master/relationship-controls.js";
 import { wireMasterPortraitControls, wireMasterFocalControls } from "./master/portrait-controls.js";
+
+import { applyMasterPermissionState, refreshMasterUndoRedoControls } from "./master/permission-state.js";
+import { wireMasterSystemControls } from "./master/system-controls.js";
+import { setMasterWorkspace, updateMasterNavigationState, wireMasterNavigation, wireMasterSelectionControls } from "./master/navigation-controls.js";
+import { updateMasterSaveStatus, wireMasterSaveControls } from "./master/save-controls.js";
+import { runMasterUndoRedo, wireMasterHistoryControls } from "./master/history-controls.js";
 
 // Keep the public module path and exported builder identity stable.
 export { buildMasterPanelContext } from "./master/context.js";
@@ -50,7 +46,19 @@ const PARTIALS = [
   `modules/${MODULE_ID}/templates/partials/identity.hbs`,
   `modules/${MODULE_ID}/templates/partials/heart-track.hbs`,
   `modules/${MODULE_ID}/templates/partials/focal-profile.hbs`,
-  `modules/${MODULE_ID}/templates/partials/smart-selector.hbs`
+  `modules/${MODULE_ID}/templates/partials/smart-selector.hbs`,
+  `modules/${MODULE_ID}/templates/partials/master-header.hbs`,
+  `modules/${MODULE_ID}/templates/partials/master-savebar.hbs`,
+  `modules/${MODULE_ID}/templates/partials/master-navigation.hbs`,
+  `modules/${MODULE_ID}/templates/partials/master-subjects.hbs`,
+  `modules/${MODULE_ID}/templates/partials/master-profile.hbs`,
+  `modules/${MODULE_ID}/templates/partials/master-characters.hbs`,
+  `modules/${MODULE_ID}/templates/partials/master-relationship.hbs`,
+  `modules/${MODULE_ID}/templates/partials/master-portrait.hbs`,
+  `modules/${MODULE_ID}/templates/partials/master-focal.hbs`,
+  `modules/${MODULE_ID}/templates/partials/master-history.hbs`,
+  `modules/${MODULE_ID}/templates/partials/master-cleanup.hbs`,
+  `modules/${MODULE_ID}/templates/partials/master-settings.hbs`
 ];
 
 export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
@@ -77,20 +85,16 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
     this.subjectId = String(subjectId || "");
     this.activeSection = normalizeWorkspace(activeSection);
     this.newProfileGroupId = String(newProfileGroupId || "");
-    this._listeners = [];
     this._controlControllers = [];
     this._portraitController = null;
     this._focalPortraitController = null;
     this._accessibilityController = null;
-    this._profileSelectorController = null;
-    this._subjectSelectorController = null;
-    this._profileGroupSelectorController = null;
-    this._newProfileGroupSelectorController = null;
     this._motionController = null;
     this._motionBooted = false;
     this._pendingMotion = "";
     this._navigationTrail = new NavigationTrail({ profileId: this.profileId, subjectId: this.subjectId, activeSection: this.activeSection });
     this._navigationController = null;
+    this._selectionController = null;
     this._relationshipDrafts = new Map();
     this._portraitDrafts = new Map();
     this._fieldDrafts = new Map();
@@ -165,125 +169,30 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
     await this.render({ force: true });
   }
 
-  _applyPermissionState(root, context) {
-    if (!root?.querySelector) return;
-    const rules = [
-      ["relationship", context.permissions.canEditRelationships],
-      ["portrait", context.permissions.canEditPortraits],
-      ["subjects", context.permissions.canEditSubjects],
-      ["profile", context.permissions.canEditSubjects],
-      ["focal", context.permissions.canEditFocal],
-      ["characters", context.permissions.canBulkEdit || context.permissions.canEditSubjects],
-      ["history", context.permissions.canUndoRedo]
-    ];
-    for (const [section, allowed] of rules) {
-      const panel = root.querySelector(`[data-master-section-panel="${section}"]`);
-      if (!panel) continue;
-      panel.dataset.permissionAllowed = String(Boolean(allowed));
-      if (!allowed) for (const control of panel.querySelectorAll("button,input,select,textarea")) control.disabled = true;
-    }
-    if (!canUser(globalThis.game?.user, MODULE_CAPABILITY.BULK)) {
-      for (const control of root.querySelectorAll("[data-master-bulk] button, [data-master-bulk] input, [data-master-bulk] select, [data-master-bulk-subject], [data-master-bulk-select-all]")) control.disabled = true;
-    }
-    if (!canUser(globalThis.game?.user, MODULE_CAPABILITY.SUBJECTS)) {
-      for (const control of root.querySelectorAll("[data-master-subject-admin] button, [data-master-subject-admin] input, [data-master-subject-admin] select, [data-master-subject-admin] textarea")) control.disabled = true;
-      for (const selector of root.querySelectorAll("[data-master-subject-admin] [data-smart-selector-toggle]")) selector.disabled = true;
-    }
-    const undo = root.querySelector("[data-master-undo]");
-    const redo = root.querySelector("[data-master-redo]");
-    if (!context.permissions.canUndoRedo) { if (undo) undo.disabled = true; if (redo) redo.disabled = true; }
+  _applyPermissionState(root, context) { applyMasterPermissionState(root, context); }
+
+  _hasPendingChanges() {
+    this._captureFormDrafts(appElement(this));
+    return Boolean(this._saveController.hasPending || this._saveController.isSaving || this._fieldDrafts.size || this._focalPortraitDrafts.size || this._bindingDrafts.size);
   }
 
   _wirePermissionSettings(root) {
-    const save = root.querySelector("[data-master-save-permissions]");
-    if (!save) return;
-    listen(this._listeners, save, "click", async () => {
-      if (!canUser(globalThis.game?.user, MODULE_CAPABILITY.CONFIGURE_PERMISSIONS)) {
-        notify("warn", "Somente um Gamemaster completo pode alterar estas permissões.");
-        return;
-      }
-      const current = getPermissionConfig();
-      const next = { schema: 1, assistant: { ...current.assistant }, trusted: { ...current.trusted } };
-      for (const input of root.querySelectorAll("[data-master-permission-role][data-master-permission-capability]")) {
-        const role = String(input.dataset.masterPermissionRole || "");
-        const capability = String(input.dataset.masterPermissionCapability || "");
-        if (!next[role] || !capability) continue;
-        next[role][capability] = Boolean(input.checked);
-      }
-      try {
-        await setPermissionConfig(next);
-        notify("info", "Permissões da Matriz de Reputação atualizadas.");
-      } catch (error) {
-        notify("error", error?.message || "Não foi possível salvar as permissões.");
-      }
-    });
-  }
-
-  _wireBackupControls(root) {
-    const restore = root.querySelector("[data-master-restore-backup]");
-    if (!restore) return;
-    listen(this._listeners, restore, "click", async () => {
-      if (!canUser(globalThis.game?.user, MODULE_CAPABILITY.CONFIGURE_PERMISSIONS)) {
-        notify("warn", "Somente um Gamemaster completo pode restaurar o backup mundial.");
-        return;
-      }
-      if (this._saveController.hasPending) {
-        notify("warn", "Salve ou descarte as alterações pendentes antes de restaurar um backup.");
-        return;
-      }
-      const confirmed = await confirmMasterAction({
-        title: "Restaurar backup mundial",
-        message: "Restaurar o último snapshot automático da Matriz? O estado atual será preservado como novo backup antes do rollback.",
-        confirmLabel: "Restaurar backup"
-      });
-      if (!confirmed) return;
-      try {
-        await restoreWorldStateBackup();
-        notify("info", "Backup mundial restaurado com sucesso.");
-        await this.render({ force: true });
-      } catch (error) {
-        notify("error", error?.message || "Não foi possível restaurar o backup mundial.");
-      }
-    });
+    this._controlControllers.push(wireMasterSystemControls(root, {
+      hasPendingChanges: () => this._hasPendingChanges(),
+      render: (options) => this.render(options)
+    }));
   }
 
   _setSection(root, sectionId, { animate = true } = {}) {
-    const workspace = normalizeWorkspace(sectionId);
-    const visiblePanels = new Set(WORKSPACE_PANELS[workspace]);
-    const content = root.querySelector(".gms-master-panel__content");
-    if (content && animate) this._sectionScroll.set(this.activeSection, content.scrollTop);
-    this.activeSection = workspace;
-    root.dataset.masterActiveSection = workspace;
-    for (const button of root.querySelectorAll("[data-master-section-choice]")) {
-      const active = button.dataset.masterSectionChoice === workspace;
-      button.dataset.active = String(active);
-      button.setAttribute("aria-selected", String(active));
-      button.tabIndex = active ? 0 : -1;
-      if (active) button.scrollIntoView?.({ block: "nearest", inline: "nearest" });
-    }
-    if (content) content.scrollTop = this._sectionScroll.get(workspace) ?? 0;
-    const location = root.querySelector("[data-navigation-location]");
-    if (location) location.textContent = SECTIONS.find(([id]) => id === workspace)?.[1] ?? "Perfis";
-    this._updateNavigationState(root);
-    const panels = [...root.querySelectorAll("[data-master-section-panel]")];
-    for (const panel of panels) {
-      const visible = visiblePanels.has(String(panel.dataset.masterSectionPanel || ""));
-      panel.hidden = !visible;
-      panel.dataset.workspaceVisible = String(visible);
-    }
-    if (animate) {
-      panels
-        .filter((panel) => !panel.hidden)
-        .forEach((panel, order) => this._motionController?.section?.(panel, order));
-    }
+    setMasterWorkspace(root, sectionId, {
+      animate, scrollPositions: this._sectionScroll,
+      getSelection: () => ({ activeSection: this.activeSection }),
+      onSectionChange: (id) => { this.activeSection = id; },
+      getMotionController: () => this._motionController, trail: this._navigationTrail
+    });
   }
 
-  _updateNavigationState(root) {
-    const back = root?.querySelector?.("[data-navigation-back]");
-    const forward = root?.querySelector?.("[data-navigation-forward]");
-    if (back) back.disabled = !this._navigationTrail.canBack;
-    if (forward) forward.disabled = !this._navigationTrail.canForward;
-  }
+  _updateNavigationState(root) { updateMasterNavigationState(root, this._navigationTrail); }
 
   _navigate(target = {}, options = {}) {
     if (this._closingRequested) return Promise.resolve(this);
@@ -315,30 +224,12 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
   }
 
   _wireNavigation(root, context) {
-    this._navigationController = wireNavigationPalette(root, {
-      items: [
-        ...context.sections.map((section) => ({ label: section.label, description: section.kicker, group: "ÁREAS", target: { activeSection: section.id } })),
-        ...context.profiles.map((profile) => ({ label: profile.name, description: profile.groupName, group: "PERFIS", target: { profileId: profile.id } })),
-        ...context.subjects.map((subject) => ({ label: subject.alias, description: subject.realName, group: "PERSONAGENS", target: { subjectId: subject.id, activeSection: "relationship" } }))
-      ], onNavigate: (target) => this._navigate(target)
+    this._navigationController = wireMasterNavigation(root, context, {
+      navigate: (target, options) => this._navigate(target, options),
+      trail: this._navigationTrail,
+      getSelection: () => ({ subjectId: this.subjectId, profileId: this.profileId }),
+      captureDrafts: () => this._captureFormDrafts(root)
     });
-    const travel = (direction) => {
-      if (!(direction < 0 ? this._navigationTrail.canBack : this._navigationTrail.canForward)) return;
-      return this._navigate(direction < 0 ? this._navigationTrail.back() : this._navigationTrail.forward(), { record: false });
-    };
-    listen(this._listeners, root.querySelector("[data-navigation-back]"), "click", () => travel(-1));
-    listen(this._listeners, root.querySelector("[data-navigation-forward]"), "click", () => travel(1));
-    listen(this._listeners, root, "keydown", (event) => {
-      if (event.altKey && ["ArrowLeft", "ArrowRight"].includes(event.key)) { event.preventDefault(); travel(event.key === "ArrowLeft" ? -1 : 1); }
-    });
-    listen(this._listeners, root, "input", () => this._captureFormDrafts(root));
-    listen(this._listeners, root, "change", () => this._captureFormDrafts(root));
-    for (const button of root.querySelectorAll("[data-navigation-subject-step]")) listen(this._listeners, button, "click", () => {
-      const id = adjacentId(context.subjects, this.subjectId, Number(button.dataset.navigationSubjectStep));
-      if (id) return this._navigate({ subjectId: id });
-    });
-    listen(this._listeners, root.querySelector("[data-master-open-player]"), "click", () => openPlayerDashboard({ profileId: this.profileId }));
-    this._updateNavigationState(root);
   }
 
   _contextIds(root) {
@@ -408,48 +299,10 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
     return Array.from(root.querySelectorAll("[data-master-bulk-subject]:checked"), (input) => String(input.value || "")).filter(Boolean);
   }
 
-  _refreshUndoRedoControls(root) {
-    if (!root?.querySelector) return;
-    const stack = buildUndoRedoState();
-    if (!canUser(globalThis.game?.user, MODULE_CAPABILITY.BULK)) {
-      for (const control of root.querySelectorAll("[data-master-bulk] button, [data-master-bulk] input, [data-master-bulk] select, [data-master-bulk-subject], [data-master-bulk-select-all]")) control.disabled = true;
-    }
-    if (!canUser(globalThis.game?.user, MODULE_CAPABILITY.SUBJECTS)) {
-      for (const control of root.querySelectorAll("[data-master-subject-admin] button, [data-master-subject-admin] input, [data-master-subject-admin] select, [data-master-subject-admin] textarea")) control.disabled = true;
-      for (const selector of root.querySelectorAll("[data-master-subject-admin] [data-smart-selector-toggle]")) selector.disabled = true;
-    }
-    const undo = root.querySelector("[data-master-undo]");
-    const redo = root.querySelector("[data-master-redo]");
-    const allowed = canUser(globalThis.game?.user, MODULE_CAPABILITY.HISTORY);
-    if (undo) {
-      undo.disabled = !allowed || !stack.canUndo;
-      undo.title = stack.undoTarget?.label || "Nada para desfazer";
-    }
-    if (redo) {
-      redo.disabled = !allowed || !stack.canRedo;
-      redo.title = stack.redoTarget?.label || "Nada para refazer";
-    }
-  }
+  _refreshUndoRedoControls(root) { refreshMasterUndoRedoControls(root); }
 
   _updateSaveStatus(root, snapshot = this._saveController.snapshot()) {
-    if (!root?.querySelector) return;
-    const bar = root.querySelector("[data-master-save-state]");
-    if (bar) {
-      bar.dataset.masterSaveState = snapshot.status;
-      bar.dataset.pendingCount = String(snapshot.pendingCount);
-    }
-    const label = root.querySelector("[data-master-save-label]");
-    if (label) label.textContent = snapshot.label;
-    const count = root.querySelector("[data-master-save-pending-count]");
-    if (count) count.textContent = snapshot.pendingCount ? `${snapshot.pendingCount} pendente${snapshot.pendingCount === 1 ? "" : "s"}` : "buffer limpo";
-    const saveNow = root.querySelector("[data-master-save-now]");
-    if (saveNow) {
-      const canCaptureRelationship = Boolean(this.profileId && this.subjectId && canUser(globalThis.game?.user, MODULE_CAPABILITY.RELATIONSHIPS));
-      saveNow.disabled = snapshot.status === "saving" || (!snapshot.hasPending && !canCaptureRelationship);
-      saveNow.dataset.saveReady = String(Boolean(snapshot.hasPending || canCaptureRelationship));
-    }
-    const discard = root.querySelector("[data-master-discard-pending]");
-    if (discard) discard.disabled = !snapshot.hasPending || snapshot.status === "saving";
+    updateMasterSaveStatus(root, snapshot, { profileId: this.profileId, subjectId: this.subjectId });
   }
 
   _queueRelationshipDraft(root) {
@@ -594,64 +447,26 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
     }));
   }
 
-  async _runUndoRedo(direction, target) {
-    if (!canUser(globalThis.game?.user, MODULE_CAPABILITY.HISTORY)) { notify("warn", "Você não possui permissão para desfazer/refazer alterações."); return; }
-    if (this._saveController.hasPending) {
-      notify("warn", "Salve ou descarte as alterações pendentes antes de desfazer/refazer.");
-      return;
-    }
-    if (!target?.transactionId) return;
-    const confirmed = await confirmMasterAction({
-      title: direction === "undo" ? "Desfazer alteração" : "Refazer alteração",
-      message: `${direction === "undo" ? "Desfazer" : "Refazer"} “${target.label}”? A operação será registrada no histórico e poderá ser ${direction === "undo" ? "refeita" : "desfeita"} novamente.`,
-      confirmLabel: direction === "undo" ? "Desfazer" : "Refazer"
+  async _runUndoRedo(direction, target, options = {}) {
+    return runMasterUndoRedo(direction, target, {
+      ...options,
+      hasPending: () => this._hasPendingChanges(),
+      runMutation: (action, message) => this._runMutation(action, message)
     });
-    if (!confirmed) return;
-    await this._runMutation(
-      () => direction === "undo" ? undoLastTransaction() : redoLastTransaction(),
-      direction === "undo" ? "Última alteração desfeita." : "Alteração refeita."
-    );
   }
 
   _wireSaveControls(root, context) {
-    this._updateSaveStatus(root);
-    listen(this._listeners, root.querySelector("[data-master-save-now]"), "click", async (event) => {
-      event?.preventDefault?.();
-      // Explicit save must be authoritative: re-read the current relationship
-      // controls before flushing instead of relying only on prior input events.
-      this._queueRelationshipDraft(root);
-      await this._flushPending();
-      this._updateSaveStatus(root);
-    });
-    listen(this._listeners, root.querySelector("[data-master-discard-pending]"), "click", async () => {
-      if (!this._saveController.hasPending) return;
-      const confirmed = await confirmMasterAction({
-        title: "Descartar alterações pendentes",
-        message: "Descartar as alterações locais que ainda não foram gravadas?",
-        confirmLabel: "Descartar"
-      });
-      if (!confirmed) return;
-      this._saveController.discard();
-      this._relationshipDrafts.clear(); this._portraitDrafts.clear();
-      await this.render({ force: true });
-    });
-
-    const modeSelect = root.querySelector("[data-master-save-mode]");
-    const delayInput = root.querySelector("[data-master-autosave-delay]");
-    listen(this._listeners, modeSelect, "change", async () => {
-      const mode = await setMasterSaveMode(modeSelect.value);
-      this._saveController.configure({ mode });
-      if (delayInput) delayInput.disabled = mode !== MASTER_SAVE_MODE.IDLE;
-      this._updateSaveStatus(root);
-    });
-    listen(this._listeners, delayInput, "change", async () => {
-      const delay = await setMasterAutoSaveDelay(delayInput.value);
-      delayInput.value = String(delay);
-      this._saveController.configure({ idleDelay: delay });
-    });
-
-    listen(this._listeners, root.querySelector("[data-master-undo]"), "click", () => this._runUndoRedo("undo", context.undoRedo.undoTarget));
-    listen(this._listeners, root.querySelector("[data-master-redo]"), "click", () => this._runUndoRedo("redo", context.undoRedo.redoTarget));
+    this._controlControllers.push(wireMasterSaveControls(root, {
+      saveController: this._saveController,
+      updateStatus: () => this._updateSaveStatus(root),
+      queueRelationship: () => this._queueRelationshipDraft(root),
+      flushPending: () => this._flushPending(),
+      onDiscard: () => { this._relationshipDrafts.clear(); this._portraitDrafts.clear(); },
+      render: (options) => this.render(options)
+    }));
+    this._controlControllers.push(wireMasterHistoryControls(root, context, {
+      onUndoRedo: (direction, target, options) => this._runUndoRedo(direction, target, options)
+    }));
   }
 
   _onRender(context, options) {
@@ -659,7 +474,6 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
     this._portraitVisibilityController?.destroy?.();
     this._portraitVisibilityController = null;
     for (const controller of this._controlControllers.splice(0)) controller?.destroy();
-    destroyListeners(this._listeners);
     this._portraitController?.destroy?.();
     this._portraitController = null;
     this._focalPortraitController?.destroy?.();
@@ -668,14 +482,7 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
     this._accessibilityController = null;
     this._motionController?.destroy?.();
     this._motionController = null;
-    this._profileSelectorController?.destroy?.();
-    this._profileSelectorController = null;
-    this._subjectSelectorController?.destroy?.();
-    this._subjectSelectorController = null;
-    this._profileGroupSelectorController?.destroy?.();
-    this._profileGroupSelectorController = null;
-    this._newProfileGroupSelectorController?.destroy?.();
-    this._newProfileGroupSelectorController = null;
+    this._selectionController?.destroy?.(); this._selectionController = null;
     this._navigationController?.destroy?.();
     this._settingsTabController?.destroy?.();
     const root = appElement(this);
@@ -685,20 +492,7 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
     if (this._pendingMotion === "sync") this._motionController.sync?.(root);
     else if (this._pendingMotion) this._motionController.transition?.(this._pendingMotion, root);
     this._pendingMotion = "";
-    const profileSelector = root.querySelector('[data-smart-selector="master-profile"]');
-    const subjectSelector = root.querySelector('[data-smart-selector="master-subject"]');
-    this._profileSelectorController = wireSmartSelector(profileSelector, {
-      onSelect: (value) => this._navigate({ profileId: String(value || "") })
-    });
-    this._subjectSelectorController = wireSmartSelector(subjectSelector, {
-      onSelect: (value) => this._navigate({ subjectId: String(value || "") })
-    });
-    for (const button of root.querySelectorAll("[data-master-subject-choice]")) {
-      listen(this._listeners, button, "click", async () => {
-        await this._navigate({ subjectId: String(button.dataset.masterSubjectChoice || "") });
-      });
-    }
-    for (const button of root.querySelectorAll("[data-master-section-choice]")) listen(this._listeners, button, "click", () => this._navigate({ activeSection: button.dataset.masterSectionChoice }));
+    this._selectionController = wireMasterSelectionControls(root, { navigate: (target) => this._navigate(target) });
 
     this._wireSaveControls(root, context);
     this._wireRegistry(root);
@@ -709,7 +503,6 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
     this._wireCleanup(root, context);
     this._wirePlayerBindings(root, context);
     this._wirePermissionSettings(root);
-    this._wireBackupControls(root);
     this._wireNavigation(root, context);
     this._restoreFormDrafts(root);
     this._applyPermissionState(root, context);
@@ -737,10 +530,10 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
   async _onClose(options) {
     this._portraitVisibilityController?.destroy?.(); this._portraitVisibilityController = null;
     this._settingsTabController?.destroy?.(); this._settingsTabController = null;
+    this._selectionController?.destroy?.(); this._selectionController = null;
     this._navigationController?.destroy?.(); this._navigationController = null;
     unregisterReputationFeedbackSurface(this);
     for (const controller of this._controlControllers.splice(0)) controller?.destroy();
-    destroyListeners(this._listeners);
     this._portraitController?.destroy?.();
     this._portraitController = null;
     this._focalPortraitController?.destroy?.();
@@ -749,14 +542,6 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
     this._accessibilityController = null;
     this._motionController?.destroy?.();
     this._motionController = null;
-    this._profileSelectorController?.destroy?.();
-    this._profileSelectorController = null;
-    this._subjectSelectorController?.destroy?.();
-    this._subjectSelectorController = null;
-    this._profileGroupSelectorController?.destroy?.();
-    this._profileGroupSelectorController = null;
-    this._newProfileGroupSelectorController?.destroy?.();
-    this._newProfileGroupSelectorController = null;
     this._permissionUnsubscribe?.();
     this._permissionUnsubscribe = null;
     this._syncUnsubscribe?.();

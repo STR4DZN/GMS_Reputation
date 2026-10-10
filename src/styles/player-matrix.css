@@ -1,0 +1,217 @@
+
+
+/* ========================================================================== 
+   PLAYER MATRIX 59.3 — trilho alinhado / pesquisa removida
+   Uma única coluna visual mantém seletor de perfil, focal e relações no mesmo
+   eixo. Os cards reservam áreas fixas para retrato, leitura e score para que
+   nomes, corações e protocolos não mudem de posição entre registros.
+   ========================================================================== */
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__scroll {
+  padding: 0 !important;
+}
+
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__content,
+.gms-player-dashboard[data-gms-visual-generation="3"] .gms-player-dashboard__content {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  align-content: start !important;
+  gap: 10px !important;
+  width: 100% !important;
+  max-width: 960px !important;
+  min-width: 0 !important;
+  margin: 0 auto !important;
+  padding: 10px 10px 16px !important;
+  box-sizing: border-box !important;
+}
+
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__content > :is(.gms-profile-library,.gms-player-dashboard__focal,.gms-player-dashboard__records),
+.gms-player-dashboard[data-gms-visual-generation="3"] .gms-player-dashboard__content > :is(.gms-profile-library,.gms-player-dashboard__focal,.gms-player-dashboard__records) {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__focal,
+.gms-player-dashboard[data-gms-visual-generation="3"] .gms-player-dashboard__focal {
+  padding: 0 !important;
+}
+
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__records,
+.gms-player-dashboard[data-gms-visual-generation="3"] .gms-player-dashboard__records {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-auto-flow: row !important;
+  align-items: stretch !important;
+  gap: 8px !important;
+  padding: 0 !important;
+}
+
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card[data-gms-visual-generation="3"],
+.gms-player-dashboard[data-gms-visual-generation="3"] .gms-reputation-player-card[data-gms-visual-generation="3"] {
+  grid-template-columns: 78px minmax(0, 1fr) 62px !important;
+  grid-template-rows: 52px 40px !important;
+  gap: 0 9px !important;
+  min-height: 94px !important;
+  align-items: stretch !important;
+}
+
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__portrait,
+.gms-player-dashboard[data-gms-visual-generation="3"] .gms-reputation-player-card__portrait {
+  align-self: center !important;
+  width: 68px !important;
+  min-width: 68px !important;
+  height: 78px !important;
+  margin: 0 0 0 7px !important;
+}
+
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__heading,
+.gms-player-dashboard[data-gms-visual-generation="3"] .gms-reputation-player-card__heading {
+  align-content: center !important;
+  gap: 4px !important;
+  padding: 7px 4px 3px 0 !important;
+}
+
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__identity,
+.gms-player-dashboard[data-gms-visual-generation="3"] .gms-reputation-player-card__identity {
+  align-self: end !important;
+  min-width: 0 !important;
+}
+
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__relation,
+.gms-player-dashboard[data-gms-visual-generation="3"] .gms-reputation-player-card__relation {
+  min-height: 12px !important;
+  align-self: start !important;
+}
+
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__hearts,
+.gms-player-dashboard[data-gms-visual-generation="3"] .gms-reputation-player-card__hearts,
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card:not(.is-special-standard) .gms-reputation-player-card__hearts,
+.gms-player-dashboard[data-gms-visual-generation="3"] .gms-reputation-player-card:not(.is-special-standard) .gms-reputation-player-card__hearts {
+  align-self: center !important;
+  min-height: 36px !important;
+  padding: 4px 116px 6px 0 !important;
+  box-sizing: border-box !important;
+}
+
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__hearts .gms-reputation-heart-track,
+.gms-player-dashboard[data-gms-visual-generation="3"] .gms-reputation-player-card__hearts .gms-reputation-heart-track {
+  justify-content: start !important;
+  margin: 0 !important;
+}
+
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card[data-gms-visual-generation="3"] > .gms-reputation-player-card__score,
+.gms-player-dashboard[data-gms-visual-generation="3"] .gms-reputation-player-card[data-gms-visual-generation="3"] > .gms-reputation-player-card__score {
+  align-self: center !important;
+  justify-self: end !important;
+  width: 54px !important;
+  min-width: 54px !important;
+  max-width: 54px !important;
+  min-height: 56px !important;
+  margin: 0 5px 0 0 !important;
+  padding: 6px 3px !important;
+}
+
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card[data-gms-visual-generation="3"] > .gms-reputation-player-card__score > strong,
+.gms-player-dashboard[data-gms-visual-generation="3"] .gms-reputation-player-card[data-gms-visual-generation="3"] > .gms-reputation-player-card__score > strong {
+  font-size: 25px !important;
+  line-height: .9 !important;
+}
+
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__special,
+.gms-player-dashboard[data-gms-visual-generation="3"] .gms-reputation-player-card__special {
+  align-self: center !important;
+  justify-self: end !important;
+  min-width: 104px !important;
+  min-height: 30px !important;
+  margin: 0 2px 0 0 !important;
+}
+
+@container gms-player-dashboard (max-width: 600px) {
+  .application.gms-reputation-player-dashboard-app .gms-player-dashboard__content,
+  .gms-player-dashboard[data-gms-visual-generation="3"] .gms-player-dashboard__content {
+    gap: 7px !important;
+    padding: 7px 7px 12px !important;
+  }
+
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card[data-gms-visual-generation="3"],
+  .gms-player-dashboard[data-gms-visual-generation="3"] .gms-reputation-player-card[data-gms-visual-generation="3"] {
+    grid-template-columns: 66px minmax(0, 1fr) 52px !important;
+    grid-template-rows: 48px 38px !important;
+    gap: 0 7px !important;
+    min-height: 88px !important;
+  }
+
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card__portrait,
+  .gms-player-dashboard[data-gms-visual-generation="3"] .gms-reputation-player-card__portrait {
+    width: 58px !important;
+    min-width: 58px !important;
+    height: 70px !important;
+    margin-left: 5px !important;
+  }
+
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card__hearts,
+  .gms-player-dashboard[data-gms-visual-generation="3"] .gms-reputation-player-card__hearts,
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card:not(.is-special-standard) .gms-reputation-player-card__hearts,
+  .gms-player-dashboard[data-gms-visual-generation="3"] .gms-reputation-player-card:not(.is-special-standard) .gms-reputation-player-card__hearts {
+    padding-right: 38px !important;
+  }
+
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card__special,
+  .gms-player-dashboard[data-gms-visual-generation="3"] .gms-reputation-player-card__special {
+    grid-template-columns: 24px !important;
+    min-width: 30px !important;
+    width: 30px !important;
+    padding: 2px !important;
+  }
+
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card__special strong,
+  .gms-player-dashboard[data-gms-visual-generation="3"] .gms-reputation-player-card__special strong {
+    display: none !important;
+  }
+
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card[data-gms-visual-generation="3"] > .gms-reputation-player-card__score,
+  .gms-player-dashboard[data-gms-visual-generation="3"] .gms-reputation-player-card[data-gms-visual-generation="3"] > .gms-reputation-player-card__score {
+    width: 46px !important;
+    min-width: 46px !important;
+    max-width: 46px !important;
+    min-height: 50px !important;
+    margin-right: 3px !important;
+  }
+}
+
+@container gms-player-dashboard (max-width: 440px) {
+  .application.gms-reputation-player-dashboard-app .gms-player-dashboard__content,
+  .gms-player-dashboard[data-gms-visual-generation="3"] .gms-player-dashboard__content {
+    padding-inline: 5px !important;
+  }
+
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card[data-gms-visual-generation="3"],
+  .gms-player-dashboard[data-gms-visual-generation="3"] .gms-reputation-player-card[data-gms-visual-generation="3"] {
+    grid-template-columns: 58px minmax(0, 1fr) 46px !important;
+    gap: 0 5px !important;
+  }
+
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card__portrait,
+  .gms-player-dashboard[data-gms-visual-generation="3"] .gms-reputation-player-card__portrait {
+    width: 52px !important;
+    min-width: 52px !important;
+    height: 64px !important;
+    margin-left: 4px !important;
+  }
+
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card__hearts,
+  .gms-player-dashboard[data-gms-visual-generation="3"] .gms-reputation-player-card__hearts,
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card:not(.is-special-standard) .gms-reputation-player-card__hearts,
+  .gms-player-dashboard[data-gms-visual-generation="3"] .gms-reputation-player-card:not(.is-special-standard) .gms-reputation-player-card__hearts {
+    padding-right: 28px !important;
+  }
+
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card[data-gms-visual-generation="3"] > .gms-reputation-player-card__score,
+  .gms-player-dashboard[data-gms-visual-generation="3"] .gms-reputation-player-card[data-gms-visual-generation="3"] > .gms-reputation-player-card__score {
+    width: 42px !important;
+    min-width: 42px !important;
+    max-width: 42px !important;
+  }
+}

@@ -1,0 +1,36 @@
+        <section id="gms-workspace-profile" role="tabpanel" aria-labelledby="gms-nav-profiles" data-master-section-panel="profile" data-gms-v2-bay="profile-editor-bay" hidden>
+          <header><small>CONFIGURAÇÃO DA MATRIZ</small><h2>Perfil selecionado</h2></header>
+          {{#if profileEditor}}
+            <section class="gms-master-profile-editor" data-master-subject-admin aria-label="Editar perfil selecionado">
+              <header class="gms-master-profile-editor__head">
+                <div><small>PERFIL SELECIONADO</small><strong>{{profileEditor.name}}</strong><p>Defina nome, grupo, disponibilidade e ordem desta matriz. A apresentação aparece logo abaixo.</p></div>
+                <span data-state="{{#if profileEditor.archived}}archived{{else}}{{#if profileEditor.active}}active{{else}}inactive{{/if}}{{/if}}">{{#if profileEditor.archived}}ARQUIVADO{{else}}{{#if profileEditor.active}}ATIVO{{else}}INATIVO{{/if}}{{/if}}</span>
+              </header>
+
+              <div class="gms-master-profile-editor__metrics">
+                <article><small>GRUPO</small><strong>{{profileEditor.groupName}}</strong></article>
+                <article><small>NO PERFIL</small><strong>{{profileEditor.rosterCount}}</strong><span>/ {{profileEditor.totalSubjects}} personagens</span></article>
+                <article><small>RELAÇÕES</small><strong>{{profileEditor.relationshipCount}}</strong></article>
+                <article><small>ATUALIZADO</small><span>{{profileEditor.updatedAtText}}</span></article>
+              </div>
+
+              <div class="gms-master-profile-editor__form">
+                <label class="is-wide"><span>Nome da matriz</span><input type="text" data-master-profile-editor-name maxlength="240" value="{{profileEditor.name}}" placeholder="Ex.: Reputação com Lapso"></label>
+                <fieldset class="gms-master-profile-editor__groups" aria-label="Grupo do perfil">
+                  <legend>Grupo</legend>
+                  <div>{{#each profileGroupChoices}}<button type="button" data-master-profile-editor-group-choice="{{value}}" data-active="{{active}}" aria-pressed="{{active}}"><span>{{primary}}</span><small>{{secondary}}</small></button>{{/each}}</div>
+                </fieldset>
+                <div class="gms-master-profile-editor__status">
+                  <label><input type="checkbox" data-master-profile-editor-active {{#if profileEditor.active}}checked{{/if}}><span><b>Perfil ativo</b><small>Disponível na navegação dos Players.</small></span></label>
+                  <label><input type="checkbox" data-master-profile-editor-archived {{#if profileEditor.archived}}checked{{/if}}><span><b>Arquivado</b><small>Oculta o Perfil das listas normais sem apagar os dados.</small></span></label>
+                </div>
+              </div>
+
+              <footer class="gms-master-profile-editor__actions">
+                <div class="gms-master-profile-editor__order"><button type="button" data-master-profile-move="up" {{#if profileEditor.canMoveUp}}{{else}}disabled{{/if}}><i class="fa-solid fa-arrow-up" aria-hidden="true"></i><span>Subir no grupo</span></button><button type="button" data-master-profile-move="down" {{#if profileEditor.canMoveDown}}{{else}}disabled{{/if}}><i class="fa-solid fa-arrow-down" aria-hidden="true"></i><span>Descer no grupo</span></button></div>
+                <button type="button" class="is-primary" data-master-save-profile-editor><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i><span>Salvar Perfil</span></button>
+              </footer>
+            </section>
+          {{else}}<p class="is-empty">Selecione um Perfil na aba Perfis para editar.</p>{{/if}}
+        </section>
+

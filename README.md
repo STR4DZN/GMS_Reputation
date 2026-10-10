@@ -4,7 +4,7 @@
 
 **Foundry VTT:** v13 — mínimo `13.341`, verificado para `13.351`.
 
-Em desenvolvimento: [retratos carregados pela área visível e validação de desempenho](docs/PORTRAIT_PERFORMANCE.md).
+Em desenvolvimento: [retratos pela área visível](docs/PORTRAIT_PERFORMANCE.md), [organização da interface](docs/ARCHITECTURE_60.md) e [validação/pacote de revisão](docs/VALIDATION.md).
 
 Para editar a interface, use as [fontes CSS organizadas e os comandos de geração](docs/STYLES.md).
 

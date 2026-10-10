@@ -1,0 +1,143 @@
+
+
+/* ========================================================================== */
+/* 59.10 — GERENCIADOR DE LIMPEZA                                             */
+/* Exclusões permanentes ficam isoladas em uma página própria do Mestre.       */
+/* ========================================================================== */
+.application.gms-reputation-master-panel-app .gms-master-cleanup{
+  --cleanup-accent:#45e7f3;
+  --cleanup-danger:#ff5b72;
+  --cleanup-panel:rgba(7,13,20,.88);
+  display:grid;
+  gap:14px;
+  padding:2px 0 14px;
+}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__warning{
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr);
+  gap:13px;
+  align-items:start;
+  padding:14px 16px;
+  border:1px solid rgba(255,91,114,.28);
+  background:
+    linear-gradient(110deg,rgba(255,91,114,.09),transparent 42%),
+    rgba(7,11,17,.92);
+  clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,0 100%);
+}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__warning>i{
+  width:38px;height:38px;display:grid;place-items:center;
+  color:var(--cleanup-danger);
+  border:1px solid rgba(255,91,114,.35);
+  background:rgba(255,91,114,.06);
+  font-size:16px;
+}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__warning strong{
+  display:block;color:#fff1f4;font-size:14px;letter-spacing:.06em;text-transform:uppercase;
+}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__warning p{
+  margin:6px 0 0;color:#aaa6b1;font-size:11px;line-height:1.55;
+}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__toolbar{
+  display:grid;
+  grid-template-columns:minmax(280px,1fr) minmax(330px,.85fr);
+  gap:10px;
+  align-items:stretch;
+}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__search,
+.application.gms-reputation-master-panel-app .gms-master-cleanup__unlock{
+  min-height:52px;
+  border:1px solid rgba(69,231,243,.18);
+  background:rgba(6,12,19,.88);
+}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__search{
+  display:grid;grid-template-columns:38px 1fr;align-items:center;padding:0 11px;
+}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__search i{color:var(--cleanup-accent);opacity:.74;text-align:center}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__search input{
+  width:100%;height:34px;border:0 !important;background:transparent !important;color:#edfaff !important;box-shadow:none !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__unlock{
+  display:grid;grid-template-columns:28px 1fr;gap:8px;align-items:center;padding:7px 12px;cursor:pointer;
+}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__unlock input{width:18px;height:18px;accent-color:var(--cleanup-danger)}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__unlock span{display:grid;gap:2px}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__unlock strong{font-size:11px;color:#e9faff;letter-spacing:.045em}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__unlock small{font-size:9px;color:#858d9a;line-height:1.25}
+.application.gms-reputation-master-panel-app .gms-master-cleanup[data-cleanup-unlocked="true"] .gms-master-cleanup__unlock{
+  border-color:rgba(255,91,114,.42);box-shadow:inset 0 0 24px rgba(255,91,114,.045);
+}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__grid{display:grid;gap:12px}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__section{
+  border:1px solid rgba(69,231,243,.15);
+  background:linear-gradient(120deg,rgba(10,18,27,.92),rgba(5,10,16,.88));
+  overflow:hidden;
+}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__section>header{
+  min-height:46px !important;
+  display:flex !important;align-items:center;justify-content:space-between;gap:14px;
+  margin:0 !important;padding:8px 13px !important;
+  border-bottom:1px solid rgba(69,231,243,.13) !important;
+  background:linear-gradient(90deg,rgba(69,231,243,.055),transparent);
+}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__section>header span{display:grid;gap:2px}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__section>header small{font-size:8px;letter-spacing:.23em;color:#6c8391}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__section>header strong{font-size:14px;color:#dffcff;letter-spacing:.05em}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__section>header>b{
+  min-width:34px;height:26px;display:grid;place-items:center;border:1px solid rgba(69,231,243,.25);color:var(--cleanup-accent);font-size:13px;
+}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__list{display:grid}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__row{
+  min-height:66px;
+  display:grid;
+  grid-template-columns:minmax(250px,1fr) minmax(220px,.72fr) 126px;
+  gap:12px;align-items:center;
+  padding:9px 12px;
+  border-bottom:1px solid rgba(133,166,185,.09);
+  position:relative;
+}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__row:last-child{border-bottom:0}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__row::before{
+  content:"";position:absolute;left:0;top:8px;bottom:8px;width:2px;background:linear-gradient(transparent,var(--cleanup-accent),transparent);opacity:.34;
+}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__row:hover{background:rgba(69,231,243,.025)}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__identity{display:grid;grid-template-columns:34px minmax(0,1fr);gap:9px;align-items:center;min-width:0}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__identity>i{
+  width:32px;height:32px;display:grid;place-items:center;border:1px solid rgba(69,231,243,.18);color:#84eaf1;background:rgba(69,231,243,.035);
+}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__identity span{display:grid;gap:3px;min-width:0}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__identity strong{font-size:12px;color:#effcff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__identity small{font-size:9px;color:#788793;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__impact{display:flex;justify-content:flex-end;gap:6px;min-width:0}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__impact>span{
+  min-width:58px;min-height:39px;padding:4px 7px;display:grid;place-items:center;border:1px solid rgba(130,166,188,.11);background:rgba(255,255,255,.012);
+}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__impact b{font-size:13px;color:#d9f8fb;line-height:1}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__impact small{font-size:7px;letter-spacing:.12em;color:#697b88}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__impact .gms-master-cleanup__preserve{color:#79e6b3;min-width:90px}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__preserve i{font-size:12px;color:#79e6b3}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__delete{
+  height:38px !important;padding:0 11px !important;display:flex !important;align-items:center;justify-content:center;gap:8px;
+  border:1px solid rgba(255,91,114,.35) !important;background:rgba(255,91,114,.055) !important;color:#ff9cad !important;
+  font-size:10px !important;font-weight:800;letter-spacing:.055em;text-transform:uppercase;
+}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__delete:not(:disabled):hover{
+  border-color:rgba(255,91,114,.72) !important;background:rgba(255,91,114,.13) !important;color:#ffe9ee !important;box-shadow:0 0 18px rgba(255,91,114,.08);
+}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__delete:disabled{opacity:.28 !important;filter:saturate(.25);cursor:not-allowed}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__footnote{
+  margin:0;padding:10px 12px;display:flex;gap:9px;align-items:center;color:#7c8993;font-size:9px;border-top:1px solid rgba(69,231,243,.10);
+}
+.application.gms-reputation-master-panel-app .gms-master-cleanup__footnote i{color:var(--cleanup-accent)}
+.application.gms-reputation-master-panel-app .gms-master-cleanup-denied{padding:22px;display:flex;gap:10px;align-items:center;border:1px solid rgba(255,91,114,.2);color:#c9bbc2;background:rgba(255,91,114,.035)}
+@media(max-width:900px){
+  .application.gms-reputation-master-panel-app .gms-master-cleanup__toolbar{grid-template-columns:1fr}
+  .application.gms-reputation-master-panel-app .gms-master-cleanup__row{grid-template-columns:minmax(220px,1fr) 126px}
+  .application.gms-reputation-master-panel-app .gms-master-cleanup__impact{grid-column:1/-1;grid-row:2;justify-content:flex-start;padding-left:43px}
+  .application.gms-reputation-master-panel-app .gms-master-cleanup__delete{grid-column:2;grid-row:1}
+}
+@media(max-width:620px){
+  .application.gms-reputation-master-panel-app .gms-master-cleanup__row{grid-template-columns:1fr}
+  .application.gms-reputation-master-panel-app .gms-master-cleanup__impact{grid-column:1;grid-row:auto;padding-left:0;justify-content:flex-start;flex-wrap:wrap}
+  .application.gms-reputation-master-panel-app .gms-master-cleanup__delete{grid-column:1;grid-row:auto;width:100%}
+}
+

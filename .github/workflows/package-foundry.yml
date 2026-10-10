@@ -21,6 +21,9 @@ jobs:
         with:
           node-version: 20
 
+      - name: Install development dependencies
+        run: npm ci
+
       - name: Run test suite
         shell: bash
         run: bash tests/run-all.sh
@@ -32,14 +35,8 @@ jobs:
           VERSION=$(node -p "require('./module.json').version")
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
-      - name: Build module ZIP
-        shell: bash
-        run: |
-          mkdir -p dist
-          zip -r "dist/GMS_Reputation_${{ steps.version.outputs.version }}.zip" \
-            module.json README.md CHANGELOG.md \
-            assets docs scripts styles templates \
-            -x "*/.DS_Store" "*/Thumbs.db"
+      - name: Build and verify reproducible module ZIP
+        run: python tools/package-module.py
 
       - name: Upload packaged module
         uses: actions/upload-artifact@v4

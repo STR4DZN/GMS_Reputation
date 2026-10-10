@@ -1,0 +1,70 @@
+        <section id="gms-workspace-subjects" role="tabpanel" aria-labelledby="gms-nav-profiles" data-master-section-panel="subjects" data-gms-v2-bay="subject-registry-bay">
+          <header><small>ORGANIZAÇÃO CENTRAL</small><h2>Matrizes, perfis e grupos</h2></header>
+
+          <section class="gms-master-profile-hub" data-master-subject-admin>
+            <div class="gms-master-profile-hub__intro"><small>BIBLIOTECA DE PERSPECTIVAS</small><strong>Grupos organizam perfis; cada perfil define uma matriz de relações.</strong><p>Navegue pela lista compacta e abra os formulários somente ao criar algo.</p></div>
+            <div class="gms-master-profile-hub__actions">
+              <details class="gms-master-create-composer">
+                <summary><i class="fa-solid fa-folder-plus" aria-hidden="true"></i><span><small>ORGANIZAÇÃO</small><strong>Novo grupo</strong></span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary>
+                <div class="gms-master-create-composer__body">
+                  <label><span>Nome do grupo</span><input type="text" data-master-new-group-name maxlength="160" placeholder="Ex.: Nexus"></label>
+                  <button type="button" data-master-create-group><i class="fa-solid fa-plus" aria-hidden="true"></i><span>Criar grupo</span></button>
+                </div>
+              </details>
+              <details class="gms-master-create-composer gms-master-create-composer--profile">
+                <summary><i class="fa-solid fa-address-card" aria-hidden="true"></i><span><small>PERSPECTIVA</small><strong>Novo perfil</strong></span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary>
+                <div class="gms-master-create-composer__body gms-master-create-composer__body--profile">
+                  <label><span>Nome da matriz</span><input type="text" data-master-new-profile-name maxlength="240" placeholder="Ex.: Reputação com Lapso"></label>
+                  <label><span>Nome focal</span><input type="text" data-master-new-profile-focal-name maxlength="240" placeholder="Ex.: Lapso"></label>
+                  <fieldset class="gms-master-group-choice gms-master-group-choice--new-profile" aria-label="Grupo do novo perfil">
+                    <legend>Grupo do novo perfil</legend>
+                    <div>{{#each newProfileGroupChoices}}<button type="button" data-master-new-profile-group-choice="{{value}}" data-active="{{active}}" aria-pressed="{{active}}"><span>{{primary}}</span><small>{{secondary}}</small></button>{{/each}}</div>
+                  </fieldset>
+                  <button type="button" data-master-create-profile><i class="fa-solid fa-plus" aria-hidden="true"></i><span>Criar e abrir perfil</span></button>
+                </div>
+              </details>
+            </div>
+          </section>
+
+          <section class="gms-master-profile-index" aria-label="Lista de grupos e perfis">
+            <header class="gms-master-profile-index__head"><div><small>ÍNDICE DE PERFIS</small><strong>Grupos</strong><span>Abra um grupo para ver seus Perfis.</span></div><label><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input type="search" data-master-profile-list-search placeholder="Buscar grupo ou perfil..." autocomplete="off"></label></header>
+            <div class="gms-master-profile-groups">
+              {{#each profileGroups}}
+                <details class="gms-master-profile-group" data-master-group="{{id}}" data-system="{{system}}">
+                  <summary class="gms-master-profile-group__summary">
+                    <span class="gms-master-profile-group__glyph" aria-hidden="true"><i class="fa-solid {{#if system}}fa-box-archive{{else}}fa-folder-tree{{/if}}"></i></span>
+                    <span class="gms-master-profile-group__summary-copy"><small>{{#if system}}SEM CLASSIFICAÇÃO{{else}}GRUPO DE PERFIS{{/if}}</small><strong>{{name}}</strong>{{#if description}}<em>{{description}}</em>{{/if}}</span>
+                    <span class="gms-master-profile-group__count"><b>{{profiles.length}}</b><small>PERFIS</small></span>
+                    <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                  </summary>
+                  <div class="gms-master-profile-group__body">
+                    {{#if system}}{{else}}
+                      <div class="gms-master-profile-group__editor" data-master-subject-admin>
+                        <label><span>Nome do grupo</span><input type="text" data-master-group-name maxlength="160" value="{{name}}"></label>
+                        <div class="gms-master-profile-group__actions">
+                          <button type="button" data-master-group-move="up" {{#if canMoveUp}}{{else}}disabled{{/if}} title="Mover grupo para cima"><i class="fa-solid fa-arrow-up"></i></button>
+                          <button type="button" data-master-group-move="down" {{#if canMoveDown}}{{else}}disabled{{/if}} title="Mover grupo para baixo"><i class="fa-solid fa-arrow-down"></i></button>
+                          <button type="button" data-master-group-save><i class="fa-solid fa-floppy-disk"></i><span>Salvar nome</span></button>
+                        </div>
+                      </div>
+                    {{/if}}
+                    <div class="gms-master-profile-group__profiles">
+                      {{#if profiles.length}}
+                        {{#each profiles}}
+                          <button type="button" class="gms-master-profile-entry" data-master-profile-choice="{{id}}" data-selected="{{selected}}">
+                            <span class="gms-master-profile-entry__thumb">{{#if image}}<img data-gms-portrait-src="{{image}}" data-gms-portrait-state="suspended" alt="">{{else}}<i class="fa-solid fa-user-astronaut" aria-hidden="true"></i>{{/if}}</span>
+                            <span class="gms-master-profile-entry__copy"><strong>{{focalName}}</strong><small>{{name}}</small></span>
+                            <span class="gms-master-profile-entry__status">{{#if archived}}ARQUIVADO{{else}}{{#if selected}}ABERTO{{else}}{{#if active}}ATIVO{{else}}INATIVO{{/if}}{{/if}}{{/if}}</span>
+                            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                          </button>
+                        {{/each}}
+                      {{else}}<p class="gms-master-profile-group__empty">Nenhum perfil neste grupo.</p>{{/if}}
+                    </div>
+                  </div>
+                </details>
+              {{/each}}
+            </div>
+          </section>
+
+        </section>
+

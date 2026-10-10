@@ -1,3 +1,4 @@
+import { expandMasterTemplate } from "../tools/template-sources.mjs";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
@@ -87,7 +88,7 @@ assert.equal(Master.openMasterPanel(), null);
 
 const detailTemplate = await readFile(new URL("../templates/apps/subject-detail.hbs", import.meta.url), "utf8");
 const playerTemplate = await readFile(new URL("../templates/apps/player-dashboard.hbs", import.meta.url), "utf8");
-const masterTemplate = await readFile(new URL("../templates/apps/master-panel.hbs", import.meta.url), "utf8");
+const masterTemplate = await expandMasterTemplate();
 for (const source of [detailTemplate, playerTemplate]) {
   assert.doesNotMatch(source, /data-delta|name="score"|data-edit-portrait|data-toggle-bond|data-toggle-communion/i);
 }

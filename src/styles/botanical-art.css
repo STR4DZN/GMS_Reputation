@@ -1,0 +1,512 @@
+
+
+/* ========================================================================== 
+   BOTANICAL VECTOR 59.5 — FINAL VISUAL AUTHORITY FOR REAL FOUNDRY DOM
+   Applies directly to ApplicationV2 Player/Master classes, without relying on
+   prototype-only markup. Decorative layers never own layout or interaction.
+   ========================================================================== */
+
+/* ---------- Theme tokens / application shell ----------------------------- */
+.application.gms-reputation-app,
+.gms-reputation-app {
+  --gms595-bg-0: #020308;
+  --gms595-bg-1: #05060d;
+  --gms595-bg-2: #090a13;
+  --gms595-panel: rgba(8,9,17,.72);
+  --gms595-panel-strong: rgba(8,9,17,.86);
+  --gms595-panel-soft: rgba(10,11,20,.60);
+  --gms595-line: rgba(208,184,223,.18);
+  --gms595-line-soft: rgba(208,184,223,.10);
+  --gms595-violet: #a36ad8;
+  --gms595-violet-deep: #67418f;
+  --gms595-petal: #df77c1;
+  --gms595-petal-hot: #ff5aaa;
+  --gms595-blue: #477df4;
+  --gms595-cyan: #4bd3dd;
+  --gms595-ivory: #ece5ef;
+  --gms595-muted: #8a8291;
+  --gms595-green: #75d58f;
+  --gms595-gold: #d7af65;
+  --gms595-red: #e6547a;
+  --gms595-shadow: rgba(0,0,0,.48);
+  isolation: isolate !important;
+  color: var(--gms595-ivory) !important;
+}
+
+.application.gms-reputation-player-dashboard-app,
+.application.gms-reputation-master-panel-app {
+  background:
+    radial-gradient(ellipse at 50% -8%,rgba(169,96,210,.17),transparent 30%),
+    radial-gradient(circle at 8% 18%,rgba(91,54,130,.15),transparent 24%),
+    radial-gradient(circle at 92% 18%,rgba(55,83,150,.10),transparent 23%),
+    linear-gradient(180deg,var(--gms595-bg-1),var(--gms595-bg-0)) !important;
+  border-color: rgba(211,183,225,.20) !important;
+  box-shadow: 0 26px 78px rgba(0,0,0,.58), inset 0 0 0 1px rgba(255,255,255,.018) !important;
+}
+
+.application.gms-reputation-app > .window-content,
+.application.gms-reputation-app .window-content {
+  background: transparent !important;
+}
+
+.application.gms-reputation-app .window-header {
+  background:
+    linear-gradient(180deg,rgba(10,10,17,.96),rgba(5,6,11,.94)) !important;
+  border-bottom: 1px solid rgba(209,180,222,.18) !important;
+  box-shadow: inset 0 -1px rgba(74,118,210,.06) !important;
+}
+
+.application.gms-reputation-app .window-header .window-title {
+  color: #eee8f0 !important;
+  letter-spacing: .025em !important;
+}
+
+/* ---------- Real Player/Master roots ------------------------------------- */
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard,
+.application.gms-reputation-master-panel-app .gms-master-panel {
+  position: relative !important;
+  isolation: isolate !important;
+  overflow: hidden !important;
+  background:
+    radial-gradient(ellipse at 50% -10%,rgba(160,91,203,.16),transparent 29%),
+    radial-gradient(circle at 9% 21%,rgba(91,53,128,.14),transparent 26%),
+    radial-gradient(circle at 90% 20%,rgba(63,73,144,.10),transparent 24%),
+    radial-gradient(circle at 50% 105%,rgba(50,93,174,.07),transparent 31%),
+    linear-gradient(180deg,#070812 0%,#04050a 48%,#030409 100%) !important;
+  color: var(--gms595-ivory) !important;
+}
+
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard::before,
+.application.gms-reputation-master-panel-app .gms-master-panel::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  opacity: .75 !important;
+  background:
+    radial-gradient(circle at 24% 16%,rgba(255,255,255,.023) 0 1px,transparent 1.2px),
+    radial-gradient(circle at 66% 61%,rgba(255,255,255,.016) 0 .8px,transparent 1px),
+    repeating-linear-gradient(0deg,transparent 0 2px,rgba(255,255,255,.006) 3px 4px),
+    repeating-linear-gradient(90deg,transparent 0 79px,rgba(145,113,164,.016) 80px 81px) !important;
+  background-size: 37px 41px,53px 49px,100% 4px,81px 100% !important;
+  mix-blend-mode: screen !important;
+}
+
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard::after,
+.application.gms-reputation-master-panel-app .gms-master-panel::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  background:
+    linear-gradient(90deg,rgba(0,0,0,.40),transparent 10%,transparent 90%,rgba(0,0,0,.40)),
+    linear-gradient(90deg,transparent calc(50% - 1px),rgba(210,179,225,.045) 50%,transparent calc(50% + 1px)),
+    radial-gradient(ellipse at center,transparent 0 60%,rgba(0,0,0,.24) 100%) !important;
+}
+
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard > :not(.gms-atmosphere),
+.application.gms-reputation-master-panel-app .gms-master-panel > :not(.gms-atmosphere) {
+  position: relative !important;
+  z-index: 4 !important;
+}
+
+/* ---------- Background-art partial: visible, but not interactive --------- */
+.application.gms-reputation-app .gms-atmosphere {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 1 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+  user-select: none !important;
+  color: var(--gms595-ivory) !important;
+  opacity: 1 !important;
+}
+
+.application.gms-reputation-app .gms-atmosphere::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  background:
+    radial-gradient(circle at 22% 15%,rgba(255,255,255,.025) 0 1px,transparent 1.2px),
+    radial-gradient(circle at 61% 66%,rgba(255,255,255,.018) 0 .8px,transparent 1px),
+    repeating-linear-gradient(0deg,transparent 0 2px,rgba(255,255,255,.006) 3px 4px),
+    repeating-linear-gradient(90deg,transparent 0 83px,rgba(144,114,166,.017) 84px 85px) !important;
+  background-size:37px 41px,51px 47px,100% 4px,85px 100% !important;
+  mix-blend-mode:screen !important;
+  opacity:.92 !important;
+}
+
+.application.gms-reputation-app .gms-atmosphere::after {
+  content:"" !important;
+  position:absolute !important;
+  inset:0 !important;
+  background:
+    linear-gradient(90deg,rgba(0,0,0,.38),transparent 13%,transparent 87%,rgba(0,0,0,.38)),
+    radial-gradient(ellipse at center,transparent 0 60%,rgba(0,0,0,.24) 100%) !important;
+}
+
+.application.gms-reputation-app .gms-atmosphere .art-stage {
+  position:absolute !important;
+  inset:0 !important;
+  z-index:1 !important;
+  overflow:hidden !important;
+  pointer-events:none !important;
+}
+
+.application.gms-reputation-app .gms-atmosphere .art-stage svg { overflow: visible !important; }
+
+.application.gms-reputation-app .gms-atmosphere .botanical {
+  position:absolute !important;
+  width:min(48%,560px) !important;
+  height:auto !important;
+  color:#cbbbd2 !important;
+  opacity:.22 !important;
+  filter:drop-shadow(0 0 16px rgba(169,91,207,.11)) !important;
+  animation:gms595-botanical-breathe 9.5s ease-in-out infinite !important;
+}
+.application.gms-reputation-app .gms-atmosphere .botanical .vine { fill:none !important;stroke:currentColor !important;stroke-width:1.08 !important;vector-effect:non-scaling-stroke !important;stroke-linecap:round !important;stroke-linejoin:round !important; }
+.application.gms-reputation-app .gms-atmosphere .botanical .vine.faint { opacity:.38 !important;stroke-dasharray:2 6 !important; }
+.application.gms-reputation-app .gms-atmosphere .botanical .leaf { fill:rgba(192,163,205,.075) !important;stroke:currentColor !important;stroke-width:.82 !important;vector-effect:non-scaling-stroke !important; }
+.application.gms-reputation-app .gms-atmosphere .botanical .leaf.ghost { fill:transparent !important;opacity:.50 !important; }
+.application.gms-reputation-app .gms-atmosphere .botanical .bud { fill:rgba(225,112,190,.27) !important;stroke:var(--gms595-petal) !important;stroke-width:.9 !important; }
+.application.gms-reputation-app .gms-atmosphere .botanical .node { fill:var(--gms595-petal) !important;filter:drop-shadow(0 0 4px var(--gms595-petal)) !important;opacity:.78 !important; }
+.application.gms-reputation-app .gms-atmosphere .botanical.tl { left:-7% !important;top:2% !important;transform:rotate(-5deg) !important; }
+.application.gms-reputation-app .gms-atmosphere .botanical.tr { right:-7% !important;top:2% !important;transform:scaleX(-1) rotate(-5deg) !important;animation-delay:-4.75s !important; }
+.application.gms-reputation-app .gms-atmosphere .botanical.bl { left:-7% !important;bottom:-3% !important;transform:scaleY(-1) rotate(-5deg) !important;animation-delay:-2.3s !important; }
+.application.gms-reputation-app .gms-atmosphere .botanical.br { right:-7% !important;bottom:-3% !important;transform:scale(-1,-1) rotate(-5deg) !important;animation-delay:-7.1s !important; }
+
+.application.gms-reputation-app .gms-atmosphere .geo-lattice {
+  position:absolute !important;width:min(42%,440px) !important;height:auto !important;color:#8d78ae !important;
+  animation:gms595-lattice-drift 23s ease-in-out infinite alternate !important;
+}
+.application.gms-reputation-app .gms-atmosphere .geo-lattice.left { left:2% !important;top:11% !important;transform:rotate(7deg) !important; }
+.application.gms-reputation-app .gms-atmosphere .geo-lattice.right { right:1% !important;bottom:3% !important;transform:rotate(187deg) !important;animation-delay:-11.5s !important; }
+.application.gms-reputation-app .gms-atmosphere .geo-lattice polygon,
+.application.gms-reputation-app .gms-atmosphere .geo-lattice path { fill:none !important;stroke:currentColor !important;stroke-width:.76 !important;vector-effect:non-scaling-stroke !important; }
+
+.application.gms-reputation-app .gms-atmosphere .wave-fan { position:absolute !important;width:min(40%,440px) !important;height:200px !important;color:var(--gms595-ivory) !important; }
+.application.gms-reputation-app .gms-atmosphere .wave-fan.left { left:-48px !important;bottom:28px !important; }
+.application.gms-reputation-app .gms-atmosphere .wave-fan.right { right:-48px !important;top:138px !important;transform:rotate(180deg) !important; }
+.application.gms-reputation-app .gms-atmosphere .wave-fan path { fill:none !important;stroke:currentColor !important;stroke-width:.85 !important;vector-effect:non-scaling-stroke !important; }
+
+.application.gms-reputation-app .gms-atmosphere .vector-ribbon { position:absolute !important;left:50% !important;transform:translateX(-50%) !important;width:min(88%,1180px) !important;height:132px !important;opacity:.18 !important;color:#d8cedc !important; }
+.application.gms-reputation-app .gms-atmosphere .vector-ribbon.top { top:58px !important; }
+.application.gms-reputation-app .gms-atmosphere .vector-ribbon.bottom { bottom:-6px !important;transform:translateX(-50%) rotate(180deg) !important; }
+.application.gms-reputation-app .gms-atmosphere .vector-ribbon path { fill:none !important;stroke:currentColor !important;stroke-width:.78 !important;vector-effect:non-scaling-stroke !important;stroke-dasharray:1500 !important;stroke-dashoffset:1500 !important;animation:gms595-ribbon-draw 7s cubic-bezier(.25,.7,.25,1) forwards,gms595-ribbon-pulse 8s ease-in-out 7s infinite !important; }
+.application.gms-reputation-app .gms-atmosphere .vector-ribbon path:nth-child(2){opacity:.72 !important;animation-delay:.12s,7.12s !important}
+.application.gms-reputation-app .gms-atmosphere .vector-ribbon path:nth-child(3){opacity:.50 !important;animation-delay:.24s,7.24s !important}
+.application.gms-reputation-app .gms-atmosphere .vector-ribbon path:nth-child(4){opacity:.32 !important;animation-delay:.36s,7.36s !important}
+.application.gms-reputation-app .gms-atmosphere .vector-ribbon path:nth-child(5){opacity:.19 !important;animation-delay:.48s,7.48s !important}
+
+.application.gms-reputation-app .gms-atmosphere .frame-rail { position:absolute !important;top:66px !important;bottom:22px !important;width:66px !important;opacity:.34 !important; }
+.application.gms-reputation-app .gms-atmosphere .frame-rail.left { left:5px !important; }
+.application.gms-reputation-app .gms-atmosphere .frame-rail.right { right:5px !important;transform:scaleX(-1) !important; }
+.application.gms-reputation-app .gms-atmosphere .frame-rail::before,
+.application.gms-reputation-app .gms-atmosphere .frame-rail::after { content:"" !important;position:absolute !important;left:12px !important;width:40px !important;border-left:1px solid rgba(216,191,228,.30) !important;border-right:1px solid rgba(78,123,213,.16) !important; }
+.application.gms-reputation-app .gms-atmosphere .frame-rail::before { top:0 !important;height:38% !important; }
+.application.gms-reputation-app .gms-atmosphere .frame-rail::after { bottom:0 !important;height:38% !important; }
+.application.gms-reputation-app .gms-atmosphere .frame-rail i { position:absolute !important;left:17px !important;right:17px !important;height:1px !important;background:linear-gradient(90deg,transparent,rgba(220,196,231,.46),transparent) !important; }
+.application.gms-reputation-app .gms-atmosphere .frame-rail i:nth-child(1){top:12% !important}.application.gms-reputation-app .gms-atmosphere .frame-rail i:nth-child(2){top:33% !important}.application.gms-reputation-app .gms-atmosphere .frame-rail i:nth-child(3){bottom:33% !important}.application.gms-reputation-app .gms-atmosphere .frame-rail i:nth-child(4){bottom:12% !important}
+
+.application.gms-reputation-app .gms-atmosphere .cross-cluster { position:absolute !important;width:182px !important;height:104px !important;top:44% !important;opacity:.27 !important;color:#d9cfdd !important; }
+.application.gms-reputation-app .gms-atmosphere .cross-cluster.left { left:6px !important; }.application.gms-reputation-app .gms-atmosphere .cross-cluster.right { right:6px !important;transform:scaleX(-1) !important; }
+.application.gms-reputation-app .gms-atmosphere .cross-cluster span { position:absolute !important;width:11px !important;height:11px !important; }
+.application.gms-reputation-app .gms-atmosphere .cross-cluster span::before,
+.application.gms-reputation-app .gms-atmosphere .cross-cluster span::after { content:"" !important;position:absolute !important;left:50% !important;top:50% !important;background:currentColor !important;transform:translate(-50%,-50%) !important; }
+.application.gms-reputation-app .gms-atmosphere .cross-cluster span::before { width:11px !important;height:1px !important; }.application.gms-reputation-app .gms-atmosphere .cross-cluster span::after { width:1px !important;height:11px !important; }
+.application.gms-reputation-app .gms-atmosphere .cross-cluster span:nth-child(1){left:6px !important;top:12px !important}.application.gms-reputation-app .gms-atmosphere .cross-cluster span:nth-child(2){left:48px !important;top:34px !important}.application.gms-reputation-app .gms-atmosphere .cross-cluster span:nth-child(3){left:88px !important;top:4px !important}.application.gms-reputation-app .gms-atmosphere .cross-cluster span:nth-child(4){left:117px !important;top:58px !important}.application.gms-reputation-app .gms-atmosphere .cross-cluster span:nth-child(5){left:158px !important;top:22px !important}.application.gms-reputation-app .gms-atmosphere .cross-cluster span:nth-child(6){left:69px !important;top:82px !important}
+
+.application.gms-reputation-app .gms-atmosphere .concept-seal { position:absolute !important;left:50% !important;top:5px !important;width:94px !important;height:94px !important;transform:translateX(-50%) !important;opacity:.70 !important;filter:drop-shadow(0 0 18px rgba(176,101,217,.16)) !important; }
+.application.gms-reputation-app .gms-atmosphere .concept-seal .ring { transform-origin:60px 60px !important;animation:gms595-seal-spin 28s linear infinite !important; }
+.application.gms-reputation-app .gms-atmosphere .concept-seal .ring.reverse { animation-direction:reverse !important;animation-duration:42s !important; }
+.application.gms-reputation-app .gms-atmosphere .concept-seal .pulse { transform-origin:60px 60px !important;animation:gms595-seal-pulse 4.6s ease-in-out infinite !important; }
+.application.gms-reputation-app .gms-atmosphere .symmetry-spine { position:absolute !important;left:50% !important;top:56px !important;bottom:18px !important;width:1px !important;opacity:.38 !important;background:linear-gradient(180deg,transparent,rgba(218,190,231,.29) 10%,rgba(74,124,215,.23) 50%,rgba(218,190,231,.29) 90%,transparent) !important;box-shadow:0 0 18px rgba(139,87,180,.08) !important; }
+.application.gms-reputation-app .gms-atmosphere .symmetry-spine::before,
+.application.gms-reputation-app .gms-atmosphere .symmetry-spine::after { content:"" !important;position:absolute !important;left:50% !important;width:8px !important;height:8px !important;border:1px solid rgba(226,201,237,.40) !important;transform:translateX(-50%) rotate(45deg) !important;background:#060710 !important; }
+.application.gms-reputation-app .gms-atmosphere .symmetry-spine::before { top:22% !important; }.application.gms-reputation-app .gms-atmosphere .symmetry-spine::after { bottom:22% !important; }
+
+
+/* ---------- Player: approved Maximum Detail language on real cards -------- */
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__header {
+  min-height:76px !important;
+  padding:10px 18px 10px 20px !important;
+  background:linear-gradient(180deg,rgba(9,8,16,.73),rgba(5,7,12,.58)),linear-gradient(90deg,rgba(132,72,163,.08),transparent 46%,rgba(58,114,217,.055)) !important;
+  border-bottom:1px solid rgba(211,183,224,.18) !important;
+  box-shadow:inset 0 -1px rgba(79,125,218,.055) !important;
+  backdrop-filter:blur(4px) !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__header::before { content:"" !important;position:absolute !important;left:18px !important;right:18px !important;top:7px !important;height:1px !important;background:linear-gradient(90deg,transparent,rgba(218,187,229,.35) 18%,rgba(81,124,216,.16) 50%,rgba(218,187,229,.35) 82%,transparent) !important; }
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__title small { color:#a887ba !important;letter-spacing:.22em !important;font-size:8px !important; }
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__title strong { font-family:Georgia,"Times New Roman",serif !important;font-size:24px !important;font-weight:500 !important;letter-spacing:.035em !important;color:#eee7ef !important;text-shadow:0 1px #000,0 0 20px rgba(201,105,198,.10) !important; }
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__editorial-index { color:rgba(204,174,220,.36) !important; }
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__editorial-index b { font-family:Georgia,serif !important;font-style:italic !important;font-weight:400 !important;color:rgba(203,165,221,.44) !important; }
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__editorial-index i { color:#89758e !important; }
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__vector-field { opacity:.48 !important;filter:hue-rotate(28deg) saturate(.76) !important; }
+
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__scroll { background:transparent !important; }
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__content { width:min(100%,980px) !important;margin-inline:auto !important;padding:12px 14px 22px !important; }
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__records { display:grid !important;gap:10px !important; }
+
+.application.gms-reputation-player-dashboard-app .gms-profile-library,
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__focal,
+.application.gms-reputation-player-dashboard-app .gms-reputation-focal-profile {
+  background:linear-gradient(135deg,rgba(12,11,21,.74),rgba(6,8,14,.66)) !important;
+  border-color:rgba(200,173,215,.18) !important;
+  box-shadow:inset 0 1px rgba(255,255,255,.02),0 10px 28px rgba(0,0,0,.15) !important;
+  backdrop-filter:blur(4px) !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-profile-library__trigger { background:linear-gradient(90deg,rgba(148,84,180,.07),rgba(7,9,15,.54) 45%,rgba(60,108,197,.045)) !important;border-color:rgba(199,170,215,.16) !important; }
+.application.gms-reputation-player-dashboard-app .gms-profile-library__drawer { background:rgba(5,7,12,.84) !important;border-color:rgba(196,165,211,.18) !important; }
+.application.gms-reputation-player-dashboard-app .gms-profile-library__group > summary,
+.application.gms-reputation-player-dashboard-app .gms-profile-library__profile { background:rgba(10,11,19,.64) !important;border-color:rgba(193,164,208,.13) !important; }
+.application.gms-reputation-player-dashboard-app .gms-profile-library__group > summary:hover,
+.application.gms-reputation-player-dashboard-app .gms-profile-library__group[open] > summary,
+.application.gms-reputation-player-dashboard-app .gms-profile-library__profile:hover { background:linear-gradient(90deg,rgba(161,93,193,.11),rgba(8,10,16,.72) 56%,rgba(68,119,220,.05)) !important;border-color:rgba(211,124,199,.28) !important; }
+
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card {
+  min-height:128px !important;
+  display:grid !important;
+  grid-template-columns:78px minmax(0,1fr) auto 92px !important;
+  grid-template-rows:auto minmax(48px,auto) !important;
+  position:relative !important;
+  background:
+    linear-gradient(90deg,color-mix(in srgb,var(--gms56-band,currentColor) 7%,transparent),transparent 17%),
+    linear-gradient(135deg,rgba(181,121,204,.045),transparent 30%),
+    repeating-linear-gradient(90deg,transparent 0 78px,rgba(203,182,215,.013) 79px 80px),
+    linear-gradient(180deg,rgba(12,12,21,.78),rgba(5,7,12,.82)) !important;
+  border:1px solid rgba(199,170,214,.18) !important;
+  border-left:2px solid var(--gms56-band,currentColor) !important;
+  box-shadow:inset 0 1px rgba(255,255,255,.025),inset -1px 0 color-mix(in srgb,var(--gms56-band,currentColor) 10%,transparent),4px 4px 0 rgba(0,0,0,.18),0 10px 25px rgba(0,0,0,.13) !important;
+  clip-path:polygon(0 0,97% 0,100% 15%,100% 84%,97.5% 100%,1.8% 100%,0 82%) !important;
+  backdrop-filter:blur(4px) !important;
+  transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease,background .22s ease !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card:hover { transform:translateX(4px) !important;border-color:color-mix(in srgb,var(--gms56-band,currentColor) 44%,rgba(211,183,224,.20)) !important;box-shadow:inset 0 0 38px color-mix(in srgb,var(--gms56-band,currentColor) 5%,transparent),0 0 0 1px color-mix(in srgb,var(--gms56-band,currentColor) 14%,transparent),6px 6px 0 rgba(0,0,0,.20),0 13px 30px rgba(0,0,0,.18) !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card::after { content:"" !important;position:absolute !important;left:86px !important;right:86px !important;top:7px !important;height:3px !important;background:repeating-linear-gradient(90deg,rgba(216,190,226,.20) 0 1px,transparent 1px 8px,color-mix(in srgb,var(--gms56-band,currentColor) 26%,transparent) 8px 10px,transparent 10px 19px) !important;opacity:.56 !important;pointer-events:none !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__frame { border-color:rgba(210,184,220,.10) !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__serial { font-family:Georgia,serif !important;font-size:10px !important;letter-spacing:.18em !important;color:rgba(212,187,222,.42) !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__vector-mark { opacity:.32 !important;filter:hue-rotate(25deg) saturate(.78) !important; }
+
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__portrait {align-self:center !important;width:62px !important;min-width:62px !important;height:84px !important;margin-left:9px !important;z-index:18 !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__portrait .gms-reputation-portrait { border-color:rgba(215,183,222,.28) !important;background:#080910 !important;box-shadow:0 0 0 3px rgba(151,84,179,.025),0 7px 18px rgba(0,0,0,.30) !important;clip-path:polygon(0 0,86% 0,100% 12%,100% 100%,12% 100%,0 88%) !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__portrait .gms-reputation-portrait::after { content:"" !important;position:absolute !important;inset:4px !important;border:1px solid rgba(238,219,241,.09) !important;pointer-events:none !important; }
+
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__heading { grid-column:2 / 4 !important;padding:15px 12px 3px 0 !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__identity .gms-reputation-identity__text { font-family:Georgia,"Times New Roman",serif !important;font-size:20px !important;font-weight:500 !important;letter-spacing:.035em !important;color:#eee8ef !important;text-shadow:0 1px #000,0 0 13px rgba(222,119,193,.055) !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__relation { margin-top:5px !important;letter-spacing:.055em !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__relation::before { width:6px !important;height:6px !important;transform:rotate(45deg) !important;box-shadow:0 0 9px currentColor !important; }
+
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__hearts {min-height:48px !important;padding:1px 8px 10px 0 !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card.is-special-standard .gms-reputation-player-card__hearts { padding-right:8px !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-heart-track { --gms-heart-base:var(--gms56-band,#98a4ae) !important;display:grid !important;grid-auto-flow:column !important;grid-auto-columns:28px !important;gap:4px !important;align-items:center !important;min-height:40px !important;padding:4px 6px !important;border:1px solid color-mix(in srgb,var(--gms-heart-base) 28%,rgba(205,182,217,.14)) !important;background:linear-gradient(90deg,color-mix(in srgb,var(--gms-heart-base) 7%,transparent),transparent 28% 76%,rgba(72,118,205,.035)),rgba(2,4,8,.70) !important;box-shadow:inset 0 1px rgba(255,255,255,.026),inset 0 -9px 20px rgba(0,0,0,.28),0 0 13px color-mix(in srgb,var(--gms-heart-base) 4%,transparent) !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-heart { width:28px !important;min-width:28px !important;aspect-ratio:1.04 / 1 !important;position:relative !important;color:var(--gms-heart-base,#98a4ae) !important;filter:drop-shadow(0 0 4px color-mix(in srgb,currentColor 20%,transparent)) !important; }
+
+.application.gms-reputation-player-dashboard-app .gms-reputation-heart[data-special-slot="true"] { color:var(--gms-heart-special-a,var(--gms595-cyan)) !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-heart-track.is-special-dual-sync .gms-reputation-heart[data-heart-ordinal="12"] { color:var(--gms-heart-special-b,var(--gms595-petal)) !important; }
+
+.application.gms-reputation-player-dashboard-app .gms-reputation-heart::before,
+.application.gms-reputation-player-dashboard-app .gms-reputation-heart > i { clip-path:none !important;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M12 21.8 2.95 13.15C-.45 9.9.62 5.05 4.82 3.63 7.82 2.62 10.45 4.2 12 6.98 13.55 4.2 16.18 2.62 19.18 3.63 23.38 5.05 24.45 9.9 21.05 13.15L12 21.8Z'/%3E%3C/svg%3E") center/contain no-repeat !important;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M12 21.8 2.95 13.15C-.45 9.9.62 5.05 4.82 3.63 7.82 2.62 10.45 4.2 12 6.98 13.55 4.2 16.18 2.62 19.18 3.63 23.38 5.05 24.45 9.9 21.05 13.15L12 21.8Z'/%3E%3C/svg%3E") center/contain no-repeat !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-heart::before { inset:3% 2% 1% !important;opacity:.98 !important;background:linear-gradient(150deg,color-mix(in srgb,currentColor 54%,#17131c),color-mix(in srgb,currentColor 30%,#05060a) 72%,#030408) !important;box-shadow:none !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-heart > i { inset:12% 10% 10% !important;opacity:1 !important;background:linear-gradient(145deg,rgba(255,255,255,.42),transparent 24%),linear-gradient(160deg,color-mix(in srgb,currentColor 98%,white 7%),currentColor 54%,color-mix(in srgb,currentColor 63%,#040509)) !important;filter:drop-shadow(0 0 5px color-mix(in srgb,currentColor 36%,transparent)) !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-heart[data-heart-state="empty"]::before { background:color-mix(in srgb,currentColor 42%,#13131a) !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-heart[data-heart-state="empty"] > i { background:linear-gradient(160deg,#070911,#020307) !important;opacity:1 !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-heart[data-heart-state="half"] > i { background:linear-gradient(90deg,color-mix(in srgb,currentColor 96%,white 4%) 0 47%,color-mix(in srgb,currentColor 52%,#06070c) 47% 50%,#05060a 50% 100%) !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-heart > i::before { left:18% !important;top:18% !important;width:38% !important;height:2px !important;border-radius:2px !important;background:rgba(255,255,255,.42) !important;transform:rotate(-22deg) !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-heart > i::after { right:21% !important;bottom:19% !important;width:1px !important;height:25% !important;background:rgba(0,0,0,.35) !important;transform:rotate(24deg) !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-heart[data-special-slot="true"]::after { inset:-3px !important;border-color:color-mix(in srgb,currentColor 44%,transparent) !important;background:radial-gradient(circle at 50% 52%,color-mix(in srgb,currentColor 10%,transparent),transparent 66%) !important;box-shadow:0 0 8px color-mix(in srgb,currentColor 9%,transparent) !important; }
+
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__score { grid-column:4 !important;display:flex !important;flex-direction:column !important;justify-content:center !important;align-items:center !important;min-width:92px !important;border-left:1px solid rgba(211,186,223,.14) !important;background:linear-gradient(90deg,transparent,rgba(0,0,0,.16)) !important;z-index:5 !important;color:var(--gms56-band,var(--gms-heart-base,#ece5ef)) !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__score::before { content:"" !important;position:absolute !important;left:-1px !important;top:9px !important;bottom:9px !important;width:2px !important;background:linear-gradient(transparent,rgba(217,186,228,.22),currentColor,rgba(217,186,228,.22),transparent) !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__score strong {font-size:44px !important;line-height:.88 !important;letter-spacing:-.045em !important;text-shadow:0 0 8px color-mix(in srgb,currentColor 32%,transparent),0 0 20px color-mix(in srgb,currentColor 15%,transparent) !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__score small { margin-top:7px !important;font-size:8px !important;letter-spacing:.20em !important;color:#81798a !important; }
+
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__special {grid-row:2 !important;justify-self:end !important;min-width:122px !important;height:34px !important;display:flex !important;align-items:center !important;justify-content:center !important;gap:8px !important;margin:0 6px 9px 3px !important;padding:0 11px !important;border:1px solid currentColor !important;background:linear-gradient(90deg,color-mix(in srgb,currentColor 10%,transparent),rgba(4,6,10,.76) 55%,transparent) !important;clip-path:polygon(0 0,93% 0,100% 50%,93% 100%,0 100%,5% 50%) !important;z-index:7 !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__special[data-special-state="bond"] { color:var(--gms595-gold) !important;border-color:color-mix(in srgb,var(--gms595-gold) 62%,transparent) !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__special[data-special-state="communion"] { color:var(--gms595-cyan) !important;border-color:color-mix(in srgb,var(--gms595-cyan) 64%,transparent) !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__special[data-special-state="dual-sync"] { color:#f2eaf1 !important;border-color:rgba(224,153,218,.54) !important;background:linear-gradient(90deg,rgba(72,126,229,.10),rgba(223,88,187,.12),rgba(4,6,10,.76) 72%) !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__special::after { content:"" !important;position:absolute !important;inset:0 !important;background:linear-gradient(105deg,transparent,rgba(255,255,255,.15),transparent) !important;transform:translateX(-130%) !important;animation:gms595-tag-sweep 4.8s ease-in-out infinite !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__special-sigil { width:20px !important;height:20px !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__special strong { font-size:9px !important;letter-spacing:.09em !important; }
+
+/* ---------- Master: real command deck ------------------------------------ */
+.application.gms-reputation-master-panel-app .gms-master-panel__header {
+  min-height:74px !important;
+  padding:10px 18px 10px 20px !important;
+  background:linear-gradient(180deg,rgba(9,8,16,.76),rgba(5,7,12,.62)),linear-gradient(90deg,rgba(132,72,163,.08),transparent 46%,rgba(58,114,217,.055)) !important;
+  border-bottom:1px solid rgba(211,183,224,.18) !important;
+  backdrop-filter:blur(4px) !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__header::before { content:"" !important;position:absolute !important;left:18px !important;right:18px !important;top:7px !important;height:1px !important;background:linear-gradient(90deg,transparent,rgba(218,187,229,.35) 18%,rgba(81,124,216,.16) 50%,rgba(218,187,229,.35) 82%,transparent) !important; }
+.application.gms-reputation-master-panel-app .gms-master-panel__header small { color:#a887ba !important;letter-spacing:.22em !important; }
+.application.gms-reputation-master-panel-app .gms-master-panel__header strong { font-family:Georgia,"Times New Roman",serif !important;font-size:29px !important;font-weight:500 !important;letter-spacing:.035em !important;color:#eee7ef !important;text-shadow:0 1px #000,0 0 20px rgba(201,105,198,.10) !important; }
+.application.gms-reputation-master-panel-app .gms-master-panel__header span { color:#8d8694 !important; }
+.application.gms-reputation-master-panel-app .gms-master-panel__header-mark { filter:hue-rotate(25deg) saturate(.78) !important;opacity:.72 !important; }
+
+.application.gms-reputation-master-panel-app .gms-master-panel__selection-bus,
+.application.gms-reputation-master-panel-app .gms-master-panel__savebar,
+.application.gms-reputation-master-panel-app .gms-master-panel__nav,
+.application.gms-reputation-master-panel-app .gms-master-panel__content > [data-master-section-panel],
+.application.gms-reputation-master-panel-app .gms-master-profile-hub__intro,
+.application.gms-reputation-master-panel-app .gms-master-create-composer,
+.application.gms-reputation-master-panel-app .gms-master-profile-index,
+.application.gms-reputation-master-panel-app .gms-master-profile-group,
+.application.gms-reputation-master-panel-app .gms-master-profile-editor,
+.application.gms-reputation-master-panel-app .gms-master-subject-registry,
+.application.gms-reputation-master-panel-app .gms-master-character-editor,
+.application.gms-reputation-master-panel-app .gms-master-focal-workspace,
+.application.gms-reputation-master-panel-app .gms-master-reputation-console > section,
+.application.gms-reputation-master-panel-app .gms-master-panel__history,
+.application.gms-reputation-master-panel-app .gms-master-panel__settings {
+  background:linear-gradient(135deg,rgba(12,11,21,.72),rgba(6,8,14,.64)) !important;
+  border-color:rgba(198,169,213,.17) !important;
+  box-shadow:inset 0 1px rgba(255,255,255,.020),0 9px 24px rgba(0,0,0,.12) !important;
+  backdrop-filter:blur(4px) !important;
+}
+
+.application.gms-reputation-master-panel-app .gms-master-panel__selection-bus { border-bottom:1px solid rgba(206,179,220,.17) !important; }
+.application.gms-reputation-master-panel-app .gms-master-panel__selection-copy { border-right:1px solid rgba(201,174,215,.13) !important;background:linear-gradient(90deg,rgba(128,70,157,.055),transparent) !important; }
+.application.gms-reputation-master-panel-app .gms-master-panel__selection-copy small { color:#a780b7 !important;letter-spacing:.16em !important; }
+.application.gms-reputation-master-panel-app .gms-master-panel__selection-copy strong { color:#ece6ed !important;font-family:Georgia,serif !important;font-weight:500 !important; }
+
+.application.gms-reputation-master-panel-app .gms-smart-selector { background:rgba(5,7,12,.70) !important;border-color:rgba(199,169,213,.17) !important; }
+.application.gms-reputation-master-panel-app .gms-smart-selector__trigger { background:linear-gradient(90deg,rgba(131,73,161,.07),rgba(5,7,12,.72)) !important;border-color:rgba(199,169,213,.16) !important; }
+.application.gms-reputation-master-panel-app .gms-smart-selector__trigger:hover,
+.application.gms-reputation-master-panel-app .gms-smart-selector[data-open="true"] .gms-smart-selector__trigger { border-color:rgba(216,123,201,.38) !important;background:linear-gradient(90deg,rgba(158,87,188,.13),rgba(5,7,12,.75)) !important;box-shadow:inset 2px 0 var(--gms595-petal) !important; }
+.application.gms-reputation-master-panel-app .gms-smart-selector__menu { background:rgba(5,7,12,.96) !important;border-color:rgba(209,177,221,.22) !important;box-shadow:0 16px 38px rgba(0,0,0,.45) !important; }
+
+.application.gms-reputation-master-panel-app .gms-master-panel__savebar { min-height:48px !important;border-top:1px solid rgba(197,168,211,.10) !important;border-bottom:1px solid rgba(197,168,211,.16) !important;background:linear-gradient(90deg,rgba(11,10,19,.76),rgba(5,7,12,.62)) !important; }
+.application.gms-reputation-master-panel-app .gms-master-panel__save-state strong { color:#d9d0de !important;letter-spacing:.10em !important; }
+.application.gms-reputation-master-panel-app .gms-master-panel__save-state small { color:#817988 !important; }
+
+.application.gms-reputation-master-panel-app .gms-master-panel__nav { padding:5px !important;gap:5px !important;background:rgba(5,7,12,.62) !important;border-bottom:1px solid rgba(203,176,217,.15) !important; }
+.application.gms-reputation-master-panel-app .gms-master-panel__nav > button { min-height:42px !important;background:linear-gradient(180deg,rgba(11,12,20,.72),rgba(5,7,12,.72)) !important;border:1px solid rgba(194,164,208,.13) !important;clip-path:polygon(0 0,95% 0,100% 18%,100% 100%,0 100%) !important; }
+.application.gms-reputation-master-panel-app .gms-master-panel__nav > button:hover { background:linear-gradient(90deg,rgba(144,79,174,.11),rgba(7,9,15,.74) 60%,rgba(64,116,215,.05)) !important;border-color:rgba(208,123,197,.28) !important; }
+.application.gms-reputation-master-panel-app .gms-master-panel__nav > button[data-active="true"] { background:linear-gradient(90deg,rgba(165,91,195,.16),rgba(7,9,15,.74) 58%,rgba(61,117,220,.08)) !important;border-color:rgba(215,124,200,.42) !important;box-shadow:inset 2px 0 var(--gms595-petal),inset 0 -1px rgba(73,125,224,.24) !important; }
+.application.gms-reputation-master-panel-app .gms-master-panel__nav > button[data-active="true"] i { color:var(--gms595-petal) !important;text-shadow:0 0 9px rgba(225,119,193,.28) !important; }
+.application.gms-reputation-master-panel-app .gms-master-panel__nav-copy small { color:#8a788f !important;letter-spacing:.14em !important; }.application.gms-reputation-master-panel-app .gms-master-panel__nav-copy strong { color:#e8e2ea !important; }
+
+.application.gms-reputation-master-panel-app .gms-master-panel__content { background:transparent !important;padding:12px !important; }
+.application.gms-reputation-master-panel-app .gms-master-panel__content > [data-master-section-panel] { position:relative !important;padding:13px !important;border:1px solid rgba(198,168,213,.16) !important; }
+.application.gms-reputation-master-panel-app .gms-master-panel__content > [data-master-section-panel]::before { content:"" !important;position:absolute !important;left:0 !important;top:0 !important;width:72px !important;height:1px !important;background:linear-gradient(90deg,var(--gms595-violet),var(--gms595-petal),transparent) !important;opacity:.70 !important; }
+.application.gms-reputation-master-panel-app .gms-master-panel__content > [data-master-section-panel] > header { padding:8px 10px 14px !important;border-left:2px solid rgba(219,111,191,.74) !important;background:linear-gradient(90deg,rgba(127,70,156,.06),transparent 58%) !important; }
+.application.gms-reputation-master-panel-app .gms-master-panel__content > [data-master-section-panel] > header small { color:#a17cad !important;letter-spacing:.18em !important; }
+.application.gms-reputation-master-panel-app .gms-master-panel__content > [data-master-section-panel] > header h2 { margin:2px 0 0 !important;font-family:Georgia,"Times New Roman",serif !important;font-weight:500 !important;font-size:28px !important;letter-spacing:.035em !important;color:#eee7ef !important; }
+
+.application.gms-reputation-master-panel-app .gms-master-profile-hub { gap:10px !important; }
+.application.gms-reputation-master-panel-app .gms-master-profile-hub__intro { border:1px solid rgba(200,170,214,.16) !important;padding:12px !important; }
+.application.gms-reputation-master-panel-app .gms-master-profile-hub__intro small { color:#a788b6 !important;letter-spacing:.13em !important; }.application.gms-reputation-master-panel-app .gms-master-profile-hub__intro strong { color:#e9e2ea !important;font-family:Georgia,serif !important;font-weight:500 !important; }
+.application.gms-reputation-master-panel-app .gms-master-create-composer { border:1px solid rgba(198,168,213,.16) !important;overflow:hidden !important; }
+.application.gms-reputation-master-panel-app .gms-master-create-composer > summary { background:linear-gradient(90deg,rgba(134,75,164,.08),rgba(7,9,15,.66)) !important;border-color:rgba(200,170,214,.13) !important; }.application.gms-reputation-master-panel-app .gms-master-create-composer[open] > summary { border-color:rgba(219,125,201,.30) !important;box-shadow:inset 2px 0 var(--gms595-petal) !important; }
+
+.application.gms-reputation-master-panel-app .gms-master-profile-index { padding:10px !important;border:1px solid rgba(198,168,213,.16) !important; }
+.application.gms-reputation-master-panel-app .gms-master-profile-index__head { border-bottom:1px solid rgba(202,174,216,.12) !important; }.application.gms-reputation-master-panel-app .gms-master-profile-index__head small { color:#a282af !important; }.application.gms-reputation-master-panel-app .gms-master-profile-index__head strong { font-family:Georgia,serif !important;font-weight:500 !important;color:#ece5ed !important; }
+.application.gms-reputation-master-panel-app .gms-master-profile-group { background:linear-gradient(90deg,rgba(11,12,20,.70),rgba(6,8,14,.62)) !important;border:1px solid rgba(193,163,207,.14) !important; }
+.application.gms-reputation-master-panel-app .gms-master-profile-group[open] { border-color:rgba(213,121,199,.28) !important;box-shadow:inset 2px 0 rgba(218,115,198,.64) !important; }
+.application.gms-reputation-master-panel-app .gms-master-profile-group__summary { background:transparent !important; }.application.gms-reputation-master-panel-app .gms-master-profile-group__summary:hover { background:linear-gradient(90deg,rgba(153,84,182,.10),transparent 70%) !important; }
+.application.gms-reputation-master-panel-app .gms-master-profile-group__summary-copy strong { color:#e8e1ea !important;font-family:Georgia,serif !important;font-weight:500 !important; }.application.gms-reputation-master-panel-app .gms-master-profile-group__summary-copy small { color:#86788a !important; }
+.application.gms-reputation-master-panel-app .gms-master-profile-entry { background:rgba(5,7,12,.58) !important;border-color:rgba(194,164,208,.12) !important; }.application.gms-reputation-master-panel-app .gms-master-profile-entry:hover { border-color:rgba(213,124,199,.28) !important;background:linear-gradient(90deg,rgba(141,77,171,.09),rgba(5,7,12,.66)) !important; }
+
+/* Relationship editor and all utility bays: coherent grids and text. */
+.application.gms-reputation-master-panel-app .gms-master-reputation-console { gap:10px !important; }
+.application.gms-reputation-master-panel-app .gms-master-reputation-console > section { border:1px solid rgba(198,168,213,.16) !important;overflow:hidden !important; }
+.application.gms-reputation-master-panel-app .gms-master-reputation-console > section > header { background:linear-gradient(90deg,rgba(137,76,166,.08),rgba(7,9,15,.60)) !important;border-bottom:1px solid rgba(199,170,213,.12) !important; }
+.application.gms-reputation-master-panel-app .gms-master-reputation-console > section > header small { color:#a684b4 !important;letter-spacing:.15em !important; }.application.gms-reputation-master-panel-app .gms-master-reputation-console > section > header strong { color:#ece4ed !important;font-family:Georgia,serif !important;font-weight:500 !important; }
+.application.gms-reputation-master-panel-app .gms-master-reputation-console__readout { background:linear-gradient(90deg,rgba(11,11,19,.70),rgba(5,7,12,.62)) !important; }
+.application.gms-reputation-master-panel-app .gms-master-reputation-console__score strong { font-family:Georgia,serif !important;font-weight:500 !important;color:var(--gms595-petal) !important;text-shadow:0 0 14px rgba(223,119,193,.14) !important; }
+.application.gms-reputation-master-panel-app .gms-master-reputation-console__editor,
+.application.gms-reputation-master-panel-app .gms-master-reputation-console__presets,
+.application.gms-reputation-master-panel-app .gms-master-reputation-console__protocols { background:rgba(5,7,12,.52) !important;border-color:rgba(194,164,208,.12) !important; }
+.application.gms-reputation-master-panel-app .gms-master-reputation-console input,
+.application.gms-reputation-master-panel-app .gms-master-reputation-console textarea,
+.application.gms-reputation-master-panel-app .gms-master-reputation-console select,
+.application.gms-reputation-master-panel-app .gms-master-panel input,
+.application.gms-reputation-master-panel-app .gms-master-panel textarea,
+.application.gms-reputation-master-panel-app .gms-master-panel select { background:rgba(3,5,9,.78) !important;border:1px solid rgba(190,160,204,.16) !important;color:#e8e1ea !important;box-shadow:inset 0 1px rgba(255,255,255,.015) !important; }
+.application.gms-reputation-master-panel-app .gms-master-panel input:focus,
+.application.gms-reputation-master-panel-app .gms-master-panel textarea:focus,
+.application.gms-reputation-master-panel-app .gms-master-panel select:focus { border-color:rgba(220,124,202,.44) !important;box-shadow:0 0 0 1px rgba(220,124,202,.12),0 0 18px rgba(177,82,187,.08) !important; }
+
+.application.gms-reputation-master-panel-app .gms-master-panel button { border-color:rgba(194,164,208,.15) !important; }.application.gms-reputation-master-panel-app .gms-master-panel button:hover:not(:disabled) { border-color:rgba(218,124,201,.34) !important;background:linear-gradient(90deg,rgba(151,83,180,.10),rgba(6,8,14,.68)) !important; }
+.application.gms-reputation-master-panel-app .gms-master-panel button.is-primary,
+.application.gms-reputation-master-panel-app .gms-master-panel button[data-master-save-now]:not(:disabled) { border-color:rgba(219,117,198,.46) !important;background:linear-gradient(90deg,rgba(135,72,166,.20),rgba(208,89,176,.15),rgba(62,111,208,.10)) !important;color:#f1e9f1 !important;box-shadow:inset 0 0 18px rgba(171,80,187,.055) !important; }
+
+/* Master hearts receive the same readable shape without changing editor layout. */
+.application.gms-reputation-master-panel-app .gms-reputation-heart-track { display:grid !important;grid-auto-flow:column !important;grid-auto-columns:24px !important;gap:3px !important;width:max-content !important;max-width:100% !important;min-height:33px !important;padding:3px 5px !important;border:1px solid rgba(205,182,217,.13) !important;background:rgba(2,4,8,.68) !important; }
+.application.gms-reputation-master-panel-app .gms-reputation-heart { width:24px !important;min-width:24px !important;height:24px !important;min-height:24px !important;aspect-ratio:1 !important;position:relative !important; }
+.application.gms-reputation-master-panel-app .gms-reputation-heart::before,
+.application.gms-reputation-master-panel-app .gms-reputation-heart > i { clip-path:none !important;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M12 21.8 2.95 13.15C-.45 9.9.62 5.05 4.82 3.63 7.82 2.62 10.45 4.2 12 6.98 13.55 4.2 16.18 2.62 19.18 3.63 23.38 5.05 24.45 9.9 21.05 13.15L12 21.8Z'/%3E%3C/svg%3E") center/contain no-repeat !important;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M12 21.8 2.95 13.15C-.45 9.9.62 5.05 4.82 3.63 7.82 2.62 10.45 4.2 12 6.98 13.55 4.2 16.18 2.62 19.18 3.63 23.38 5.05 24.45 9.9 21.05 13.15L12 21.8Z'/%3E%3C/svg%3E") center/contain no-repeat !important; }
+.application.gms-reputation-master-panel-app .gms-reputation-heart::before { inset:5% 4% 3% !important;opacity:.86 !important;background:linear-gradient(150deg,color-mix(in srgb,currentColor 78%,white 7%),color-mix(in srgb,currentColor 48%,#06070c) 68%,#05060a) !important; }
+.application.gms-reputation-master-panel-app .gms-reputation-heart > i { inset:13% 12% 11% !important;background:linear-gradient(145deg,rgba(255,255,255,.30),transparent 23%),linear-gradient(160deg,currentColor,color-mix(in srgb,currentColor 58%,#05060a)) !important; }
+.application.gms-reputation-master-panel-app .gms-reputation-heart[data-heart-state="empty"] > i { background:#05070b !important;opacity:.96 !important; }
+.application.gms-reputation-master-panel-app .gms-reputation-heart[data-heart-state="half"] > i { background:linear-gradient(90deg,currentColor 0 48%,#05070b 48% 100%) !important; }
+
+/* ---------- Scanner: style the REAL Application-level element ------------ */
+.application.gms-reputation-app[data-gms-motion-system="59"] > .gms-motion-scanner {
+  position:absolute !important;
+  inset:0 !important;
+  z-index:12 !important;
+  display:block !important;
+  overflow:hidden !important;
+  pointer-events:none !important;
+  opacity:0 !important;
+  mix-blend-mode:screen !important;
+  border-radius:inherit !important;
+}
+.application.gms-reputation-app[data-gms-motion-system="59"] > .gms-motion-scanner.is-active { opacity:1 !important; }
+.application.gms-reputation-app[data-gms-motion-system="59"] > .gms-motion-scanner::before,
+.application.gms-reputation-app[data-gms-motion-system="59"] > .gms-motion-scanner::after { content:"" !important;position:absolute !important;left:0 !important;right:0 !important;top:-82px !important;display:block !important;opacity:0 !important;pointer-events:none !important;transform:translate3d(0,0,0) !important; }
+.application.gms-reputation-app[data-gms-motion-system="59"] > .gms-motion-scanner::before { height:2px !important;background:linear-gradient(90deg,transparent 0 3%,rgba(205,163,229,.24) 13%,rgba(245,211,239,.92) 43%,#fff6fb 50%,rgba(91,137,236,.54) 72%,rgba(212,142,216,.22) 88%,transparent 97%) !important;box-shadow:0 0 5px rgba(239,187,231,.42),0 0 15px rgba(179,95,205,.24),0 6px 30px rgba(79,119,225,.11) !important; }
+.application.gms-reputation-app[data-gms-motion-system="59"] > .gms-motion-scanner::after { height:82px !important;background:repeating-linear-gradient(0deg,transparent 0 4px,rgba(222,169,225,.010) 4px 5px),linear-gradient(180deg,transparent 0%,rgba(183,118,207,.018) 14%,rgba(232,128,198,.065) 39%,rgba(92,128,230,.050) 57%,rgba(198,143,216,.022) 77%,transparent 100%) !important;border-bottom:1px solid rgba(226,174,227,.12) !important;filter:blur(.18px) !important;mask-image:linear-gradient(90deg,transparent,#000 6% 94%,transparent) !important; }
+.application.gms-reputation-app[data-gms-motion-system="59"] > .gms-motion-scanner.is-active::before,
+.application.gms-reputation-app[data-gms-motion-system="59"] > .gms-motion-scanner.is-active::after { animation:gms571-console-sweep var(--gms57-scan-duration,1680ms) cubic-bezier(.22,.82,.22,1) 1 both !important; }
+.application.gms-reputation-app :where(.gms-reputation-player-card__portrait,.gms-reputation-focal-profile__visual,.gms-master-focal-workspace__preview,.gms-reputation-portrait-editor__preview) { position:relative !important;z-index:18 !important; }
+
+/* ---------- Motion keyframes --------------------------------------------- */
+@keyframes gms595-botanical-breathe { 0%,100%{opacity:.17;filter:drop-shadow(0 0 10px rgba(167,99,216,.07))} 50%{opacity:.245;filter:drop-shadow(0 0 20px rgba(224,105,190,.15))} }
+@keyframes gms595-lattice-drift { 0%{opacity:.065;translate:-4px -3px} 100%{opacity:.115;translate:6px 5px} }
+@keyframes gms595-ribbon-draw { to{stroke-dashoffset:0} }
+@keyframes gms595-ribbon-pulse { 0%,100%{opacity:.36} 50%{opacity:.90} }
+@keyframes gms595-seal-spin { to{transform:rotate(360deg)} }
+@keyframes gms595-seal-pulse { 0%,100%{opacity:.35;transform:scale(.92)} 50%{opacity:.95;transform:scale(1.03)} }
+@keyframes gms595-tag-sweep { 0%,68%{transform:translateX(-130%)} 100%{transform:translateX(130%)} }
+/* ---------- Responsive / organization safeguards ------------------------ */
+@container gms-player-dashboard (max-width:700px) {
+  .application.gms-reputation-player-dashboard-app .gms-player-dashboard__content { padding-inline:9px !important; }
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card { grid-template-columns:68px minmax(0,1fr) auto 82px !important; }
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card__portrait { width:52px !important;min-width:52px !important;height:70px !important;margin-left:7px !important; }
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card__hearts { padding-right:6px !important; }
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card.is-special-standard .gms-reputation-player-card__hearts { padding-right:6px !important; }
+  .application.gms-reputation-player-dashboard-app .gms-reputation-heart-track { grid-auto-columns:25px !important;gap:3px !important; }
+  .application.gms-reputation-player-dashboard-app .gms-reputation-heart { width:25px !important;min-width:25px !important;height:25px !important;min-height:25px !important; }
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card__special { right:auto !important;min-width:116px !important;margin-right:5px !important; }
+  .application.gms-reputation-app .gms-atmosphere .concept-seal,
+  .application.gms-reputation-app .gms-atmosphere .symmetry-spine { display:none !important; }
+  .application.gms-reputation-app .gms-atmosphere .botanical { width:66% !important;opacity:.15 !important; }
+}
+
+@container gms-player-dashboard (max-width:540px) {
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card { grid-template-columns:58px minmax(0,1fr) 68px !important;grid-template-rows:auto auto auto !important; }
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card__identity .gms-reputation-identity__text { font-size:15px !important; }
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card__heading { grid-column:2 !important; }
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card__score { grid-column:3 !important;grid-row:1 / 3 !important;min-width:68px !important; }
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card__hearts { padding-right:0 !important; }
+  .application.gms-reputation-player-dashboard-app .gms-reputation-heart-track { grid-auto-columns:21px !important;gap:2px !important; }
+  .application.gms-reputation-player-dashboard-app .gms-reputation-heart { width:21px !important;min-width:21px !important;height:21px !important;min-height:21px !important; }
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card__special { position:relative !important;right:auto !important;bottom:auto !important;grid-column:2 !important;grid-row:3 !important;margin:2px 0 9px !important;width:max-content !important; }
+  .application.gms-reputation-app .gms-atmosphere .frame-rail,
+  .application.gms-reputation-app .gms-atmosphere .cross-cluster { display:none !important; }
+}
+
+@container gms-master-panel (max-width:850px) {
+  .application.gms-reputation-master-panel-app .gms-master-panel__content { padding:9px !important; }
+  .application.gms-reputation-master-panel-app .gms-master-panel__content > [data-master-section-panel] > header h2 { font-size:24px !important; }
+}
+@container gms-master-panel (max-width:650px) {
+  .application.gms-reputation-app .gms-atmosphere .concept-seal,
+  .application.gms-reputation-app .gms-atmosphere .symmetry-spine,
+  .application.gms-reputation-app .gms-atmosphere .frame-rail,
+  .application.gms-reputation-app .gms-atmosphere .cross-cluster { display:none !important; }
+  .application.gms-reputation-app .gms-atmosphere .botanical { width:72% !important;opacity:.13 !important; }
+}

@@ -1,0 +1,280 @@
+
+
+/* ========================================================================== */
+/* 59.10 — STATIC BOTANICAL TEXTURE + CYAN CONTROL LANGUAGE                    */
+/* User-approved direction: background art remains as texture; only scanner    */
+/* sweeps vertically. Functional UI motion remains, but atmosphere is static.  */
+/* ========================================================================== */
+
+.application.gms-reputation-app,
+.gms-reputation-app {
+  --gms599-cyan: #45E7F3;
+  --gms599-cyan-hot: #8CF7FF;
+  --gms599-cyan-deep: #168EA7;
+  --gms599-cyan-soft: rgba(69,231,243,.14);
+  --gms599-cyan-line: rgba(91,232,244,.34);
+  --gms599-violet: #8D78FF;
+  --gms595-petal: var(--gms599-cyan) !important;
+  --gms595-petal-hot: var(--gms599-cyan-hot) !important;
+  --gms-v2-magenta: var(--gms599-cyan) !important;
+  --gms-v2-magenta-hot: var(--gms599-cyan-hot) !important;
+  --gms-v2-pink: #5EEAF7 !important;
+  --gms-identity-magenta: #6DECF6 !important;
+  --gms-signal-magenta: #5EEAF7 !important;
+  --gms-v2-dual-a: var(--gms599-cyan) !important;
+  --gms-v2-dual-b: var(--gms599-violet) !important;
+}
+
+/* Background-art is a STATIC texture. Scanner lives outside this layer. */
+.application.gms-reputation-app .gms-atmosphere *,
+.application.gms-reputation-app .gms-atmosphere *::before,
+.application.gms-reputation-app .gms-atmosphere *::after {
+  animation: none !important;
+  transition: none !important;
+}
+.application.gms-reputation-app .gms-atmosphere .vector-ribbon path {
+  stroke-dashoffset: 0 !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__header-circuit,
+.application.gms-reputation-master-panel-app .gms-master-panel__header-mark,
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__vector-field {
+  animation: none !important;
+}
+.application.gms-reputation-app .gms-atmosphere .botanical {
+  color:#BFD3D8 !important;
+  opacity:.18 !important;
+  filter:drop-shadow(0 0 14px rgba(69,231,243,.07)) !important;
+}
+.application.gms-reputation-app .gms-atmosphere .botanical .bud {
+  fill:rgba(69,231,243,.14) !important;
+  stroke:var(--gms599-cyan) !important;
+}
+.application.gms-reputation-app .gms-atmosphere .botanical .node {
+  fill:var(--gms599-cyan) !important;
+  filter:drop-shadow(0 0 4px rgba(69,231,243,.32)) !important;
+}
+.application.gms-reputation-app .gms-atmosphere .geo-lattice { color:#77A6B8 !important;opacity:.10 !important; }
+.application.gms-reputation-app .gms-atmosphere .wave-fan { color:#C6D8DC !important;opacity:.14 !important; }
+.application.gms-reputation-app .gms-atmosphere .vector-ribbon { color:#BFD9DE !important;opacity:.16 !important; }
+.application.gms-reputation-app .gms-atmosphere .cross-cluster { color:#BFE9ED !important;opacity:.23 !important; }
+.application.gms-reputation-app .gms-atmosphere .concept-seal {
+  opacity:.64 !important;
+  filter:drop-shadow(0 0 16px rgba(69,231,243,.09)) !important;
+}
+.application.gms-reputation-app .gms-atmosphere .concept-seal .ring,
+.application.gms-reputation-app .gms-atmosphere .concept-seal .ring.reverse,
+.application.gms-reputation-app .gms-atmosphere .concept-seal .pulse { transform:none !important; }
+.application.gms-reputation-app .gms-atmosphere .symmetry-spine {
+  background:linear-gradient(180deg,transparent,rgba(96,228,239,.21) 10%,rgba(65,125,215,.19) 50%,rgba(96,228,239,.21) 90%,transparent) !important;
+}
+
+/* Blocks are slightly LESS transparent. */
+.application.gms-reputation-player-dashboard-app :is(.gms-profile-library,.gms-player-dashboard__focal,.gms-reputation-focal-profile) {
+  background:linear-gradient(135deg,rgba(9,12,20,.88),rgba(4,7,13,.83)) !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card {
+  background:
+    radial-gradient(ellipse at 10% 50%,var(--gms596-soft,rgba(154,168,179,.12)),transparent 27%),
+    linear-gradient(90deg,color-mix(in srgb,var(--gms596-band,#9AA8B3) 5%,transparent),transparent 24%),
+    repeating-linear-gradient(90deg,transparent 0 78px,color-mix(in srgb,var(--gms596-band,#9AA8B3) 2.2%,transparent) 79px 80px),
+    linear-gradient(180deg,rgba(8,11,18,.90),rgba(3,6,11,.94)) !important;
+}
+.application.gms-reputation-master-panel-app :is(
+  .gms-master-panel__control-well,.gms-master-profile-hub__intro,.gms-master-profile-index,
+  .gms-master-profile-editor,.gms-master-subject-registry,.gms-master-character-editor,
+  .gms-master-focal-workspace,.gms-master-panel__history,.gms-master-panel__settings
+),
+.application.gms-reputation-master-panel-app .gms-master-reputation-console > section {
+  background:linear-gradient(135deg,rgba(9,12,20,.88),rgba(4,7,13,.82)) !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__content > [data-master-section-panel] { background:rgba(4,7,12,.76) !important; }
+.application.gms-reputation-master-panel-app .gms-master-panel__nav { background:rgba(4,7,12,.80) !important; }
+.application.gms-reputation-master-panel-app .gms-master-panel__nav > button { background:linear-gradient(180deg,rgba(9,13,21,.86),rgba(4,7,12,.88)) !important; }
+.application.gms-reputation-master-panel-app .gms-master-panel__savebar { background:linear-gradient(90deg,rgba(7,11,18,.88),rgba(4,7,12,.84)) !important; }
+
+/* Generic pink control accents become cyan. Semantic relationship bands stay intact. */
+.application.gms-reputation-master-panel-app .gms-smart-selector__trigger:hover,
+.application.gms-reputation-master-panel-app .gms-smart-selector[data-open="true"] .gms-smart-selector__trigger {
+  border-color:rgba(69,231,243,.42) !important;
+  background:linear-gradient(90deg,rgba(69,231,243,.11),rgba(5,8,13,.83)) !important;
+  box-shadow:inset 2px 0 var(--gms599-cyan) !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__nav > button:hover {
+  background:linear-gradient(90deg,rgba(69,231,243,.10),rgba(5,8,13,.86) 60%,rgba(68,122,218,.06)) !important;
+  border-color:rgba(69,231,243,.28) !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__nav > button[data-active="true"] {
+  background:linear-gradient(90deg,rgba(69,231,243,.16),rgba(5,8,13,.88) 58%,rgba(65,119,218,.08)) !important;
+  border-color:rgba(69,231,243,.46) !important;
+  box-shadow:inset 2px 0 var(--gms599-cyan),inset 0 -1px rgba(69,231,243,.24) !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__nav > button[data-active="true"] i {
+  color:var(--gms599-cyan) !important;
+  text-shadow:0 0 9px rgba(69,231,243,.30) !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__content > [data-master-section-panel]::before {
+  background:linear-gradient(90deg,var(--gms599-cyan-deep),var(--gms599-cyan),transparent) !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__content > [data-master-section-panel] > header {
+  border-left-color:rgba(69,231,243,.72) !important;
+  background:linear-gradient(90deg,rgba(69,231,243,.055),transparent 58%) !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-create-composer[open] > summary,
+.application.gms-reputation-master-panel-app .gms-master-profile-group[open],
+.application.gms-reputation-master-panel-app .gms-master-profile-entry:hover { border-color:rgba(69,231,243,.30) !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__identity .gms-reputation-identity__ghost.is-magenta { color:var(--gms599-cyan-hot) !important; }
+
+/* Player protocol: larger, centered, and isolated from hearts/score. */
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card:not(.is-special-standard) {
+  grid-template-columns:72px minmax(0,1fr) 150px 92px !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__special {
+  width:138px !important;min-width:138px !important;max-width:138px !important;
+  height:46px !important;min-height:46px !important;
+  padding:0 12px !important;gap:10px !important;
+  border-radius:2px !important;
+  clip-path:polygon(7px 0,calc(100% - 11px) 0,100% 50%,calc(100% - 11px) 100%,7px 100%,0 50%) !important;
+  background:linear-gradient(90deg,color-mix(in srgb,currentColor 11%,transparent),rgba(3,7,12,.92) 52%,rgba(3,7,12,.86)) !important;
+  box-shadow:0 0 15px color-mix(in srgb,currentColor 13%,transparent),inset 0 0 18px rgba(0,0,0,.30),inset 0 1px rgba(255,255,255,.025) !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__special-sigil { flex:0 0 29px !important;width:29px !important;height:29px !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__special strong { font-size:11.5px !important;line-height:1 !important;letter-spacing:.055em !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__special[data-special-state="bond"] { color:#E5BA67 !important;border-color:rgba(229,186,103,.62) !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__special[data-special-state="communion"] { color:var(--gms599-cyan) !important;border-color:rgba(69,231,243,.66) !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__special[data-special-state="dual-sync"] {
+  color:#9BEFFA !important;border-color:rgba(105,220,242,.58) !important;
+  background:linear-gradient(90deg,rgba(69,231,243,.14),rgba(3,7,12,.92) 48%,rgba(141,120,255,.10)) !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__special[data-special-state="dual-sync"] strong { color:#DDFBFF !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-heart-track.is-special-communion .gms-reputation-heart[data-special-slot="true"] { --gms596-heart-color:var(--gms599-cyan) !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-heart-track.is-special-dual-sync .gms-reputation-heart[data-heart-ordinal="11"] { --gms596-heart-color:var(--gms599-cyan) !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-heart-track.is-special-dual-sync .gms-reputation-heart[data-heart-ordinal="12"] { --gms596-heart-color:var(--gms599-violet) !important; }
+
+/* Master protocol console: three equally readable tiles. */
+.application.gms-reputation-master-panel-app .gms-master-reputation-console__protocols {
+  gap:12px !important;padding:14px !important;
+  background:radial-gradient(circle at 88% 0,rgba(69,231,243,.07),transparent 32%),linear-gradient(90deg,rgba(69,231,243,.035),transparent 44%),rgba(3,7,12,.88) !important;
+  border-color:rgba(69,231,243,.25) !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-reputation-console__protocols > header { align-items:center !important;border-bottom-color:rgba(69,231,243,.16) !important; }
+.application.gms-reputation-master-panel-app .gms-master-reputation-console__protocols > header small { color:#77EAF3 !important; }
+.application.gms-reputation-master-panel-app .gms-master-reputation-console__protocols > header > span { color:#8999A2 !important; }
+.application.gms-reputation-master-panel-app .gms-master-reputation-console__protocols .gms-master-panel__special-readout {
+  min-height:76px !important;grid-template-columns:58px minmax(0,1fr) !important;gap:13px !important;padding:10px 12px !important;
+  background:linear-gradient(90deg,rgba(69,231,243,.05),rgba(3,7,12,.84) 36%,rgba(3,7,12,.90)) !important;
+  border:1px solid rgba(69,231,243,.18) !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-reputation-console__protocols .gms-master-panel__special-readout > :is(img,.gms-master-panel__special-placeholder) { width:52px !important;height:52px !important; }
+.application.gms-reputation-master-panel-app .gms-master-reputation-console__protocols .gms-master-panel__special-readout > div > strong { font-size:18px !important; }
+.application.gms-reputation-master-panel-app .gms-master-reputation-console__protocols .gms-master-panel__special-readout > div > p { font-size:10px !important;line-height:1.45 !important; }
+.application.gms-reputation-master-panel-app .gms-master-reputation-console__protocols .gms-master-panel__special-editor {
+  display:grid !important;grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:8px !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-reputation-console__protocols .gms-master-panel__special-editor > :is(label,.gms-master-panel__protocol-derived) {
+  min-height:64px !important;display:grid !important;grid-template-columns:28px minmax(0,1fr) !important;gap:10px !important;align-items:center !important;padding:10px 11px !important;
+  color:#D7E4E7 !important;border:1px solid rgba(116,150,159,.22) !important;background:linear-gradient(135deg,rgba(7,12,18,.94),rgba(3,7,12,.91)) !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-reputation-console__protocols .gms-master-panel__special-editor > label:has([data-master-bond]:checked) {
+  color:#E4BA69 !important;border-color:rgba(228,186,105,.54) !important;background:linear-gradient(135deg,rgba(228,186,105,.08),rgba(3,7,12,.92)) !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-reputation-console__protocols .gms-master-panel__special-editor > label:has([data-master-communion]:checked) {
+  color:var(--gms599-cyan) !important;border-color:rgba(69,231,243,.56) !important;background:linear-gradient(135deg,rgba(69,231,243,.09),rgba(3,7,12,.92)) !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__protocol-derived { opacity:.72 !important; }
+.application.gms-reputation-master-panel-app .gms-master-panel__protocol-derived[data-active="true"] {
+  opacity:1 !important;color:#C7F5FB !important;border-color:rgba(118,215,237,.46) !important;
+  background:linear-gradient(135deg,rgba(69,231,243,.08),rgba(3,7,12,.91) 56%,rgba(141,120,255,.08)) !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__protocol-derived > i {
+  width:26px !important;height:26px !important;display:grid !important;place-items:center !important;border:1px solid currentColor !important;transform:rotate(45deg) !important;
+  box-shadow:inset 0 0 0 4px rgba(3,7,12,.88),0 0 9px color-mix(in srgb,currentColor 18%,transparent) !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__protocol-derived > i::before { content:"" !important;width:7px !important;height:7px !important;background:currentColor !important; }
+.application.gms-reputation-master-panel-app .gms-master-panel__protocol-derived > span,
+.application.gms-reputation-master-panel-app .gms-master-reputation-console__protocols .gms-master-panel__special-editor > label > span { display:grid !important;gap:4px !important;min-width:0 !important; }
+.application.gms-reputation-master-panel-app .gms-master-panel__protocol-derived b,
+.application.gms-reputation-master-panel-app .gms-master-reputation-console__protocols .gms-master-panel__special-editor > label b { font-size:12px !important;letter-spacing:.055em !important; }
+.application.gms-reputation-master-panel-app .gms-master-panel__protocol-derived small,
+.application.gms-reputation-master-panel-app .gms-master-reputation-console__protocols .gms-master-panel__special-editor > label small { color:#82939B !important;font-size:8.5px !important; }
+.application.gms-reputation-master-panel-app .gms-master-reputation-console__protocols .gms-master-panel__special-editor > button {
+  grid-column:1 / -1 !important;min-height:42px !important;border-color:rgba(69,231,243,.30) !important;
+  background:linear-gradient(90deg,rgba(69,231,243,.10),rgba(4,8,13,.91),rgba(69,231,243,.05)) !important;color:#DDFBFF !important;
+}
+
+/* Scanner is the ONLY ambient background animation retained. */
+.application.gms-reputation-app[data-gms-motion-system="59"] > .gms-motion-scanner { z-index:14 !important; }
+.application.gms-reputation-app[data-gms-motion-system="59"] > .gms-motion-scanner::before {
+  top:-114px !important;height:3px !important;
+  background:linear-gradient(90deg,transparent 0 2%,rgba(69,231,243,.14) 10%,rgba(123,244,251,.72) 35%,#F4FEFF 50%,rgba(100,232,246,.78) 64%,rgba(72,139,231,.22) 88%,transparent 98%) !important;
+  box-shadow:0 0 7px rgba(179,252,255,.62),0 0 20px rgba(69,231,243,.33),0 10px 46px rgba(65,128,221,.15) !important;
+}
+.application.gms-reputation-app[data-gms-motion-system="59"] > .gms-motion-scanner::after {
+  top:-114px !important;height:114px !important;opacity:.92 !important;
+  background:repeating-linear-gradient(0deg,transparent 0 5px,rgba(157,247,252,.010) 5px 6px),linear-gradient(180deg,transparent 0%,rgba(69,231,243,.018) 12%,rgba(69,231,243,.075) 46%,rgba(69,128,224,.045) 72%,transparent 100%) !important;
+  border-bottom:1px solid rgba(134,244,250,.16) !important;
+}
+.application.gms-reputation-app[data-gms-motion-system="59"] > .gms-motion-scanner.is-active::before,
+.application.gms-reputation-app[data-gms-motion-system="59"] > .gms-motion-scanner.is-active::after {
+  animation:gms599-page-scan var(--gms57-scan-duration,3200ms) cubic-bezier(.20,.72,.20,1) 1 both !important;
+}
+@keyframes gms599-page-scan {
+  0% { transform:translate3d(0,-114px,0);opacity:0; }
+  6% { opacity:.84; }
+  86% { opacity:.70; }
+  100% { transform:translate3d(0,calc(var(--gms57-scan-distance,900px) + 114px),0);opacity:0; }
+}
+
+/* Cyan-only title signal; no geometry change. */
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__title strong,
+.application.gms-reputation-master-panel-app .gms-master-panel__header strong { animation:gms599-title-signal 9.6s steps(1,end) infinite !important; }
+@keyframes gms599-title-signal {
+  0%,89%,100% { text-shadow:0 1px #000,0 0 17px rgba(69,231,243,.08);transform:translateX(0); }
+  90% { text-shadow:-1px 0 rgba(76,148,237,.52),1px 0 rgba(69,231,243,.50);transform:translateX(.25px); }
+  91% { text-shadow:1px 0 rgba(76,148,237,.44),-1px 0 rgba(139,246,252,.55);transform:translateX(-.25px); }
+  92% { text-shadow:0 0 10px rgba(69,231,243,.15);transform:translateX(0); }
+}
+
+@container gms-player-dashboard (max-width:720px) {
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card,
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card:not(.is-special-standard) {
+    grid-template-columns:64px minmax(0,1fr) 82px !important;
+    grid-template-rows:48px 48px auto !important;
+  }
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card:not(.is-special-standard) { min-height:158px !important; }
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card__special {
+    grid-column:2 !important;grid-row:3 !important;justify-self:start !important;
+    width:138px !important;min-width:138px !important;max-width:138px !important;height:42px !important;min-height:42px !important;margin:2px 0 10px !important;
+  }
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card__score,
+  .application.gms-reputation-player-dashboard-app .gms-reputation-player-card:not(.is-special-standard) .gms-reputation-player-card__score { grid-column:3 !important;grid-row:1 / 3 !important; }
+}
+@container gms-master-panel (max-width:820px) {
+  .application.gms-reputation-master-panel-app .gms-master-reputation-console__protocols .gms-master-panel__special-editor { grid-template-columns:1fr !important; }
+  .application.gms-reputation-master-panel-app .gms-master-reputation-console__protocols .gms-master-panel__special-editor > button { grid-column:auto !important; }
+}
+
+/* 59.10 cyan cleanup for remaining non-semantic animated control accents. */
+.application.gms-reputation-master-panel-app .gms-master-panel__nav > button[data-active="true"]::after {
+  background:linear-gradient(105deg,transparent 0 38%,rgba(69,231,243,.085) 48%,rgba(72,126,229,.07) 54%,transparent 64%) !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__content > [data-master-section-panel]::after {
+  background:linear-gradient(90deg,transparent,rgba(69,231,243,.30),rgba(71,128,225,.18),transparent) !important;
+}
+.application.gms-reputation-app .gms-atmosphere .concept-seal .ring { stroke:rgba(164,231,235,.48) !important; }
+.application.gms-reputation-app .gms-atmosphere .concept-seal .ring.reverse { stroke:rgba(72,127,218,.42) !important; }
+.application.gms-reputation-app .gms-atmosphere .concept-seal .pulse path { fill:rgba(69,231,243,.08) !important;stroke:rgba(110,239,247,.68) !important; }
+.application.gms-reputation-app .gms-atmosphere .concept-seal .pulse circle { fill:rgba(122,244,250,.82) !important; }
+
+/* 59.10 hard stop: exact selectors outrank every legacy !important animation. */
+.application.gms-reputation-app .gms-atmosphere .art-stage .botanical,
+.application.gms-reputation-app .gms-atmosphere .art-stage .geo-lattice,
+.application.gms-reputation-app .gms-atmosphere .art-stage .cross-cluster {
+  animation:none !important;
+}
+.application.gms-reputation-app .gms-atmosphere .art-stage .vector-ribbon path,
+.application.gms-reputation-app .gms-atmosphere .art-stage .wave-fan path,
+.application.gms-reputation-app .gms-atmosphere .art-stage .concept-seal .ring,
+.application.gms-reputation-app .gms-atmosphere .art-stage .concept-seal .ring.reverse,
+.application.gms-reputation-app .gms-atmosphere .art-stage .concept-seal .pulse {
+  animation:none !important;
+}

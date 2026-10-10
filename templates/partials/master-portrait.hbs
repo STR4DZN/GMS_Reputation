@@ -1,0 +1,8 @@
+        <section id="gms-workspace-portrait" role="tabpanel" aria-labelledby="gms-nav-characters" data-master-section-panel="portrait" data-gms-v2-bay="optics-bay" hidden>
+          <header><small>ÓPTICA DO CADASTRO</small><h2>Retrato do personagem</h2></header>
+          {{#if hasSelection}}
+            <div data-master-portrait-editor data-gms-v2-role="optics-console">{{> "modules/gms-reputation/templates/partials/portrait-editor.hbs" selection.portraitEditor}}</div>
+            <div class="gms-master-panel__portrait-save"><button type="button" data-master-save-portrait><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> Salvar retrato</button></div>
+          {{else}}<p class="is-empty">Selecione um personagem.</p>{{/if}}
+        </section>
+

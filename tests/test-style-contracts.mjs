@@ -1,0 +1,16 @@
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
+import { removeRepeatedRootDeclarations, styleStructure } from "../tools/style-contracts.mjs";
+const clean = css => removeRepeatedRootDeclarations(css);
+assert.equal(clean(".a{color:red}.a{color:red}").removed, 1);
+assert.equal(clean(".a{color:red}.a{color:unsupported}").removed, 0, "Keep fallback values");
+assert.equal(clean(".a{color:red!important}.a{color:red}").removed, 0);
+assert.equal(clean(".a{color:red}@media(min-width:1px){.a{color:blue}}.a{color:red}").removed, 1);
+assert.equal(clean(".a{color:red}@layer test{.a{color:blue}}.a{color:red}").removed, 0);
+assert.equal(clean("@media(min-width:1px){.a{color:red}.a{color:red}}").removed, 0);
+assert.equal(clean("@keyframes x{from{opacity:0}to{opacity:0}}").removed, 0);
+const css = await readFile(new URL("../styles/gms-reputation-59.10.css", import.meta.url), "utf8");
+const fingerprint = createHash("sha256").update(JSON.stringify(styleStructure(clean(css).css))).digest("hex");
+assert.equal(fingerprint, "57a004255285e18d04393f4a00b92fc6ac6b5137b44a28947c47ae904bcef2a4", "Reviewed cascade structure must remain unchanged; update intentionally alongside visual verification");
+console.log("style-contracts: OK | fallback/importance/conditional/keyframe/layer preservation and reviewed cascade fingerprint");

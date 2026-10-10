@@ -1,3 +1,4 @@
+import { expandMasterTemplate } from "../tools/template-sources.mjs";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
@@ -131,7 +132,7 @@ assert.equal(master.selection.portraitEditor.kind, "subject");
 assert.ok(master.history.length > 0);
 assert.equal(master.world.historyCount, world.history.length);
 
-const masterTemplate = await readFile(new URL("../templates/apps/master-panel.hbs", import.meta.url), "utf8");
+const masterTemplate = await expandMasterTemplate();
 assert.match(masterTemplate, /data-master-score-delta="-1"/);
 assert.match(masterTemplate, /data-master-apply-score/);
 assert.match(masterTemplate, /data-master-apply-specials/);

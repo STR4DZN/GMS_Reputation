@@ -37,32 +37,14 @@ jobs:
           test "$RELEASE_TAG" = "v$GMS_VERSION"
           test "$(gh release view "$RELEASE_TAG" --repo "$GMS_REPOSITORY" --json isDraft --jq '.isDraft')" = true
 
+      - name: Install development dependencies
+        run: npm ci
+
       - name: Run test suite
         run: bash tests/run-all.sh
 
-      - name: Build reproducible module ZIP
-        shell: bash
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED
-          import json
-          version = json.loads(Path('module.json').read_text())['version']
-          files = [Path(name) for name in ('module.json', 'README.md', 'CHANGELOG.md')]
-          for directory in ('assets', 'docs', 'scripts', 'styles', 'templates'):
-              files.extend(p for p in Path(directory).rglob('*') if p.is_file() and p.name not in ('.DS_Store', 'Thumbs.db'))
-          Path('dist').mkdir(exist_ok=True)
-          output = Path('dist') / f'GMS_Reputation_{version}.zip'
-          with ZipFile(output, 'w', compression=ZIP_DEFLATED, compresslevel=9) as archive:
-              for path in sorted(files):
-                  info = ZipInfo(path.as_posix(), date_time=(1980, 1, 1, 0, 0, 0))
-                  info.compress_type = ZIP_DEFLATED
-                  info.external_attr = 0o100644 << 16
-                  archive.writestr(info, path.read_bytes(), compresslevel=9)
-          with ZipFile(output) as archive:
-              assert archive.testzip() is None
-              assert json.loads(archive.read('module.json'))['version'] == version
-          PY
+      - name: Build and verify reproducible module ZIP
+        run: python tools/package-module.py
 
       - name: Upload assets to draft release
         shell: bash

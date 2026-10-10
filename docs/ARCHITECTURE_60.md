@@ -114,12 +114,22 @@ diff -u /tmp/gms-controls-before.json /tmp/gms-controls-after.json
 
 O fluxo de 13 checkpoints também foi comparado contra `6c09c0c` ao separar as consultas, com resultados idênticos. Para reproduzir essa etapa no navegador, use esse commit como baseline nos comandos acima. A comparação de contextos usa dados e serviços simulados em um processo Node separado. A suíte normal continua sendo executada com `npm test`; a prévia não substitui a validação em um mundo Foundry.
 
-## Próximas fases
+### Conclusão de controles, templates e CSS
+
+O painel principal agora tem 590 linhas. Navegação/seleção, preferências/salvamento, histórico, autorização da UI e Sistema/backup ficam em `navigation-controls.js`, `save-controls.js`, `history-controls.js`, `permission-state.js` e `system-controls.js`. Cada fábrica remove os próprios eventos. Os campos de listeners/seletores antigos sem consumidores foram removidos; seleção, fila, rascunhos e coordenação de render/close permanecem na aplicação.
+
+O template principal passou de 456 para 24 linhas. Há 12 partials: cabeçalho, savebar, navegação e nove áreas. Todos estão em `PARTS.main.templates`, incluindo dependências transitivas; não há wrappers novos ou passagem de contexto que altere o escopo Handlebars. A expansão conserva o arquivo original byte a byte e 270 contextos renderizam o mesmo HTML.
+
+Backup e Undo/Redo verificam todos os tipos de rascunho e operações em andamento antes e depois da confirmação. Destruir a superfície revoga a confirmação aberta. Undo/Redo também passa `expectedTransactionId` para a persistência: a transação apresentada no diálogo deve continuar sendo o topo da pilha; uma alteração concorrente não pode fazer a confirmação atingir outro registro. Chamadas existentes sem esse parâmetro continuam usando a transação atual.
+
+A base CSS foi dividida em 16 trechos contínuos, com 24 fontes no total; 62 declarações repetidas foram removidas sem mudar fallbacks, condições ou ordem. Detalhes da cascata e comparação em `STYLES.md`. Reprodução da suíte, quatro integrações de navegador, pacote reproduzível e limites da simulação em `VALIDATION.md`.
+
+## Evoluções opcionais da arquitetura
 
 - B: contexto do Mestre dividido por responsabilidade e índices compartilhados dentro de cada snapshot; histórico e Limpeza continuam usando seus builders comprovados;
-- C: separação de contexto, áreas, vínculos, cadastro, edição, retratos, bulk e limpeza concluída; configuração, histórico e coordenação de navegação continuam no painel;
+- C: separação dos controles concluída, incluindo configuração, histórico e navegação; coordenação e rascunhos continuam no painel;
 - D: Commands passam a centralizar mutations/transações;
-- E: templates Mestre divididos em partials mantendo DOM equivalente;
-- F: consolidar regras legadas depois da separação das fontes CSS e geração de uma única folha final, já implementadas;
-- G: limpeza de legacy interno comprovadamente sem consumidores;
+- E: templates Mestre divididos em partials, com DOM/HTML equivalente comprovado;
+- F: fontes históricas divididas e duplicações comprovadas removidas; alterações futuras de tema podem substituir sobreposições preservadas;
+- G: listeners/seletores aposentados removidos; outras remoções exigem prova de ausência de consumidores;
 - H: schema 6 somente se existir necessidade funcional real e com migração explícita.

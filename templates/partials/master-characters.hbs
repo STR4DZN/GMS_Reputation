@@ -1,0 +1,65 @@
+        <section id="gms-workspace-characters" role="tabpanel" aria-labelledby="gms-nav-characters" data-master-section-panel="characters" data-gms-v2-bay="character-registry-bay" hidden>
+          <header><small>CADASTRO SOCIAL</small><h2>Personagens</h2></header>
+          {{#if subjectEditor}}
+            <section class="gms-master-character-editor" data-master-subject-admin aria-label="Editar personagem selecionado">
+              <header class="gms-master-character-editor__head">
+                <div><small>CADASTRO DO PERSONAGEM</small><strong>{{subjectEditor.alias}}</strong><p>Edite identidade, biografia, marcadores e disponibilidade. O retrato permanece nesta mesma área.</p></div>
+                <span data-state="{{#if subjectEditor.archived}}archived{{else}}{{#if subjectEditor.active}}active{{else}}inactive{{/if}}{{/if}}">{{#if subjectEditor.archived}}ARQUIVADO{{else}}{{#if subjectEditor.active}}ATIVO{{else}}INATIVO{{/if}}{{/if}}</span>
+              </header>
+              <div class="gms-master-character-editor__grid">
+                <label><span>Apelido / nome exibido</span><input type="text" data-master-subject-alias maxlength="240" value="{{subjectEditor.alias}}" placeholder="Ex.: Corvo"></label>
+                <label><span>Nome real</span><input type="text" data-master-subject-real-name maxlength="240" value="{{subjectEditor.realName}}" placeholder="Ex.: Daniel Shirako"></label>
+                <label class="is-wide"><span>Descrição / biografia</span><textarea data-master-subject-description maxlength="12000" rows="6" placeholder="Descrição exibida nos detalhes do Player...">{{subjectEditor.description}}</textarea></label>
+                <label class="is-wide"><span>Marcadores</span><input type="text" data-master-subject-tags maxlength="1200" value="{{subjectEditor.tagsText}}" placeholder="Ex.: Nexus, contato, piloto"></label>
+              </div>
+              <div class="gms-master-character-editor__status">
+                <label><input type="checkbox" data-master-subject-active {{#if subjectEditor.active}}checked{{/if}}><span>Personagem ativo</span></label>
+                <label><input type="checkbox" data-master-subject-archived {{#if subjectEditor.archived}}checked{{/if}}><span>Arquivado</span></label>
+              </div>
+              <div class="gms-master-character-editor__actions">
+                <div><button type="button" data-master-subject-move="up" {{#if subjectEditor.canMoveUp}}{{else}}disabled{{/if}}><i class="fa-solid fa-arrow-up" aria-hidden="true"></i><span>Subir</span></button><button type="button" data-master-subject-move="down" {{#if subjectEditor.canMoveDown}}{{else}}disabled{{/if}}><i class="fa-solid fa-arrow-down" aria-hidden="true"></i><span>Descer</span></button></div>
+                <button type="button" data-master-save-subject><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i><span>Salvar personagem</span></button>
+              </div>
+            </section>
+          {{else}}
+            <p class="is-empty">Nenhum personagem selecionado.</p>
+          {{/if}}
+
+          <section class="gms-master-subject-registry" data-master-subject-admin>
+            <header class="gms-master-subject-registry__head">
+              <div><small>PERSONAGENS AVALIADOS</small><strong>Elenco do perfil atual</strong><p>Escolha quem aparece neste perfil. Remover alguém da matriz preserva o cadastro e a relação.</p></div>
+              <label class="gms-master-subject-registry__search"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input type="search" data-master-character-list-search placeholder="Filtrar personagens cadastrados..." autocomplete="off"></label>
+              <details class="gms-master-subject-registry__composer" data-master-subject-admin>
+                <summary><i class="fa-solid fa-user-plus" aria-hidden="true"></i><strong>Adicionar personagem</strong><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary>
+                <div class="gms-master-subject-registry__create">
+                  <label><span>Apelido</span><input type="text" data-master-new-subject-alias maxlength="240" placeholder="Ex.: Corvo"></label>
+                  <label><span>Nome real</span><input type="text" data-master-new-subject-real-name maxlength="240" placeholder="Ex.: Daniel Shirako"></label>
+                  <button type="button" data-master-create-subject><i class="fa-solid fa-plus" aria-hidden="true"></i><span>Adicionar</span></button>
+                </div>
+              </details>
+            </header>
+            <div class="gms-master-panel__bulk-select-head"><label><input type="checkbox" data-master-bulk-select-all><span>Selecionar todos</span></label><small>Checkbox = edição em massa. Clique no personagem para abrir.</small></div>
+            <div class="gms-master-panel__subject-list gms-master-subject-registry__list">
+              {{#each subjects}}
+                <article data-selected="{{selected}}" data-active="{{active}}" data-archived="{{archived}}" data-in-profile="{{inProfile}}">
+                  <label class="gms-master-panel__bulk-check"><input type="checkbox" data-master-bulk-subject value="{{id}}" aria-label="Selecionar {{alias}} para operação em massa"></label>
+                  <button type="button" class="gms-master-panel__subject-choice" data-master-subject-choice="{{id}}" aria-label="Abrir {{alias}}"><strong>{{alias}}</strong><span>{{realName}}</span><small>{{#if archived}}ARQUIVADO{{else}}{{#if active}}{{#if inProfile}}NO PERFIL{{else}}FORA DO PERFIL{{/if}}{{else}}INATIVO{{/if}}{{/if}}</small><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
+                  <button type="button" class="gms-master-profile-roster-toggle" data-master-profile-roster-toggle="{{id}}" data-in-profile="{{inProfile}}" aria-pressed="{{inProfile}}" title="{{#if inProfile}}Remover {{alias}} deste Perfil{{else}}Adicionar {{alias}} a este Perfil{{/if}}"><i class="fa-solid {{#if inProfile}}fa-user-minus{{else}}fa-user-plus{{/if}}" aria-hidden="true"></i><span>{{#if inProfile}}Remover{{else}}Adicionar{{/if}}</span></button>
+                </article>
+              {{/each}}
+            </div>
+          </section>
+
+          <section class="gms-master-panel__bulk" data-gms-v2-role="bulk-command-strip" aria-label="Edição em massa">
+            <header><small>OPERAÇÕES MÚLTIPLAS</small><strong>Edição em massa</strong></header>
+            <div class="gms-master-panel__bulk-grid">
+              <label><span>Score</span><select data-master-bulk-score-mode><option value="keep">Manter</option><option value="delta">Somar</option><option value="set">Definir</option></select></label>
+              <label><span>Valor</span><input type="number" data-master-bulk-score-value value="0" step="0.5" min="-10" max="12"></label>
+              <label><span>Vínculo</span><select data-master-bulk-bond><option value="keep">Manter</option><option value="on">Ativar</option><option value="off">Desativar</option></select></label>
+              <label><span>Comunhão</span><select data-master-bulk-communion><option value="keep">Manter</option><option value="on">Ativar</option><option value="off">Desativar</option></select></label>
+              <label class="gms-master-panel__bulk-reason"><span>Motivo opcional</span><input type="text" data-master-reason="bulk" maxlength="2000" placeholder="Ex.: consequência da missão"></label>
+            </div>
+            <div class="gms-master-panel__bulk-actions"><button type="button" data-master-bulk-apply-relationship><i class="fa-solid fa-bolt" aria-hidden="true"></i> Aplicar relação</button><button type="button" data-master-bulk-action="archive">Arquivar</button><button type="button" data-master-bulk-action="restore">Restaurar</button><button type="button" data-master-bulk-action="activate">Ativar</button><button type="button" data-master-bulk-action="deactivate">Desativar</button><button type="button" data-master-bulk-action="top">Mover ao topo</button><button type="button" data-master-bulk-action="bottom">Mover ao fim</button></div>
+          </section>
+        </section>
+
