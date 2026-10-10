@@ -1,44 +1,48 @@
-## Em desenvolvimento — Conclusão da organização da interface
+## 1.2.0-dev.73 — Retratos visíveis e interface modular
+
+Release de desenvolvimento para atualização e validação no Foundry v13. Inclui também todas as melhorias de navegação, Motion e reputação pessoal da dev.72, que ainda não possuía ZIP publicado. Schema 5 e dados existentes preservados.
+
+### Conclusão da organização da interface
 
 - Mestre: navegação/seleção, salvamento, histórico, permissões e rollback separados em controladores; arquivo principal com 590 linhas, mantendo a fila e os mapas de rascunhos na aplicação.
 - Template principal reduzido de 456 para 24 linhas com 12 partials pré-carregados pelo Foundry; 270 renderizações com HTML idêntico.
 - Base CSS de 14.917 linhas dividida em 16 fontes contínuas; 24 fontes no total. Removidas 62 declarações repetidas, preservando fallbacks, condições, keyframes, importância e ordem da cascata.
 - Backup e Undo/Redo revalidam rascunhos após confirmação; confirmação antiga de histórico não pode atingir uma transação mais nova. Superfícies descartadas revogam confirmações abertas.
 - 32 arquivos de testes Node, quatro integrações de navegador, comparação de 4.854 contextos e verificações estruturais do CSS. Empacotamento reproduzível verifica dependências, partials e assets; CI do PR executa testes e gera ZIP de revisão.
-- Schema/API existentes preservados. Validação numa instância Foundry v13 continua pendente; sem nova versão/release. [Reprodução e limites](docs/VALIDATION.md).
+- Schema/API existentes preservados. Validação numa instância Foundry v13 continua pendente; release preparada para atualização e teste no Foundry. [Reprodução e limites](docs/VALIDATION.md).
 
-## Em desenvolvimento — Consultas e índices do contexto do Mestre
+### Consultas e índices do contexto do Mestre
 
 - Contexto dividido em cadastro, reputação/focal, navegação/histórico e Sistema; compositor público reduzido de 338 para 71 linhas, preservando as 41 propriedades e sua ordem.
 - Índices de IDs, grupos e posições compartilhados dentro de cada montagem; reconstrução por snapshot preserva rascunhos na mesma revisão, fallback, arquivados, grupos ausentes e rosters legados.
 - Contexto completo mantido para a troca de áreas sem renderização; nenhuma mudança de templates, CSS, schema ou API pública.
 - 4.854 contextos equivalentes antes/depois, 29 arquivos de testes Node e três integrações no navegador passaram; 13 checkpoints dos fluxos de edição/limpeza continuam idênticos. [Estrutura e reprodução](docs/ARCHITECTURE_60.md).
 
-## Em desenvolvimento — Controles do Mestre por responsabilidade
+### Controles do Mestre por responsabilidade
 
 - Cadastro, edição de reputação, retratos/focal, operações em massa e limpeza extraídos em controladores próprios, com descarte dos eventos ao renderizar/fechar.
 - Arquivo principal reduzido de 1.180 para 805 linhas; aplicação continua dona dos rascunhos, contexto e fila de salvamento.
 - 13 checkpoints de fluxos reais no navegador idênticos à versão anterior; 28 arquivos de testes Node e três integrações no navegador passaram.
 - Exclusões verificadas com bloqueio, cancelamento, permissão revogada durante a confirmação, remoção de referências e backup. [Estrutura e reprodução](docs/ARCHITECTURE_60.md).
 
-## Em desenvolvimento — Divisão do painel do Mestre
+### Divisão do painel do Mestre
 
 - Contexto dos templates, definição das áreas e controles dos vínculos de jogadores extraídos para módulos próprios; arquivo principal reduzido de 1.570 para 1.180 linhas.
 - API pública, rascunhos, autorização e persistência preservados; contexto comparado antes/depois em 3.234 cenários.
 - Novos testes de concorrência, falhas e limpeza dos eventos de vínculos, incluindo controles antigos após renderização. [Estrutura e validação](docs/ARCHITECTURE_60.md).
 
-## Em desenvolvimento — Organização dos estilos
+### Organização dos estilos
 
 - Fontes dos componentes recentes separadas em navegação, feedback, transições, responsividade, acessibilidade, layout, reputação pessoal e visibilidade de retratos.
 - Geração determinística da única folha carregada no Foundry, inicialmente idêntica à anterior; ordem da cascata e caminhos de assets preservados.
 - Verificação automática impede empacotar uma folha desatualizada em relação às fontes. [Como editar e validar](docs/STYLES.md).
 
-## Em desenvolvimento — Retratos pela área visível
+### Retratos pela área visível
 
 - Carregamento de retratos restrito à área visível em cards, seletores, perfis, detalhes, editores e avisos.
 - Liberação das fontes fora da área visível, em seções ocultas e em abas do navegador em segundo plano; limpeza ao fechar e renderizar novamente.
 - Enquadramento e comportamento dos renderers/editores públicos preservados; testes de rolagem, troca de fonte e salvamento com 30 personagens e 25 GIFs.
-- [Implementação, comparação e validação](docs/PORTRAIT_PERFORMANCE.md). Ainda sem nova release.
+- [Implementação, comparação e validação](docs/PORTRAIT_PERFORMANCE.md).
 
 ## 1.2.0-dev.72 — Navegação, Motion e reputação pessoal
 

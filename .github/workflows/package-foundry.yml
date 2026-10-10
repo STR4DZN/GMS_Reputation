@@ -5,6 +5,11 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish the verified version as a GitHub release
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -12,6 +17,8 @@ permissions:
 jobs:
   package:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -42,6 +49,39 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: GMS_Reputation_${{ steps.version.outputs.version }}
-          path: dist/GMS_Reputation_${{ steps.version.outputs.version }}.zip
+          path: |
+            dist/GMS_Reputation_${{ steps.version.outputs.version }}.zip
+            dist/module.json
+            dist/SHA256SUMS.txt
           if-no-files-found: error
           compression-level: 0
+
+  publish:
+    needs: package
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      ((github.event_name == 'push' && startsWith(github.event.head_commit.message, '[release] ')) ||
+      (github.event_name == 'workflow_dispatch' && inputs.publish))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GMS_REPOSITORY: ${{ github.repository }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout exact release commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download verified package
+        uses: actions/download-artifact@v4
+        with:
+          name: GMS_Reputation_${{ needs.package.outputs.version }}
+          path: release-assets
+      - name: Verify, upload and publish release
+        run: python tools/publish-release.py release-assets

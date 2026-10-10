@@ -1,6 +1,6 @@
 # Navegação, feedback e Motion
 
-Esta melhoria mantém o WorldState no schema 5, as cinco configurações existentes, a API pública e os cálculos de reputação. A versão do manifesto é `1.2.0-dev.72`, com ZIP e tag próprios para atualização pelo Foundry.
+Esta melhoria mantém o WorldState no schema 5, as cinco configurações existentes, a API pública e os cálculos de reputação. A versão do manifesto é `1.2.0-dev.73`, com ZIP e tag próprios para atualização pelo Foundry.
 
 ## Uso
 

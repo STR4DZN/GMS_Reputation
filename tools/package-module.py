@@ -1,5 +1,6 @@
 """Build and inspect the installable runtime ZIP, without development dependencies."""
 import json
+import hashlib
 from pathlib import Path, PurePosixPath
 import posixpath
 import re
@@ -48,3 +49,5 @@ with ZipFile(output) as archive:
                 target = posixpath.normpath(str(PurePosixPath(name).parent / resource.split("#")[0].split("?")[0]))
                 assert target in names, f"Missing stylesheet resource: {target}"
 print(f"package: OK | {len(files)} runtime files | {output.stat().st_size} bytes | import/template/asset closure | {output.relative_to(root)}")
+(output.parent / "module.json").write_bytes((root / "module.json").read_bytes())
+(output.parent / "SHA256SUMS.txt").write_text(f"{hashlib.sha256(output.read_bytes()).hexdigest()}  {output.name}\n")

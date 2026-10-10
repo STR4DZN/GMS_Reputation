@@ -16,7 +16,7 @@ python tools/package-module.py
 
 `test:browser` inicia uma prévia local, executa as quatro integrações e encerra o servidor. `CHROMIUM_PATH` pode indicar um Chromium já instalado; `PORT` pode mudar a porta. O runtime instalado no Foundry não precisa dessas ferramentas.
 
-O ZIP fica em `dist/GMS_Reputation_1.2.0-dev.72.zip`, com arquivos de runtime e documentação; fontes CSS, ferramentas, testes e node_modules ficam fora. A construção tem ordem, permissões e horários fixos. A verificação abre o ZIP e confere manifesto, imports relativos de scripts, templates da aplicação, inclusões de partials e assets referenciados pelo CSS. Os workflows de pacote e release usam o mesmo construtor. O workflow de validação gera um artefato de revisão sem publicar uma release.
+O ZIP fica em `dist/GMS_Reputation_1.2.0-dev.73.zip`, com arquivos de runtime e documentação; fontes CSS, ferramentas, testes e node_modules ficam fora. A construção tem ordem, permissões e horários fixos. A verificação abre o ZIP e confere manifesto, imports relativos de scripts, templates da aplicação, inclusões de partials e assets referenciados pelo CSS. Os workflows de pacote e release usam o mesmo construtor. O workflow de validação gera um artefato de revisão sem publicar uma release.
 
 ## Comparações com a versão anterior
 
@@ -40,7 +40,7 @@ GMS_STYLE_BASELINE=../gms-completion-baseline python tools/run-browser-tests.py 
 
 Os testes de navegador usam templates e controladores reais com serviços Foundry simulados. Não executam o gerenciador de janelas, sockets ou integrações de outros módulos numa instância Foundry. Não foi fornecida uma instância acessível durante este trabalho.
 
-Antes de merge/release, validar em uma cópia de World no Foundry v13:
+Antes de usar em sessão, validar em uma cópia de World no Foundry v13:
 
 1. Abrir Mestre/Player, redimensionar, minimizar/restaurar, fechar e reabrir; conferir seletor, editor de retrato, atalhos e áreas.
 2. Conectar GM/Assistant/Player em clientes distintos; mudar permissões e reputação, conferir sincronização, avisos e autorização.
@@ -48,4 +48,4 @@ Antes de merge/release, validar em uma cópia de World no Foundry v13:
 4. Conferir uma cópia do World existente: IDs, rosters, grupos, flags pessoais, histórico e retratos preservados.
 5. Testar o ZIP final instalado sem arquivos de desenvolvimento e com os módulos usados na campanha.
 
-Schema 5 e versão do manifesto permanecem iguais. O pacote é para revisão manual; a URL do manifesto de `main` continua apontando para a release existente. Uma release exige versão/manifesto/tag/ZIP correspondentes, conforme `INSTALLATION.md`.
+Schema 5 preservado. A versão `1.2.0-dev.73` usa manifesto, constante de runtime, tag e ZIP correspondentes. A publicação confere os arquivos baixados da release antes de torná-la pública. O manifesto de `main` mantém o URL usado para futuras atualizações, conforme `INSTALLATION.md`.
