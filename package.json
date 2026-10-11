@@ -2,6 +2,16 @@
   "name": "gms-reputation-dev",
   "private": true,
   "type": "module",
-  "scripts": { "test": "bash tests/run-all.sh", "preview": "node visualizer/serve.mjs" },
-  "devDependencies": { "handlebars": "4.7.9" }
+  "scripts": {
+    "test": "bash tests/run-all.sh",
+    "styles:build": "node tools/build-styles.mjs",
+    "styles:check": "node tools/build-styles.mjs --check",
+    "prepreview": "npm run styles:build",
+    "preview": "node visualizer/serve.mjs",
+    "test:browser": "python tools/run-browser-tests.py"
+  },
+  "devDependencies": {
+    "handlebars": "4.7.9",
+    "postcss": "8.5.29"
+  }
 }

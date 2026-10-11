@@ -1,0 +1,8 @@
+      <nav class="gms-master-panel__nav" data-gms-v2-role="command-rail" role="tablist" aria-label="Áreas do controle de reputação">
+        {{#each sections}}
+          <button type="button" role="tab" id="gms-nav-{{id}}" aria-controls="{{controls}}" data-master-section-choice="{{id}}" data-active="{{active}}" aria-selected="{{active}}">
+            <i class="fa-solid {{icon}}" aria-hidden="true"></i><span class="gms-master-panel__nav-copy"><small>{{kicker}}</small><strong>{{label}}</strong></span><span class="gms-navigation-count">{{count}}</span>
+          </button>
+        {{/each}}
+      </nav>
+

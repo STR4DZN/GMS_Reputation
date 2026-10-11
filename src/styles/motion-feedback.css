@@ -1,0 +1,104 @@
+
+
+
+/* ---------- 59.5 Motion fidelity: visible sci-fi feedback without layout ownership ---------- */
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__header-circuit,
+.application.gms-reputation-master-panel-app .gms-master-panel__header-mark {
+  animation:gms595-circuit-signal 7.6s ease-in-out infinite !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__vector-field {
+  opacity:.64 !important;
+  animation:gms595-vector-field 13s linear infinite !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__trace {
+  opacity:.78 !important;
+  background-size:220% 100% !important;
+  animation:gms595-trace-flow 4.6s linear infinite !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__vector-mark {
+  opacity:.46 !important;
+  animation:gms595-vector-breathe 6.4s ease-in-out infinite !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-player-dashboard__title strong,
+.application.gms-reputation-master-panel-app .gms-master-panel__header strong {
+  display:inline-block !important;
+  animation:gms595-title-signal 9.2s steps(1,end) infinite !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card:hover .gms-reputation-identity__text {
+  display:inline-block !important;
+  animation:gms595-hover-glitch .46s steps(1,end) 1 !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__relation {
+  color:var(--gms56-band,currentColor) !important;
+  text-shadow:0 0 8px color-mix(in srgb,var(--gms56-band,currentColor) 16%,transparent) !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__relation::after {
+  content:"" !important;position:absolute !important;left:0 !important;right:0 !important;bottom:-4px !important;height:1px !important;
+  background:linear-gradient(90deg,transparent,var(--gms56-band,currentColor),rgba(255,255,255,.48),var(--gms56-band,currentColor),transparent) !important;
+  background-size:220% 100% !important;opacity:.38 !important;animation:gms595-relation-scan 4.2s linear infinite !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card__score strong,
+.application.gms-reputation-master-panel-app :is(.gms-master-reputation-console__score strong,[data-master-score-preview]) {
+  animation:gms595-score-breathe 4.8s ease-in-out infinite !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-reputation-heart[data-heart-state="full"] > i,
+.application.gms-reputation-player-dashboard-app .gms-reputation-heart[data-heart-state="half"] > i,
+.application.gms-reputation-master-panel-app .gms-reputation-heart[data-heart-state="full"] > i,
+.application.gms-reputation-master-panel-app .gms-reputation-heart[data-heart-state="half"] > i {
+  animation:gms595-heart-live 3.6s ease-in-out infinite alternate !important;
+}
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card:nth-child(2n) .gms-reputation-heart > i { animation-delay:-1.1s !important; }
+.application.gms-reputation-player-dashboard-app .gms-reputation-player-card:nth-child(3n) .gms-reputation-heart > i { animation-delay:-2.2s !important; }
+
+.application.gms-reputation-master-panel-app .gms-master-panel__nav > button[data-active="true"]::after,
+.application.gms-reputation-master-panel-app .gms-master-panel__content > [data-master-section-panel]::after {
+  content:"" !important;position:absolute !important;pointer-events:none !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__nav > button[data-active="true"]::after {
+  inset:0 !important;background:linear-gradient(105deg,transparent 0 38%,rgba(225,124,198,.09) 48%,rgba(72,126,229,.08) 54%,transparent 64%) !important;
+  transform:translateX(-120%) !important;animation:gms595-panel-sweep 5.8s ease-in-out infinite !important;
+}
+.application.gms-reputation-master-panel-app .gms-master-panel__content > [data-master-section-panel]::after {
+  left:9px !important;right:9px !important;top:43px !important;height:1px !important;
+  background:linear-gradient(90deg,transparent,rgba(207,158,220,.34),rgba(71,128,225,.20),transparent) !important;
+  background-size:220% 100% !important;animation:gms595-panel-line 7.2s linear infinite !important;
+}
+.application.gms-reputation-app .gms-atmosphere .geo-lattice { opacity:.13 !important; }
+.application.gms-reputation-app .gms-atmosphere .wave-fan { opacity:.20 !important; }
+.application.gms-reputation-app .gms-atmosphere .wave-fan path { stroke-dasharray:2 6 !important;animation:gms595-wave-drift 13s linear infinite !important; }
+.application.gms-reputation-app .gms-atmosphere .vector-ribbon { opacity:.235 !important; }
+.application.gms-reputation-app .gms-atmosphere .cross-cluster { opacity:.34 !important;animation:gms595-cross-pulse 6.5s ease-in-out infinite !important; }
+.application.gms-reputation-app .gms-atmosphere .concept-seal { opacity:.80 !important; }
+
+/* Scanner is intentionally long enough to read as a top-to-bottom console sweep. */
+.application.gms-reputation-app[data-gms-motion-system="59"] > .gms-motion-scanner::before {box-shadow:0 0 6px rgba(248,208,239,.62),0 0 18px rgba(183,94,209,.34),0 10px 42px rgba(72,121,225,.18) !important; }
+.application.gms-reputation-app[data-gms-motion-system="59"] > .gms-motion-scanner::after { height:108px !important;top:-108px !important;opacity:.90 !important; }
+
+@keyframes gms595-circuit-signal {
+  0%,100%{opacity:.42;filter:hue-rotate(24deg) saturate(.75)}
+  44%{opacity:.68;filter:hue-rotate(0deg) saturate(1.15) drop-shadow(0 0 4px rgba(70,130,235,.18))}
+  48%{opacity:.90;filter:hue-rotate(26deg) saturate(1.3) drop-shadow(0 0 7px rgba(226,113,193,.22))}
+  52%{opacity:.58}
+}
+@keyframes gms595-vector-field { to{background-position:180px -90px,-140px 110px,0 0} }
+@keyframes gms595-trace-flow { to{background-position:220% 0} }
+@keyframes gms595-vector-breathe { 0%,100%{opacity:.28;filter:hue-rotate(25deg) saturate(.72)}50%{opacity:.62;filter:hue-rotate(5deg) saturate(1.16) drop-shadow(0 0 5px rgba(218,114,195,.18))} }
+@keyframes gms595-title-signal {
+  0%,88%,100%{text-shadow:0 1px #000,0 0 18px rgba(205,111,198,.10);transform:translateX(0)}
+  89%{text-shadow:-1px 0 rgba(73,136,238,.58),1px 0 rgba(242,97,179,.42);transform:translateX(.3px)}
+  90%{text-shadow:1px 0 rgba(73,136,238,.42),-1px 0 rgba(242,97,179,.56);transform:translateX(-.4px)}
+  91%{text-shadow:0 0 11px rgba(232,144,209,.18);transform:translateX(0)}
+}
+@keyframes gms595-hover-glitch {
+  0%,100%{transform:translate(0);text-shadow:0 1px #000}
+  28%{transform:translate(.7px,-.2px);text-shadow:-1px 0 rgba(68,135,235,.55),1px 0 rgba(241,96,180,.45)}
+  44%{transform:translate(-.6px,.15px);text-shadow:1px 0 rgba(68,135,235,.45),-1px 0 rgba(241,96,180,.55)}
+  62%{transform:translate(.2px,0);text-shadow:0 0 9px rgba(231,131,203,.22)}
+}
+@keyframes gms595-relation-scan { to{background-position:-220% 0} }
+@keyframes gms595-score-breathe { 0%,100%{filter:brightness(.96)}50%{filter:brightness(1.16) drop-shadow(0 0 5px color-mix(in srgb,currentColor 30%,transparent))} }
+@keyframes gms595-heart-live { from{filter:brightness(.94) saturate(.96) drop-shadow(0 0 2px color-mix(in srgb,currentColor 18%,transparent))}to{filter:brightness(1.16) saturate(1.10) drop-shadow(0 0 6px color-mix(in srgb,currentColor 38%,transparent))} }
+@keyframes gms595-panel-sweep { 0%,70%{transform:translateX(-120%)}100%{transform:translateX(120%)} }
+@keyframes gms595-panel-line { to{background-position:-220% 0} }
+@keyframes gms595-wave-drift { to{stroke-dashoffset:-110} }
+@keyframes gms595-cross-pulse { 0%,100%{opacity:.24;filter:none}50%{opacity:.44;filter:drop-shadow(0 0 5px rgba(214,168,224,.16))} }

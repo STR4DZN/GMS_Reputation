@@ -1,0 +1,67 @@
+        <section id="gms-workspace-cleanup" role="tabpanel" aria-labelledby="gms-nav-cleanup" data-master-section-panel="cleanup" data-gms-v2-bay="cleanup-bay" hidden>
+          <header><small>GERENCIADOR DE LIMPEZA</small><h2>Excluir dados antigos</h2></header>
+          {{#if permissions.isFullGM}}
+            <section class="gms-master-cleanup" data-master-cleanup-root data-cleanup-unlocked="false">
+              <div class="gms-master-cleanup__warning">
+                <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                <div><strong>Exclusão permanente</strong><p>Use esta área apenas para remover registros antigos. Antes de cada exclusão, o módulo cria o backup mundial automático. Personagens removem suas relações dos perfis; Perfis removem suas próprias relações; Grupos preservam os Perfis e os movem para “Sem Grupo”.</p></div>
+              </div>
+
+              <div class="gms-master-cleanup__toolbar">
+                <label class="gms-master-cleanup__search"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input type="search" data-master-cleanup-search placeholder="Buscar personagem, perfil ou grupo..." autocomplete="off"></label>
+                <label class="gms-master-cleanup__unlock"><input type="checkbox" data-master-cleanup-unlock><span><strong>Desbloquear exclusões</strong><small>Entendo que os botões abaixo apagam dados permanentemente.</small></span></label>
+              </div>
+
+              <div class="gms-master-cleanup__grid">
+                <section class="gms-master-cleanup__section" data-master-cleanup-section="subjects">
+                  <header><span><small>ENTIDADES</small><strong>Personagens</strong></span><b>{{cleanup.subjects.length}}</b></header>
+                  <div class="gms-master-cleanup__list">
+                    {{#if cleanup.subjects.length}}
+                      {{#each cleanup.subjects}}
+                        <article class="gms-master-cleanup__row" data-master-cleanup-row data-cleanup-search-text="{{name}} {{realName}} personagem">
+                          <div class="gms-master-cleanup__identity"><i class="fa-solid fa-user" aria-hidden="true"></i><span><strong>{{name}}</strong><small>{{#if realName}}{{realName}}{{else}}Sem nome real{{/if}}</small></span></div>
+                          <div class="gms-master-cleanup__impact"><span><b>{{relationshipCount}}</b><small>RELAÇÕES</small></span><span><b>{{rosterCount}}</b><small>PERFIS</small></span><span><b>{{historyCount}}</b><small>EVENTOS</small></span></div>
+                          <button type="button" class="gms-master-cleanup__delete" data-master-cleanup-delete="subject" data-cleanup-id="{{id}}" data-cleanup-name="{{name}}" data-cleanup-impact-a="{{relationshipCount}}" data-cleanup-impact-b="{{rosterCount}}" disabled><i class="fa-solid fa-trash-can" aria-hidden="true"></i><span>Apagar</span></button>
+                        </article>
+                      {{/each}}
+                    {{else}}<p class="is-empty">Nenhum personagem cadastrado.</p>{{/if}}
+                  </div>
+                </section>
+
+                <section class="gms-master-cleanup__section" data-master-cleanup-section="profiles">
+                  <header><span><small>MATRIZES</small><strong>Perfis</strong></span><b>{{cleanup.profiles.length}}</b></header>
+                  <div class="gms-master-cleanup__list">
+                    {{#if cleanup.profiles.length}}
+                      {{#each cleanup.profiles}}
+                        <article class="gms-master-cleanup__row" data-master-cleanup-row data-cleanup-search-text="{{name}} {{focalName}} {{groupName}} perfil">
+                          <div class="gms-master-cleanup__identity"><i class="fa-solid fa-address-card" aria-hidden="true"></i><span><strong>{{focalName}}</strong><small>{{name}} // {{groupName}}</small></span></div>
+                          <div class="gms-master-cleanup__impact"><span><b>{{relationshipCount}}</b><small>RELAÇÕES</small></span><span><b>{{rosterCount}}</b><small>ROSTER</small></span><span><b>{{historyCount}}</b><small>EVENTOS</small></span></div>
+                          <button type="button" class="gms-master-cleanup__delete" data-master-cleanup-delete="profile" data-cleanup-id="{{id}}" data-cleanup-name="{{name}}" data-cleanup-impact-a="{{relationshipCount}}" data-cleanup-impact-b="{{rosterCount}}" disabled><i class="fa-solid fa-trash-can" aria-hidden="true"></i><span>Apagar</span></button>
+                        </article>
+                      {{/each}}
+                    {{else}}<p class="is-empty">Nenhum perfil cadastrado.</p>{{/if}}
+                  </div>
+                </section>
+
+                <section class="gms-master-cleanup__section gms-master-cleanup__section--groups" data-master-cleanup-section="groups">
+                  <header><span><small>ORGANIZAÇÃO</small><strong>Grupos</strong></span><b>{{cleanup.groups.length}}</b></header>
+                  <div class="gms-master-cleanup__list">
+                    {{#if cleanup.groups.length}}
+                      {{#each cleanup.groups}}
+                        <article class="gms-master-cleanup__row" data-master-cleanup-row data-cleanup-search-text="{{name}} {{description}} grupo">
+                          <div class="gms-master-cleanup__identity"><i class="fa-solid fa-folder-tree" aria-hidden="true"></i><span><strong>{{name}}</strong><small>{{#if description}}{{description}}{{else}}Grupo de perfis{{/if}}</small></span></div>
+                          <div class="gms-master-cleanup__impact"><span><b>{{profileCount}}</b><small>PERFIS</small></span><span class="gms-master-cleanup__preserve"><i class="fa-solid fa-shield-heart" aria-hidden="true"></i><small>PRESERVADOS</small></span></div>
+                          <button type="button" class="gms-master-cleanup__delete" data-master-cleanup-delete="group" data-cleanup-id="{{id}}" data-cleanup-name="{{name}}" data-cleanup-impact-a="{{profileCount}}" data-cleanup-impact-b="0" disabled><i class="fa-solid fa-trash-can" aria-hidden="true"></i><span>Apagar grupo</span></button>
+                        </article>
+                      {{/each}}
+                    {{else}}<p class="is-empty">Nenhum grupo de perfis cadastrado.</p>{{/if}}
+                  </div>
+                </section>
+              </div>
+              <p class="gms-master-cleanup__footnote"><i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i><span>Se uma exclusão for feita por engano, use <strong>Sistema → Backup e restauração</strong> imediatamente antes de qualquer outra gravação.</span></p>
+            </section>
+          {{else}}
+            <div class="gms-master-cleanup-denied"><i class="fa-solid fa-lock" aria-hidden="true"></i><strong>Somente um Gamemaster completo pode acessar exclusões permanentes.</strong></div>
+          {{/if}}
+        </section>
+

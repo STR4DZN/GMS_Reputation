@@ -1,0 +1,34 @@
+/* Personal reputation: named bindings and one recap per Foundry user. */
+.gms-settings-tabs { display: flex; gap: 7px; padding: 8px 0 14px; }
+.gms-settings-tabs button { width: auto; padding: 9px 14px; border: 1px solid #355d5a; border-radius: 6px; background: #0a1b20; color: #bddbd3; font: 600 12px/1.4 sans-serif; }
+.gms-settings-tabs button[aria-selected="true"] { color: #79f4df; border-color: #70efdb; background: #143639; }
+.gms-player-bindings { padding: 15px; background: rgba(7,20,25,.8); border: 1px solid #355d5a; border-radius: 8px; }
+.gms-player-bindings h3 { margin: 5px 0 10px; font: 600 20px/1.4 sans-serif; color: #e4f6ee; }
+.gms-player-bindings header small { font-size: 10px; color: #70efdb; letter-spacing: .1em; }
+.gms-player-bindings > p { color: #a3c6bb; font-size: 12px; line-height: 1.6; }
+.gms-player-bindings__example { background: #102a2e; padding: 10px; border-radius: 5px; }
+.gms-player-binding { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr) auto; gap: 10px; padding: 14px; border: 1px solid #355d5a; border-radius: 7px; margin: 18px 0 0; }
+.gms-player-binding legend { display: flex; align-items: center; gap: 9px; padding: 0 7px; font: 600 14px/1.4 sans-serif; color: #def1e7; }
+.gms-player-binding legend small { color: #87ada1; font-size: 10px; }
+.gms-player-binding__initial { display: inline-grid; place-items: center; width: 25px; height: 25px; background: #15393a; border-radius: 5px; color: #70efdb; }
+.gms-player-binding label { display: grid; gap: 7px; min-width: 0; font: 11px/1.4 sans-serif; color: #aacbbf; }
+.gms-player-binding select { width: 100%; min-width: 0; height: 38px; background: #081b20; border: 1px solid #355d5a; border-radius: 5px; color: #d7eee5; font: 12px/1.4 sans-serif; }
+.gms-player-binding button { align-self: end; height: 38px; width: auto; padding: 8px 12px; border: 1px solid #4a8d7c; border-radius: 5px; background: #153b36; color: #b7ffe6; font: 600 12px sans-serif; }
+.gms-player-binding p { grid-column: 1/-1; margin: 0; font-size: 11px; line-height: 1.5; color: #87ada1; }
+.gms-player-navigation { flex-wrap: wrap; }
+.gms-personal-reputation-status { order: 5; flex: 1 1 100%; display: flex; align-items: center; gap: 10px; border-top: 1px solid #244742; padding-top: 7px; }
+.gms-personal-reputation-status > span { flex: 1; color: #8ebdaf; font-size: 10px; line-height: 1.5; }
+.gms-personal-reputation-status button { padding: 0 10px; color: #70efdb; white-space: nowrap; }
+.gms-feedback-personal-message { margin: 0 0 8px; color: #cce8dc; font-size: 11px; line-height: 1.5; }
+.gms-feedback-period { color: #89b8a7; font-size: 10px; margin: 0 0 9px; }
+@container gms-window (max-width: 700px) {
+  .gms-player-binding { grid-template-columns: minmax(0,1fr); padding: 10px; }
+  .gms-player-binding button { width: 100%; }
+  .gms-personal-reputation-status { flex-wrap: wrap; }
+  .gms-personal-reputation-status > span { flex: 1 1 100%; }
+  .gms-personal-reputation-status button { width: 100%; }
+  .gms-settings-tabs button { padding: 8px 10px; font-size: 11px; }
+  .gms-navigation-bar:has([data-personal-reputation-open]) { flex-wrap: wrap; }
+  .gms-navigation-bar [data-personal-reputation-open] { flex: 1 1 100%; }
+}
+

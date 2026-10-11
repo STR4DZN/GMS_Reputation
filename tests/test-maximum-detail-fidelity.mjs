@@ -1,10 +1,11 @@
+import { expandMasterTemplate } from "../tools/template-sources.mjs";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 const css = await readFile(new URL("../styles/gms-reputation-59.10.css", import.meta.url), "utf8");
 const motion = await readFile(new URL("../scripts/motion/motion-system.js", import.meta.url), "utf8");
 const art = await readFile(new URL("../templates/partials/background-art.hbs", import.meta.url), "utf8");
-const masterTemplate = await readFile(new URL("../templates/apps/master-panel.hbs", import.meta.url), "utf8");
+const masterTemplate = await expandMasterTemplate();
 const dualIcon = await readFile(new URL("../assets/icons/dual-sync-sigil.svg", import.meta.url), "utf8");
 
 // Semantic propagation remains explicit.

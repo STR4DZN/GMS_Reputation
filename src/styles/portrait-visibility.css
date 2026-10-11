@@ -1,0 +1,4 @@
+/* Keep portrait geometry while its source is released outside the viewport. */
+img[data-gms-portrait-src][data-gms-portrait-state="suspended"] {
+  visibility: hidden;
+}

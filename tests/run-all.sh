@@ -7,4 +7,3 @@ for test in test-*.mjs; do
   if ! node "$test"; then status=1; fi
 done
 exit "$status"
-node tests/test-foundry-update-manifest.mjs

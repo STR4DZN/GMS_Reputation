@@ -1,3 +1,5 @@
+import { setPortraitImageSource } from "./portrait-visibility.js";
+
 function text(value, fallback = "") {
   const normalized = String(value ?? "").trim();
   return normalized || fallback;
@@ -129,13 +131,14 @@ export function wireSmartSelector(root, {
     const primary = option.querySelector("[data-smart-selector-option-primary]")?.textContent?.trim() ?? "";
     const secondary = option.querySelector("[data-smart-selector-option-secondary]")?.textContent?.trim() ?? "";
     const badge = option.querySelector("[data-smart-selector-option-badge]")?.textContent?.trim() ?? "";
-    const image = option.querySelector("img")?.getAttribute?.("src") ?? "";
+    const optionImage = option.querySelector("img");
+    const image = optionImage?.getAttribute?.("data-gms-portrait-src") ?? optionImage?.getAttribute?.("src") ?? "";
     if (currentPrimary) currentPrimary.textContent = primary;
     if (currentSecondary) { currentSecondary.textContent = secondary; currentSecondary.hidden = !secondary; }
     if (currentBadge) { currentBadge.textContent = badge; currentBadge.hidden = !badge; }
     if (currentImage) {
-      if (image) { currentImage.setAttribute("src", image); currentImage.hidden = false; }
-      else currentImage.hidden = true;
+      setPortraitImageSource(currentImage, image);
+      currentImage.hidden = !image;
     }
 
     if (closeOnSelect) setOpen(false, { focusSearch: false });

@@ -1,3 +1,4 @@
+import { expandMasterTemplate } from "../tools/template-sources.mjs";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
@@ -19,7 +20,7 @@ const { MODULE_ID, SETTINGS, MODULE_VERSION } = await import("../scripts/constan
 const Schema = await import("../scripts/data/schema.js");
 const { registerPersistenceSettings } = await import("../scripts/persistence/settings.js");
 registerPersistenceSettings();
-assert.equal(MODULE_VERSION, "1.2.0-dev.72");
+assert.equal(MODULE_VERSION, "1.2.0-dev.73");
 
 const state = Schema.createEmptyWorldState({ createdBy: "gm-apps" });
 state.subjects.s1 = Schema.createSubject({
@@ -43,6 +44,8 @@ storage.set(`${MODULE_ID}.${SETTINGS.WORLD_STATE_BACKUP}`, {});
 const Detail = await import("../scripts/apps/subject-detail.js");
 const Player = await import("../scripts/apps/player-dashboard.js");
 const Master = await import("../scripts/apps/master-panel.js");
+const MasterContext = await import("../scripts/apps/master/context.js");
+assert.equal(Master.buildMasterPanelContext, MasterContext.buildMasterPanelContext, "The existing public import keeps the canonical context builder");
 
 const detail = Detail.buildSubjectDetailContext({ profileId: "p1", subjectId: "s1" });
 assert.equal(detail.found, true);
@@ -85,7 +88,7 @@ assert.equal(Master.openMasterPanel(), null);
 
 const detailTemplate = await readFile(new URL("../templates/apps/subject-detail.hbs", import.meta.url), "utf8");
 const playerTemplate = await readFile(new URL("../templates/apps/player-dashboard.hbs", import.meta.url), "utf8");
-const masterTemplate = await readFile(new URL("../templates/apps/master-panel.hbs", import.meta.url), "utf8");
+const masterTemplate = await expandMasterTemplate();
 for (const source of [detailTemplate, playerTemplate]) {
   assert.doesNotMatch(source, /data-delta|name="score"|data-edit-portrait|data-toggle-bond|data-toggle-communion/i);
 }

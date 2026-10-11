@@ -1,0 +1,42 @@
+.gms-feedback-dock { position: fixed; bottom: 18px; right: 18px; width: min(360px,calc(100vw - 24px)); z-index: 10000; pointer-events: none; color: #def3ee; font: 12px/1.4 sans-serif; }
+.gms-feedback-dock[hidden] { display: none; }
+.gms-feedback-announcer { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.gms-feedback-dock [data-feedback-cards] { display: flex; flex-direction: column; gap: 10px; max-height: calc(100dvh - 70px); overflow: auto; padding: 3px; }
+.gms-feedback-card { pointer-events: auto; background: #0c1e23; border: 1px solid #47766d; border-radius: 10px; box-shadow: 0 12px 35px #0007; padding: 13px; --feedback-accent: #70efdb; border-left: 3px solid var(--feedback-accent); animation: gms-feedback-enter 240ms cubic-bezier(.2,.8,.2,1); }
+.gms-feedback-card[data-direction="down"] { --feedback-accent: #f6a88f; }
+.gms-feedback-card header { display: flex; align-items: center; gap: 8px; color: var(--feedback-accent); margin-bottom: 11px; }
+.gms-feedback-card header strong { flex: 1; font-size: 12px; }
+.gms-feedback-card button { font: inherit; width: auto; margin: 0; padding: 5px 9px; min-height: 28px; background: #153236; border: 1px solid #365f5b; border-radius: 5px; color: #d8ece9; cursor: pointer; }
+.gms-feedback-card button:hover { background: #214d4e; }
+.gms-feedback-card button:focus-visible { outline: 2px solid #70efdb; outline-offset: 2px; }
+.gms-feedback-card button:disabled { opacity: .35; }
+.gms-feedback-card header button { background: none; border: 0; font-size: 20px; padding: 0 6px; }
+.gms-feedback-identity { display: flex; align-items: center; gap: 9px; }
+.gms-feedback-identity img, .gms-feedback-avatar { width: 38px; height: 38px; object-fit: cover; border: 1px solid #365f5b; border-radius: 7px; flex: 0 0 auto; }
+.gms-feedback-avatar { display: grid; place-items: center; font-size: 24px; color: #70efdb; }
+.gms-feedback-identity > div { display: grid; min-width: 0; flex: 1; }
+.gms-feedback-identity small { font-size: 9px; color: #8cafac; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gms-feedback-identity strong { overflow-wrap: anywhere; }
+.gms-feedback-delta { color: var(--feedback-accent); font-size: 21px; }
+.gms-feedback-change[data-direction="down"] { --feedback-accent: #f6a88f; }
+.gms-feedback-change[data-direction="up"] { --feedback-accent: #70efdb; }
+.gms-feedback-comparison { display: grid; grid-template-columns: 1fr 20px 1fr; align-items: center; gap: 8px; margin: 10px 0 5px; }
+.gms-feedback-comparison > div { display: grid; grid-template-columns: auto 1fr; column-gap: 8px; padding: 8px; background: #07171b; border: 1px solid #264944; border-radius: 6px; }
+.gms-feedback-comparison small { grid-column: 1/-1; font-size: 8px; color: #8cafac; }
+.gms-feedback-comparison strong { font-size: 22px; color: var(--band,#a4bfb9); }
+.gms-feedback-comparison span:not(.gms-feedback-arrow) { font-size: 9px; align-self: center; color: #a4bfb9; }
+.gms-feedback-arrow { color: #70efdb; text-align: center; }
+.gms-feedback-tracks { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.gms-feedback-hearts { display: flex; gap: 1px; }
+.gms-feedback-hearts > span { position: relative; width: 11px; height: 13px; flex: 1; }
+.gms-feedback-hearts svg { position: absolute; width: 100%; height: 100%; fill: none; stroke: #46645e; stroke-width: 1.4; }
+.gms-feedback-hearts svg+svg { fill: var(--heart-accent,#70efdb); stroke: none; opacity: 0; }
+.gms-feedback-hearts [data-state="full"] svg+svg { opacity: 1; }
+.gms-feedback-hearts [data-state="half"] svg+svg { opacity: 1; clip-path: inset(0 50% 0 0); }
+.gms-feedback-protocol { display: flex; justify-content: space-between; gap: 8px; margin: 8px 0; color: #9abdb8; font-size: 9px; }
+.gms-feedback-inspect, .gms-feedback-expand { width: 100% !important; margin-top: 8px !important; }
+.gms-feedback-summary { font-size: 10px; color: #9abdb8; margin: 0 0 10px; }
+.gms-feedback-batch { max-height: min(340px,calc(100dvh - 230px)); overflow: auto; }
+.gms-feedback-batch .gms-feedback-change { border-top: 1px solid #264944; padding: 10px 0; }
+.gms-feedback-pages { display: flex; align-items: center; justify-content: space-between; gap: 5px; margin-top: 10px; font-size: 10px; }
+.gms-feedback-waiting { display: block; text-align: right; padding: 4px 5px; color: #9abdb8; font-size: 10px; }

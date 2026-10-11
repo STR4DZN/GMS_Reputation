@@ -2,6 +2,7 @@ import { MODULE_ID } from "../constants.js";
 import { loadWorldState } from "../persistence/world-store.js";
 import { listHistory } from "../data/history-registry.js";
 import { buildPortraitFrameModel } from "../components/portrait-frame.js";
+import { wirePortraitVisibility } from "../components/portrait-visibility.js";
 import { buildIdentityModel } from "../components/identity.js";
 import { buildHeartTrackModel } from "../components/heart-track.js";
 import { getReputationView } from "../core/reputation-engine.js";
@@ -103,6 +104,7 @@ export class ReputationSubjectDetailApplication extends HandlebarsApplicationV2 
 
   _onRender(context, options) {
     super._onRender?.(context, options);
+    this._portraitVisibilityController?.destroy?.();
     destroyListeners(this._listeners);
     const root = appElement(this);
     const close = root?.querySelector?.("[data-subject-detail-close]");
@@ -115,9 +117,11 @@ export class ReputationSubjectDetailApplication extends HandlebarsApplicationV2 
     if (this._pendingMotion === "relation") this._motionController.relationship?.(root.querySelector?.("[data-subject-detail-root]") ?? root);
     else if (this._pendingMotion) this._motionController.transition?.("detail", root);
     this._pendingMotion = "";
+    this._portraitVisibilityController = wirePortraitVisibility(root);
   }
 
   async _onClose(options) {
+    this._portraitVisibilityController?.destroy?.(); this._portraitVisibilityController = null;
     destroyListeners(this._listeners);
     this._accessibilityController?.destroy?.();
     this._accessibilityController = null;

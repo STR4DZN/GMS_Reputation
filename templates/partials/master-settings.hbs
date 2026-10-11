@@ -1,0 +1,70 @@
+        <section id="gms-workspace-settings" role="tabpanel" aria-labelledby="gms-nav-settings" data-master-section-panel="settings" data-gms-v2-bay="system-config-bay" hidden>
+          <header><small>DIAGNÓSTICO E ACESSO</small><h2>Sistema</h2></header>
+          <nav class="gms-settings-tabs" data-master-settings-tabs role="tablist" aria-label="Configurações do Mestre">
+            {{#each settingsTabs}}<button type="button" id="gms-settings-tab-{{id}}" role="tab" aria-controls="gms-settings-pane-{{id}}" aria-selected="{{active}}" data-master-settings-tab="{{id}}">{{label}}</button>{{/each}}
+          </nav>
+          <div id="gms-settings-pane-general" role="tabpanel" aria-labelledby="gms-settings-tab-general" data-master-settings-pane="general">
+          <dl class="gms-master-panel__settings" data-gms-v2-role="system-readout">
+            <div><dt>Versão do módulo</dt><dd>{{world.moduleVersion}}</dd></div>
+            <div><dt>Schema</dt><dd>{{world.schemaVersion}}</dd></div>
+            <div><dt>Revisão mundial</dt><dd>{{world.revision}}</dd></div>
+            <div><dt>Grupos</dt><dd>{{world.groupCount}}</dd></div>
+            <div><dt>Personagens</dt><dd>{{world.subjectCount}}</dd></div>
+            <div><dt>Perfis</dt><dd>{{world.profileCount}}</dd></div>
+            <div><dt>Eventos históricos</dt><dd>{{world.historyCount}}</dd></div>
+          </dl>
+          <section class="gms-master-panel__save-settings" data-gms-v2-role="save-config" aria-label="Preferências de salvamento do Mestre">
+            <header><small>PERSISTÊNCIA</small><strong>Salvamento</strong></header>
+            <label><span>Modo</span><select data-master-save-mode>{{#each savePreferences.modeOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select></label>
+            <label><span>Pausa do auto-save</span><input type="number" data-master-autosave-delay min="0.75" max="10" step="0.25" value="{{savePreferences.idleDelay}}" {{#if savePreferences.idleMode}}{{else}}disabled{{/if}}><small>segundos sem editar</small></label>
+            <p><strong>Manual:</strong> mantém alterações pendentes até “Salvar mudanças”. <strong>Automático:</strong> agrupa entradas rápidas e grava após a interação. <strong>Após pausa:</strong> grava depois do intervalo configurado.</p>
+          </section>
+          <section class="gms-master-panel__backup-settings" data-gms-v2-role="rollback-config" aria-label="Backup e rollback da Matriz de Reputação">
+            <header><small>SEGURANÇA DE DADOS</small><strong>Backup e restauração</strong></header>
+            <p>Antes de cada gravação mundial, o módulo preserva o estado anterior em um snapshot automático.</p>
+            <dl class="gms-master-panel__settings gms-master-panel__backup-readout">
+              <div><dt>Estado</dt><dd>{{#if world.backup.available}}Disponível{{else}}Vazio{{/if}}</dd></div>
+              {{#if world.backup.available}}<div><dt>Revisão preservada</dt><dd>{{world.backup.revision}}</dd></div>{{/if}}
+              <div><dt>Última referência</dt><dd>{{world.backup.updatedAtText}}</dd></div>
+            </dl>
+            <button type="button" data-master-restore-backup {{#if world.backup.available}}{{#if permissions.canConfigurePermissions}}{{else}}disabled{{/if}}{{else}}disabled{{/if}}><i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i> Restaurar último backup</button>
+            <p><small>A restauração cria primeiro um novo backup do estado atual, permitindo retorno caso o rollback tenha sido feito por engano.</small></p>
+          </section>
+          <section class="gms-master-panel__permission-settings" data-gms-v2-role="permissions-config" aria-label="Permissões da Matriz de Reputação">
+            <header><small>CONTROLE DE ACESSO</small><strong>Permissões do módulo</strong></header>
+            <p>Player comum permanece somente leitura. Assistant e Trusted podem receber capacidades específicas; toda gravação delegada é revalidada por um Gamemaster completo.</p>
+            <div class="gms-master-panel__permission-grid">
+              {{#each permissionRoles}}
+                <fieldset data-permission-role="{{id}}" {{#if ../permissions.canConfigurePermissions}}{{else}}disabled{{/if}}>
+                  <legend>{{label}}</legend>
+                  <label><input type="checkbox" data-master-permission-role="{{id}}" data-master-permission-capability="openMaster" {{#if policy.openMaster}}checked{{/if}}> Abrir painel</label>
+                  <label><input type="checkbox" data-master-permission-role="{{id}}" data-master-permission-capability="relationships" {{#if policy.relationships}}checked{{/if}}> Relações e especiais</label>
+                  <label><input type="checkbox" data-master-permission-role="{{id}}" data-master-permission-capability="subjects" {{#if policy.subjects}}checked{{/if}}> Personagens</label>
+                  <label><input type="checkbox" data-master-permission-role="{{id}}" data-master-permission-capability="portraits" {{#if policy.portraits}}checked{{/if}}> Retratos</label>
+                  <label><input type="checkbox" data-master-permission-role="{{id}}" data-master-permission-capability="focal" {{#if policy.focal}}checked{{/if}}> Apresentação do perfil</label>
+                  <label><input type="checkbox" data-master-permission-role="{{id}}" data-master-permission-capability="bulk" {{#if policy.bulk}}checked{{/if}}> Edição em massa</label>
+                  <label><input type="checkbox" data-master-permission-role="{{id}}" data-master-permission-capability="history" {{#if policy.history}}checked{{/if}}> Undo / Redo</label>
+                </fieldset>
+              {{/each}}
+            </div>
+            <button type="button" data-master-save-permissions {{#if permissions.canConfigurePermissions}}{{else}}disabled{{/if}}><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Salvar permissões</button>
+          </section>
+          </div>
+          <div id="gms-settings-pane-players" role="tabpanel" aria-labelledby="gms-settings-tab-players" data-master-settings-pane="players" hidden>
+            <section class="gms-player-bindings" aria-label="Vincular jogadores e perfis">
+              <header><small>REPUTAÇÃO PESSOAL</small><h3>Jogadores e perfis</h3></header>
+              <p>Vincule cada usuário ao seu perfil. O resumo reúne as mudanças no personagem dele dentro das matrizes dos outros, desde a última visualização.</p>
+              <p class="gms-player-bindings__example">Exemplo: Mari → perfil Mari → personagem Mari. Ao editar Mari no perfil Corvo, ela verá “Sua reputação aumentou com Corvo”.</p>
+              {{#if permissions.isFullGM}}{{else}}<p>Somente um Gamemaster completo pode alterar os vínculos.</p>{{/if}}
+              {{#each playerBindings}}
+                <fieldset class="gms-player-binding" data-player-binding-user="{{userId}}" {{#if ../permissions.isFullGM}}{{else}}disabled{{/if}}>
+                  <legend><span class="gms-player-binding__initial" aria-hidden="true">{{initial}}</span>{{userName}}<small>{{#if online}}Online{{else}}Offline{{/if}}</small></legend>
+                  <label><span>Perfil do jogador</span><select data-player-binding-profile aria-label="Perfil de {{userName}}"><option value="">Sem perfil vinculado</option>{{#each profiles}}<option value="{{id}}" data-profile-subject="{{match}}" {{#if selected}}selected{{/if}}>{{label}} — {{name}}{{#if unavailable}} (indisponível){{/if}}</option>{{/each}}</select></label>
+                  <label><span>Personagem nas outras matrizes</span><select data-player-binding-subject aria-label="Personagem de {{userName}}"><option value="">Escolher personagem…</option>{{#each subjects}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{label}}{{#if unavailable}} (indisponível){{/if}}</option>{{/each}}</select></label>
+                  <button type="button" data-player-binding-save>Salvar vínculo</button>
+                  <p data-player-binding-hint>{{#if draft}}Escolha pendente. Clique em Salvar vínculo para confirmar.{{else}}{{#if linked}}Vínculo configurado. A leitura do resumo é individual para esse usuário.{{else}}Sem vínculo: esse usuário não recebe avisos pessoais.{{/if}}{{/if}}</p>
+                </fieldset>
+              {{else}}<p>Nenhum usuário disponível neste mundo.</p>{{/each}}
+            </section>
+          </div>
+        </section>

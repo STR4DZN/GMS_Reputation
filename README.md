@@ -1,8 +1,14 @@
 # GMS // Matriz de Reputação
 
-**Versão:** `1.2.0-dev.72`
+**Versão:** `1.2.0-dev.73`
 
 **Foundry VTT:** v13 — mínimo `13.341`, verificado para `13.351`.
+
+Nesta versão: [retratos pela área visível](docs/PORTRAIT_PERFORMANCE.md), [organização da interface](docs/ARCHITECTURE_60.md) e [validação/pacote de revisão](docs/VALIDATION.md).
+
+Para editar a interface, use as [fontes CSS organizadas e os comandos de geração](docs/STYLES.md).
+
+A [organização interna do painel do Mestre e sua validação de compatibilidade](docs/ARCHITECTURE_60.md) descreve os índices por snapshot, consultas do contexto e controles de áreas, vínculos, cadastro, edição, retratos, bulk e limpeza.
 
 Módulo de reputação social com interfaces separadas para Player e Mestre, perfis/matrizes, personagens, retratos, reputação em passos de 0,5, Vínculo, Comunhão, Duplo//Sinc derivado, histórico, Undo/Redo, backup, permissões, sincronização e migração da macro legada.
 

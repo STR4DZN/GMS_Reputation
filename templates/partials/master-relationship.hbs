@@ -1,0 +1,46 @@
+        <section id="gms-workspace-relationship" role="tabpanel" aria-labelledby="gms-nav-relationship" data-master-section-panel="relationship" data-gms-v2-bay="relationship-control-bay" hidden>
+          <header class="gms-master-panel__relationship-heading"><div><small>EDIÇÃO DE REPUTAÇÃO</small><h2>Reputação e protocolos</h2></div><p>Leitura, ajuste e protocolos da relação selecionada.</p></header>
+          {{#if hasSelection}}
+            <div class="gms-master-reputation-console" data-master-relation-console data-gms-v2-role="relationship-console" data-relation-band="{{selection.relationBand}}">
+              <section class="gms-master-reputation-console__readout">
+                <div class="gms-master-reputation-console__identity">{{> "modules/gms-reputation/templates/partials/identity.hbs" selection.identity}}<span data-master-relation-preview>{{selection.relationLabel}}</span><small>{{selection.relationCode}}</small></div>
+                <div class="gms-master-reputation-console__score"><strong data-master-score-preview>{{selection.score}}</strong><span>/ <b data-master-score-limit-preview>{{selection.scoreLimit}}</b></span></div>
+                <div class="gms-master-reputation-console__hearts"><small>LEITURA ATUAL</small>{{> "modules/gms-reputation/templates/partials/heart-track.hbs" selection.hearts}}</div>
+              </section>
+
+              <section class="gms-master-reputation-console__editor">
+                <header><div><small>RÉGUA DE REPUTAÇÃO</small><strong>Ajuste visual</strong></div><span>PASSO 0,5</span></header>
+                <label class="gms-master-reputation-console__range"><span>-10</span><input type="range" data-master-score-range value="{{selection.score}}" step="0.5" min="-10" max="{{selection.scoreLimit}}"><span>+{{selection.scoreLimit}}</span></label>
+                <div class="gms-master-reputation-console__step-row" aria-label="Ajuste rápido de reputação"><button type="button" data-master-score-delta="-1">−1</button><button type="button" data-master-score-delta="-0.5">−0,5</button><button type="button" data-master-score-delta="0.5">+0,5</button><button type="button" data-master-score-delta="1">+1</button></div>
+                <div class="gms-master-reputation-console__direct"><label><span>VALOR EXATO</span><input type="number" data-master-score-input value="{{selection.score}}" step="0.5" min="-10" max="{{selection.scoreLimit}}"></label><button type="button" data-master-apply-score><i class="fa-solid fa-check" aria-hidden="true"></i><span>Aplicar</span></button></div>
+                <label class="gms-master-reputation-console__reason"><span>MOTIVO OPCIONAL</span><input type="text" data-master-reason="single" maxlength="2000" placeholder="Ex.: escolha durante a sessão"></label>
+              </section>
+
+              <section class="gms-master-reputation-console__presets" aria-label="Presets de reputação">
+                <header><small>ATALHOS SEMÂNTICOS</small><strong>Presets</strong></header>
+                <div>{{#each selection.quickPresets}}<button type="button" data-master-score-preset="{{value}}" data-preset-tone="{{tone}}"><span>{{label}}</span><strong>{{value}}</strong></button>{{/each}}</div>
+              </section>
+
+              <section class="gms-master-reputation-console__protocols" aria-label="Protocolos especiais">
+                <header><div><small>PROTOCOLOS ESPECIAIS</small><strong>Vínculo / Comunhão</strong></div><span>Duplo//Sinc é derivado automaticamente</span></header>
+                <div class="gms-master-panel__special-readout" data-special-state="{{selection.special.state}}">
+                  {{#if selection.special.active}}
+                    <img src="{{selection.special.sigilAsset}}" alt="" aria-hidden="true">
+                  {{else}}
+                    <span class="gms-master-panel__special-placeholder" aria-hidden="true"><i class="fa-solid fa-link-slash"></i></span>
+                  {{/if}}
+                  <div><strong>{{#if selection.special.active}}{{selection.special.label}}{{else}}SEM ESTADO ESPECIAL{{/if}}</strong><p>Vínculo e Comunhão expandem o limite para +12; Duplo//Sinc continua derivado dos dois.</p></div>
+                </div>
+                <div class="gms-master-panel__special-editor" data-gms-v2-role="protocol-console">
+                  <label><input type="checkbox" data-master-bond {{#if selection.special.bondActive}}checked{{/if}}><span><b>VÍNCULO</b><small>Enlace especial</small></span></label>
+                  <label><input type="checkbox" data-master-communion {{#if selection.special.communionActive}}checked{{/if}}><span><b>COMUNHÃO</b><small>Sincronia profunda</small></span></label>
+                  <div class="gms-master-panel__protocol-derived" data-active="{{selection.special.dualSyncActive}}" aria-label="Duplo//Sinc derivado automaticamente">
+                    <i aria-hidden="true"></i><span><b>DUPLO//SINC</b><small>Vínculo + Comunhão</small></span>
+                  </div>
+                  <button type="button" data-master-apply-specials><i class="fa-solid fa-link" aria-hidden="true"></i><span>Aplicar protocolos</span></button>
+                </div>
+              </section>
+            </div>
+          {{else}}<p class="is-empty">Selecione um perfil e personagem.</p>{{/if}}
+        </section>
+

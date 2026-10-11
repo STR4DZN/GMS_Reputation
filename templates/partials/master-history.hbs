@@ -1,0 +1,17 @@
+        <section id="gms-workspace-history" role="tabpanel" aria-labelledby="gms-nav-history" data-master-section-panel="history" data-gms-v2-bay="audit-log-bay" hidden>
+          <header><small>REGISTRO DE ALTERAÇÕES</small><h2>Auditoria e histórico</h2></header>
+          {{#if history.length}}
+            <div class="gms-master-panel__history" data-gms-v2-role="audit-timeline">
+              {{#each history}}
+                <article data-history-type="{{type}}">
+                  <time>{{timestampText}}</time>
+                  <div><strong>{{typeLabel}}</strong><small>{{actorLabel}}{{#if transactionId}} // {{transactionId}}{{/if}}</small></div>
+                  {{#if hasChanges}}<div class="gms-history-changes">{{#each changes}}<span><b>{{label}}</b><em>{{before}}</em><i class="fa-solid fa-chevron-right" aria-hidden="true"></i><strong>{{after}}</strong></span>{{/each}}</div>{{/if}}
+                  {{#if reason}}<p>{{reason}}</p>{{/if}}
+                </article>
+              {{/each}}
+            </div>
+          {{else}}<p class="is-empty">Ainda não há eventos registrados para esta seleção.</p>{{/if}}
+        </section>
+
+

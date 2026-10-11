@@ -4,6 +4,7 @@ import { subscribeWorldStateChanges } from "../events/world-sync.js";
 import { PersonalReputationReader, getPersonalReputationStatus } from "../persistence/personal-reputation.js";
 import { loadWorldState } from "../persistence/world-store.js";
 import { notify } from "../apps/application-compat.js";
+import { wirePortraitVisibility } from "../components/portrait-visibility.js";
 
 function escape(value) {
   return String(value ?? "").replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
@@ -87,7 +88,7 @@ function changeHTML(change, { compact = false, message = true } = {}) {
   const previousSpecialText = previousSpecial.active ? previousSpecial.compactLabel || previousSpecial.label : "Sem protocolo especial";
   return `<div class="gms-feedback-change" data-direction="${change.direction}">
     ${change.personal && message ? `<p class="gms-feedback-personal-message">${escape(change.title)}</p>` : ""}
-    <div class="gms-feedback-identity">${change.portrait.src ? `<img src="${escape(change.portrait.src)}" alt="" loading="lazy" style="object-position:${change.portrait.x}% ${change.portrait.y}%">` : '<span class="gms-feedback-avatar" aria-hidden="true">◇</span>'}<div><small>${escape(change.profileName)}</small><strong>${escape(change.subjectName)}</strong></div><b class="gms-feedback-delta">${delta}</b></div>
+    <div class="gms-feedback-identity">${change.portrait.src ? `<img data-gms-portrait-src="${escape(change.portrait.src)}" data-gms-portrait-state="suspended" alt="" style="object-position:${change.portrait.x}% ${change.portrait.y}%">` : '<span class="gms-feedback-avatar" aria-hidden="true">◇</span>'}<div><small>${escape(change.profileName)}</small><strong>${escape(change.subjectName)}</strong></div><b class="gms-feedback-delta">${delta}</b></div>
     <div class="gms-feedback-comparison"><div><small>ANTES</small><strong>${formatReputationScore(before.score)}<em> / ${before.scoreLimit}</em></strong><span>${escape(before.band.label)}</span></div><span class="gms-feedback-arrow" aria-hidden="true">→</span><div style="--band:${after.band.accent}"><small>AGORA</small><strong>${formatReputationScore(after.score)}<em> / ${after.scoreLimit}</em></strong><span>${escape(after.band.label)}</span></div></div>
     ${compact ? "" : `<div class="gms-feedback-tracks"><div>${hearts(before)}</div><div>${hearts(after)}</div></div><div class="gms-feedback-protocol">${escape(previousSpecialText === specialText ? specialText : `${previousSpecialText} → ${specialText}`)}<span>Limite ${after.scoreLimit}</span></div>`}
     <button type="button" class="gms-feedback-inspect" data-feedback-inspect="${escape(change.key)}">Ver relação <span aria-hidden="true">↗</span></button>
@@ -97,6 +98,7 @@ function changeHTML(change, { compact = false, message = true } = {}) {
 const surfaces = new Map();
 let unsubscribe = null;
 let dock = null;
+let portraitVisibility = null;
 const queue = new ReputationFeedbackQueue();
 const timers = new Map();
 const expanded = new Map();
@@ -213,6 +215,7 @@ function renderDock() {
     doc.addEventListener("visibilitychange", onVisibility);
     globalThis.addEventListener?.("resize", renderDock);
     doc.body.append(dock);
+    portraitVisibility = wirePortraitVisibility(dock);
   }
   const container = dock.querySelector("[data-feedback-cards]");
   const queuedKeys = new Set(queue.items.map((item) => item.key));
@@ -241,6 +244,7 @@ function renderDock() {
     if (card.matches?.(":hover") || card.contains(doc.activeElement)) pause(item.key);
   }
   dock.hidden = !visible.length;
+  portraitVisibility?.refresh();
   const waiting = queue.items.length - visible.length;
   dock.querySelector(".gms-feedback-waiting").textContent = waiting > 0 ? `${waiting} atualização(ões) na fila` : "";
 }
@@ -317,5 +321,6 @@ export function unregisterReputationFeedbackSurface(owner) {
   globalThis.document?.removeEventListener?.("visibilitychange", onVisibility);
   globalThis.document?.removeEventListener?.("visibilitychange", onPersonalVisibility);
   globalThis.removeEventListener?.("resize", renderDock);
+  portraitVisibility?.destroy(); portraitVisibility = null;
   dock?.remove(); dock = null;
 }

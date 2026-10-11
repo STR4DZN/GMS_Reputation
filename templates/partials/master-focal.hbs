@@ -1,0 +1,17 @@
+        <section id="gms-workspace-focal" role="tabpanel" aria-labelledby="gms-nav-profiles" data-master-section-panel="focal" data-gms-v2-bay="focal-bay" hidden>
+          <header><small>APRESENTAÇÃO AO JOGADOR</small><h2>Identidade do perfil</h2></header>
+          {{#if focal}}
+            <div class="gms-master-focal-workspace">
+              <div class="gms-master-focal-workspace__preview">{{> "modules/gms-reputation/templates/partials/focal-profile.hbs" focal}}</div>
+              <div class="gms-master-focal-workspace__editor" data-master-focal-editor>
+                <div class="gms-master-focal-workspace__copy">
+                  <label><span>Nome focal</span><input type="text" data-master-focal-name maxlength="240" value="{{focalName}}"></label>
+                  <label><span>Descrição</span><textarea data-master-focal-description maxlength="12000" rows="7" placeholder="Descrição do perfil focal...">{{focalDescription}}</textarea></label>
+                </div>
+                {{> "modules/gms-reputation/templates/partials/portrait-editor.hbs" focalEditor}}
+                <button type="button" class="gms-master-focal-workspace__save" data-master-save-focal><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i><span>Salvar perfil focal</span></button>
+              </div>
+            </div>
+          {{else}}<p class="is-empty">Nenhum perfil selecionado.</p>{{/if}}
+        </section>
+

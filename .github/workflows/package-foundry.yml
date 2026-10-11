@@ -5,6 +5,11 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish the verified version as a GitHub release
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -12,6 +17,8 @@ permissions:
 jobs:
   package:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -20,6 +27,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+
+      - name: Install development dependencies
+        run: npm ci
 
       - name: Run test suite
         shell: bash
@@ -32,19 +42,46 @@ jobs:
           VERSION=$(node -p "require('./module.json').version")
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
-      - name: Build module ZIP
-        shell: bash
-        run: |
-          mkdir -p dist
-          zip -r "dist/GMS_Reputation_${{ steps.version.outputs.version }}.zip" \
-            module.json README.md CHANGELOG.md \
-            assets docs scripts styles templates \
-            -x "*/.DS_Store" "*/Thumbs.db"
+      - name: Build and verify reproducible module ZIP
+        run: python tools/package-module.py
 
       - name: Upload packaged module
         uses: actions/upload-artifact@v4
         with:
           name: GMS_Reputation_${{ steps.version.outputs.version }}
-          path: dist/GMS_Reputation_${{ steps.version.outputs.version }}.zip
+          path: |
+            dist/GMS_Reputation_${{ steps.version.outputs.version }}.zip
+            dist/module.json
+            dist/SHA256SUMS.txt
           if-no-files-found: error
           compression-level: 0
+
+  publish:
+    needs: package
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      ((github.event_name == 'push' && startsWith(github.event.head_commit.message, '[release] ')) ||
+      (github.event_name == 'workflow_dispatch' && inputs.publish))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GMS_REPOSITORY: ${{ github.repository }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout exact release commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download verified package
+        uses: actions/download-artifact@v4
+        with:
+          name: GMS_Reputation_${{ needs.package.outputs.version }}
+          path: release-assets
+      - name: Verify, upload and publish release
+        run: python tools/publish-release.py release-assets

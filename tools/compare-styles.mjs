@@ -1,0 +1,10 @@
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import { removeRepeatedRootDeclarations, styleStructure } from "./style-contracts.mjs";
+if (process.argv.length !== 3) throw new Error("Usage: node tools/compare-styles.mjs /path/to/baseline-checkout");
+const filename = "styles/gms-reputation-59.10.css";
+const before = await readFile(path.join(process.argv[2], filename), "utf8");
+const after = await readFile(new URL(`../${filename}`, import.meta.url), "utf8");
+assert.deepEqual(styleStructure(removeRepeatedRootDeclarations(after).css), styleStructure(removeRepeatedRootDeclarations(before).css));
+console.log(`styles-equivalence: OK | selectors, values, conditions, importance, keyframes and cascade order | ${Buffer.byteLength(before) - Buffer.byteLength(after)} fewer bytes`);

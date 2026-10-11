@@ -1,0 +1,47 @@
+name: Validate Module
+
+on:
+  pull_request:
+  push:
+    branches:
+      - improve/viewport-portraits
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install development dependencies
+        run: npm ci
+      - name: Run Node contracts and unit tests
+        run: npm test
+      - name: Install browser test dependencies
+        run: |
+          python -m pip install -r tests/browser-requirements.txt
+          python -m playwright install --with-deps chromium
+      - name: Run real-template browser integrations
+        run: npm run test:browser
+      - name: Build and verify runtime package
+        run: python tools/package-module.py
+      - name: Upload preview package
+        uses: actions/upload-artifact@v4
+        with:
+          name: GMS_Reputation_review
+          path: dist/GMS_Reputation_*.zip
+          if-no-files-found: error
+          compression-level: 0

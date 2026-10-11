@@ -1,0 +1,15 @@
+    <section class="gms-master-panel__savebar" data-gms-v2-role="save-bus" data-master-save-state="synced" data-pending-count="0" aria-live="polite">
+      <div class="gms-master-panel__save-state">
+        <i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i>
+        <span><strong data-master-save-label>Sincronizado</strong><small data-master-save-pending-count>sem alterações pendentes</small></span>
+      </div>
+      <div class="gms-master-panel__history-actions" aria-label="Desfazer e refazer">
+        <button type="button" data-master-undo {{#if undoRedo.canUndo}}{{else}}disabled{{/if}} title="{{#if undoRedo.undoTarget}}{{undoRedo.undoTarget.label}}{{else}}Nada para desfazer{{/if}}"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i><span>Desfazer</span></button>
+        <button type="button" data-master-redo {{#if undoRedo.canRedo}}{{else}}disabled{{/if}} title="{{#if undoRedo.redoTarget}}{{undoRedo.redoTarget.label}}{{else}}Nada para refazer{{/if}}"><i class="fa-solid fa-rotate-right" aria-hidden="true"></i><span>Refazer</span></button>
+      </div>
+      <div class="gms-master-panel__save-actions">
+        <button type="button" data-master-discard-pending disabled>Descartar</button>
+        <button type="button" data-master-save-now disabled><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i><span>Salvar mudanças</span></button>
+      </div>
+    </section>
+

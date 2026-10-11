@@ -1,4 +1,4 @@
-# Instalação — GMS // Matriz de Reputação 1.2.0-dev.60.1
+# Instalação — GMS // Matriz de Reputação 1.2.0-dev.73
 
 ## Alvo
 
@@ -6,12 +6,21 @@
 - `minimum: 13.341`.
 - `verified: 13.351`.
 
+## Atualização pelo gerenciador de módulos
+
+1. Feche o World e faça um backup dos dados.
+2. Em Configuração → Módulos Adicionais, use Verificar Atualizações/Atualizar no módulo.
+3. Confira a versão `1.2.0-dev.73`, abra o World e faça `Ctrl+F5` em cada cliente.
+4. Entre primeiro como Gamemaster completo e execute as verificações abaixo.
+
+Manifesto de atualização: `https://raw.githubusercontent.com/STR4DZN/GMS_Reputation/main/module.json`.
+
 ## Instalação / atualização manual
 
 1. Faça backup do World/diretório de dados.
 2. Feche o World e pare o processo/servidor Foundry antes de substituir o módulo.
 3. **Remova a pasta antiga `Data/modules/gms-reputation` inteira. Não mescle builds.**
-4. Extraia a nova pasta `gms-reputation` em `Data/modules/`.
+4. Crie `Data/modules/gms-reputation` e extraia o conteúdo do ZIP nessa pasta (o ZIP contém `module.json` na raiz).
 5. Confirme a existência de `Data/modules/gms-reputation/module.json`.
 6. Abra o Foundry e habilite **GMS // Matriz de Reputação**.
 7. Faça hard refresh no navegador (`Ctrl+F5`).
