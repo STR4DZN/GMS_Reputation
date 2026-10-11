@@ -45,17 +45,26 @@ def gh(*arguments, capture=False, check=True):
     return subprocess.run(["gh", *arguments, "--repo", repository], check=check,
                           capture_output=capture, text=True)
 
-def tag_commit():
+def tag_commit(create_missing=False):
     # gh api uses the explicit endpoint rather than the release command's --repo flag.
-    ref = json.loads(subprocess.check_output(["gh", "api", f"repos/{repository}/git/ref/tags/{tag}"], text=True))["object"]
+    endpoint = f"repos/{repository}/git/ref/tags/{tag}"
+    result = subprocess.run(["gh", "api", endpoint], capture_output=True, text=True)
+    if result.returncode and create_missing and "HTTP 404" in result.stderr:
+        # Draft releases do not materialize their tag until publication.
+        # Create it explicitly so the exact commit can be verified beforehand.
+        subprocess.run(["gh", "api", "--method", "POST", f"repos/{repository}/git/refs",
+                        "-f", f"ref=refs/tags/{tag}", "-f", f"sha={commit}"], check=True)
+        result = subprocess.run(["gh", "api", endpoint], capture_output=True, text=True)
+    result.check_returncode()
+    ref = json.loads(result.stdout)["object"]
     while ref["type"] == "tag":
         ref = json.loads(subprocess.check_output(["gh", "api", f"repos/{repository}/git/tags/{ref['sha']}"], text=True))["object"]
     assert ref["type"] == "commit" and ref["sha"] == commit, "Existing tag targets a different commit"
 
 existing = gh("release", "view", tag, "--json", "isDraft", capture=True, check=False)
 if existing.returncode == 0:
-    tag_commit()
     draft = json.loads(existing.stdout)["isDraft"]
+    tag_commit(create_missing=draft)
     if draft:
         gh("release", "upload", tag, *[str(assets / name) for name in names], "--clobber")
         gh("release", "edit", tag, "--notes-file", str(notes), "--title", f"{tag}: Retratos visíveis e interface modular")
@@ -63,7 +72,7 @@ else:
     draft = True
     gh("release", "create", tag, *[str(assets / name) for name in names], "--draft",
        "--target", commit, "--title", f"{tag}: Retratos visíveis e interface modular", "--notes-file", str(notes))
-    tag_commit()
+    tag_commit(create_missing=True)
 
 # Download the remote assets before publication; never replace a published release.
 with tempfile.TemporaryDirectory() as destination:
