@@ -1,59 +1,141 @@
-## 1.2.0-dev.73 — Retratos visíveis e interface modular
+# 2.0.0-dev.13 — Players originais e novo Mestre
 
-Release de desenvolvimento para atualização e validação no Foundry v13. Inclui também todas as melhorias de navegação, Motion e reputação pessoal da dev.72, que ainda não possuía ZIP publicado. Schema 5 e dados existentes preservados.
+Restaura a visão dos Players da dev.70.13, incluindo templates, rótulos, composição focal, cores, efeitos, animações, fichas de detalhes e carregamento de retratos. O único acréscimo é a pesquisa de NPCs por nome/grupo. Remove o sistema de paletas por NPC/grupo, seus controles, presets, persistência, herança e integração com histórico/undo. Campos antigos de paleta deixam de participar do modelo; histórico anterior e dados de reputação são preservados. Mantém o painel novo do Mestre: edição direta, matriz, lotes, protocolos, imagens, histórico e desfazer/refazer. Isola CSS e nomes de animação entre as duas visões. HTML offline e ZIP instalável gerados dos mesmos fontes.
 
-### Conclusão da organização da interface
+# 2.0.0-dev.12 — Desktop, paletas verticais e corações preservados
 
-- Mestre: navegação/seleção, salvamento, histórico, permissões e rollback separados em controladores; arquivo principal com 590 linhas, mantendo a fila e os mapas de rascunhos na aplicação.
-- Template principal reduzido de 456 para 24 linhas com 12 partials pré-carregados pelo Foundry; 270 renderizações com HTML idêntico.
-- Base CSS de 14.917 linhas dividida em 16 fontes contínuas; 24 fontes no total. Removidas 62 declarações repetidas, preservando fallbacks, condições, keyframes, importância e ordem da cascata.
-- Backup e Undo/Redo revalidam rascunhos após confirmação; confirmação antiga de histórico não pode atingir uma transação mais nova. Superfícies descartadas revogam confirmações abertas.
-- 32 arquivos de testes Node, quatro integrações de navegador, comparação de 4.854 contextos e verificações estruturais do CSS. Empacotamento reproduzível verifica dependências, partials e assets; CI do PR executa testes e gera ZIP de revisão.
-- Schema/API existentes preservados. Validação numa instância Foundry v13 continua pendente; release preparada para atualização e teste no Foundry. [Reprodução e limites](docs/VALIDATION.md).
+Editor único com destino explícito NPC/Grupo, 1–5 cores ordenadas do topo à base, herança e prévia. Migra paletas antigas conservando suas cores; normaliza a direção para 180°. Cores da página permanecem exclusivas dos Players. Remove a pintura multicolorida por coração e toda animação das trilhas, inclusive efeitos nos seus contêineres. Corações de 24 px nas trilhas de 10 e 12 posições; gradiente de quantidade no fundo da linha e brilho suave nos scores. Protocolos passam de 156×38 para 104×60 px, antes do score. Textura de painel técnico com juntas e roteamento gravado, sem filtros sobre a mídia. Motion finito fica nos títulos e na navegação. Revisão voltada ao desktop, sem novas adaptações para celular.
 
-### Consultas e índices do contexto do Mestre
+# 2.0.0-dev.11 — Paletas exclusivas dos Players e gradientes completos
 
-- Contexto dividido em cadastro, reputação/focal, navegação/histórico e Sistema; compositor público reduzido de 338 para 71 linhas, preservando as 41 propriedades e sua ordem.
-- Índices de IDs, grupos e posições compartilhados dentro de cada montagem; reconstrução por snapshot preserva rascunhos na mesma revisão, fallback, arquivados, grupos ausentes e rosters legados.
-- Contexto completo mantido para a troca de áreas sem renderização; nenhuma mudança de templates, CSS, schema ou API pública.
-- 4.854 contextos equivalentes antes/depois, 29 arquivos de testes Node e três integrações no navegador passaram; 13 checkpoints dos fluxos de edição/limpeza continuam idênticos. [Estrutura e reprodução](docs/ARCHITECTURE_60.md).
+Remove a aplicação de paletas no painel do Mestre; somente a amostra do editor antecipa as cores dos Players. Cabeçalho, ficha, pesquisa, grupos, lista e aba de NPCs recebem as duas cores da página. Protocolos usam uma única superfície retangular, sem recortes ou molduras sobrepostas. O gradiente de reputação percorre os corações preenchidos, a ficha e o score; uma linha mede a quantidade exata, inclusive meios passos. Relevo industrial estático mais visível e feedback finito em textos, controles e corações, sem animar imagens. Scores longos, como 11,5 e -9,5, cabem na coluna original em telas pequenas. Mantém edição, herança, histórico, busca e mídia original.
 
-### Controles do Mestre por responsabilidade
+# 2.0.0-dev.10 — Paletas por NPC/grupo e protocolos alinhados
 
-- Cadastro, edição de reputação, retratos/focal, operações em massa e limpeza extraídos em controladores próprios, com descarte dos eventos ao renderizar/fechar.
-- Arquivo principal reduzido de 1.180 para 805 linhas; aplicação continua dona dos rascunhos, contexto e fila de salvamento.
-- 13 checkpoints de fluxos reais no navegador idênticos à versão anterior; 28 arquivos de testes Node e três integrações no navegador passaram.
-- Exclusões verificadas com bloqueio, cancelamento, permissão revogada durante a confirmação, remoção de referências e backup. [Estrutura e reprodução](docs/ARCHITECTURE_60.md).
+Protocolos do Player ficam à direita, antes do score. Linhas recebem gradiente horizontal pela faixa e intensidade da reputação. Paletas por NPC e grupo têm herança, duas cores, intensidade, ângulo e tons adaptativos para superfícies, foco e texto. Prévia integrada a rascunhos, salvamento global, histórico, Undo/Redo e proteção de conflito. Salvamentos simultâneos são serializados para preservar a última escolha durante edição de cor. Reflexos nos cards removidos; mídia sem filtros/sobreposições e material anodizado estático nos painéis. Inclui pesquisa, auditoria e testes de cores extremas.
 
-### Divisão do painel do Mestre
+# 2.0.0-dev.9 — Retratos limpos e superfícies de grafite
 
-- Contexto dos templates, definição das áreas e controles dos vínculos de jogadores extraídos para módulos próprios; arquivo principal reduzido de 1.570 para 1.180 linhas.
-- API pública, rascunhos, autorização e persistência preservados; contexto comparado antes/depois em 3.234 cenários.
-- Novos testes de concorrência, falhas e limpeza dos eventos de vínculos, incluindo controles antigos após renderização. [Estrutura e validação](docs/ARCHITECTURE_60.md).
+Remove varredura, sobreposições, filtros e brilho dos quadros de imagens/GIFs dos NPCs. Enquadramento e reprodução nativa preservados; feedback de navegação focal fica no texto. Substitui os desenhos geométricos, curvas e folhagens por granulação fina de grafite, fixa e repetida em escala constante. Imagens têm fundo neutro opaco para a textura não aparecer em transparências ou margens. Estrutura, pesquisa e edição de reputação preservadas.
 
-### Organização dos estilos
+# 2.0.0-dev.8 — Iluminação contida nos cards
 
-- Fontes dos componentes recentes separadas em navegação, feedback, transições, responsividade, acessibilidade, layout, reputação pessoal e visibilidade de retratos.
-- Geração determinística da única folha carregada no Foundry, inicialmente idêntica à anterior; ordem da cascata e caminhos de assets preservados.
-- Verificação automática impede empacotar uma folha desatualizada em relação às fontes. [Como editar e validar](docs/STYLES.md).
+O brilho de hover e foco fica dentro do card, sem invadir o espaço sob o perfil focal. O indicador de teclado acompanha a borda interna e a varredura antiga do retrato, que vazava acima do card, foi removida. Layout, imagens, cores e pesquisa preservados.
 
-### Retratos pela área visível
+# 2.0.0-dev.7 — referência original e pesquisa de NPCs
 
-- Carregamento de retratos restrito à área visível em cards, seletores, perfis, detalhes, editores e avisos.
-- Liberação das fontes fora da área visível, em seções ocultas e em abas do navegador em segundo plano; limpeza ao fechar e renderizar novamente.
-- Enquadramento e comportamento dos renderers/editores públicos preservados; testes de rolagem, troca de fonte e salvamento com 30 personagens e 25 GIFs.
-- [Implementação, comparação e validação](docs/PORTRAIT_PERFORMANCE.md).
+Restabelece o perfil focal com imagem larga 2:1 acima de nome e descrição, conforme a captura original. Acrescenta pesquisa na gaveta dos NPCs dos Players: nome focal, nome do perfil e grupo, com normalização de acentos, múltiplos termos, contagem, limpar, Escape e estado vazio. A consulta acompanha mudanças de perfil sem alterar dados do mundo ou o elenco. Recupera a textura vetorial da referência em um recurso leve e estático, aumenta a presença dos gradientes e do brilho em Player/Mestre e faz a navegação animar o conteúdo focal visível. Animações finitas e movimento reduzido preservados. HTML e ZIP gerados dos mesmos fontes, sem publicação remota.
 
-## 1.2.0-dev.72 — Navegação, Motion e reputação pessoal
+# 2.0.0-dev.6 — nomes alinhados e HTML completo
 
-- Navegação com histórico, atalhos, menu rápido e troca de contexto no Mestre/Player.
-- Layout adaptado à largura da janela, rascunhos preservados e saves serializados.
-- Aba Sistema → Jogadores e perfis para associar usuários por nome, com seleção automática de personagem quando o nome é único.
-- Resumo pessoal das mudanças na linha do personagem nas outras matrizes desde a última visualização, inclusive offline.
-- Comparação completa, agrupamento, paginação e reabertura do último resumo; flags por usuário sem mudar WorldState ou histórico.
-- Entradas escalonadas, movimento reduzido e limpeza de timers/animações ao fechar.
-- Prévia interativa com templates/controladores reais e testes de concorrência, teclado e responsividade.
-- Schema 5, configurações e API pública preservados; manifesto e constantes atualizados para a versão 1.2.0-dev.72.
+Retira o espaço de 26 px reservado à faixa removida; nome e corações ficam separados somente pelo gap original de 6 px. Preserva colunas, quadros de retrato e protocolos. Prévia offline com retratos incorporados, versão visível, cobertura dos 40 ícones ativos e hidratação dos ícones em navegação externa e atualizações parciais. Dados da demonstração separados por versão. Build registra os fontes e recusa HTML desatualizado; empacotamento regenera e verifica a prévia. Testes de nomes longos, imagens e edição executados no HTML entregue.
+
+# 2.0.0-dev.5 — Players originais, superfícies limpas
+
+Mantém a geometria dos Players da dev.70.13 e remove os nomes das faixas de reputação dos cards e dos detalhes. Retira arte botânica, texturas, scanner e o runtime antigo de motion. CSS base consolidado em uma única folha, sem conservar a folha histórica. Degradês suaves, cores semânticas, brilho contido e animações finitas para mouse e teclado; preferência de movimento reduzido respeitada. Retratos, proporção, enquadramento e editor de imagens preservados. Corrigido o recorte do contêiner da prévia em telas estreitas. Layout comparado nas quatro larguras e testes de imagem repetidos. Pacote local, sem publicação remota.
+
+# 2.0.0-dev.4 — dossiês originais, edição direta e GIFs em escala
+
+Navegação superior e elenco em dossiês próximos à dev.70.13. Corações com teclado e meios passos, polaridade explícita, zero, comparação do valor anterior e sigilos originais nos protocolos. Matriz e lotes preservados. Editor de imagem original com calibração numérica, retry, espera de carregamento ao salvar e rascunhos por personagem/perfil. Perfil focal passa a usar o salvamento global, histórico e Undo/Redo completo. Corrigida a exibição de posição zero no histórico e a identificação de GIF incorporado. Testes: 129 GIFs, 1.548 combinações, 512 personagens, 96 NPCs e 49.152 relações. Player e CSS original preservados. Pacote local, sem publicação remota.
+
+# 2.0.0-dev.3 — linguagem dos Players e editor original refinado
+
+O Mestre passa a compartilhar a tipografia, as molduras, as cores de reputação e as trilhas de corações da visão dos Players. Retrato focal e miniaturas reutilizam o componente original, respeitando fit, zoom e posição. Colunas, ações e cabeçalhos alinhados. O editor de imagens recupera a estrutura da dev.70.13: prévia proporcional, link direto separado do FilePicker, enquadramento e calibração; acrescenta feedback de carregamento/erro, identificação do arquivo e centralização. Removidos o editor em duas colunas e os atalhos de fit duplicados. Edição direta, matriz, lotes e motion finito preservados. Player original permanece intacto.
+
+# 2.0.0-dev.2 — gestão direta do Mestre
+
+Remove Visão geral e restaura a apresentação dos Players à dev.70.13. Reputação abre com elenco editável: meios corações, score e protocolos na linha. Matriz permite comparar e ajustar vários NPCs; seleção em lote grava uma transação com backup e Undo/Redo. Rascunhos sobrevivem à navegação e conflitos não sobrescrevem dados silenciosamente. Editor de imagens reorganizado, motion finito do Mestre com preferência de movimento reduzido, formulários por área ativa e renderização limitada. Inclui pesquisa de UX, testes de carga e prévia offline atualizada.
+
+# 2.0.0-dev.1 — Dashboard V2
+
+Base exata: dev.70.13, commit d759e53. Visão geral com indicadores e atividade real, navegação lateral responsiva, acesso direto ao editor por relação e nova apresentação Player/Mestre. Removidos CSS 60.6/60.7/60.8 sem uso, visualizadores estáticos duplicados e comando inalcançável dos testes. Prévia HTML offline com templates e controladores reais, empacotamento reproduzível e teste de navegador. ID, schema 5, API pública e regras de domínio preservados. Pacote local, sem publicação no GitHub.
+
+## 1.2.0-dev.70.13 — Retratos sem achatamento
+
+- Imagens e GIFs usam a proporção original em Player, Mestre, detalhes e miniaturas.
+- Enquadramento padrão mostra a imagem inteira; margens acomodam fontes verticais, quadradas ou panorâmicas.
+- Editor permite escolher imagem inteira ou preenchimento com recorte, ambos sem deformação.
+- Zoom deixa de trocar automaticamente o modo de encaixe ao passar de 100%.
+- Enquadramento é salvo por retrato e preservado na sincronização, no histórico e em undo/redo.
+- Reset retorna à imagem inteira centralizada; carregamento por visibilidade permanece ativo.
+
+## 1.2.0-dev.70.12 — Retratos carregados por visibilidade
+
+- Player, Mestre, navegação e detalhes carregam retratos apenas quando visíveis, com até duas solicitações em andamento por janela.
+- Grupos, seletores e abas recolhidos não antecipam o carregamento de GIFs.
+- Ao sair da área visível, o retrato perde sua fonte ativa; o endereço salvo e o enquadramento permanecem intactos.
+- Retratos voltam a carregar ao reaparecer; GIFs podem reiniciar a animação.
+- Edição de links, reset, troca de perfil e sincronização continuam usando a mídia original.
+- Controladores e solicitações ativas são descartados ao fechar ou renderizar novamente a janela.
+
+## 1.2.0-dev.70.11 — Correção dos formulários de Perfis
+
+- Nome, grupo e disponibilidade do perfil ocupam linhas completas, sem colunas espremidas.
+- Nomes dos grupos ficam visíveis por inteiro, com contagens alinhadas e rolagem própria.
+- Editor focal organiza nome, descrição, imagem e controles em uma coluna legível.
+- Botões de mídia se adaptam à largura do editor, sem quebra de texto letra por letra.
+- Prévia para os Players fica disponível em um bloco recolhível, junto ao editor focal.
+- Criação e edição de grupos seguem a mesma organização dos campos.
+- Em janelas maiores, a biblioteca de grupos permanece visível e tem rolagem própria.
+
+## 1.2.0-dev.70.10 — Motion integrado para Player e Mestre
+
+- Entradas coordenadas e revelação progressiva de cards, perfis, personagens, histórico e limpeza.
+- Navegação de NPCs, grupos, detalhes e seletores recebem transições curtas.
+- Botões e teclado têm trilhos luminosos; campos indicam foco sem alterar seu tamanho.
+- Mudanças de reputação animam valor e corações; protocolos e sincronização têm feedback próprio.
+- Animações nativas canceláveis, com atraso limitado em listas grandes e descarte ao fechar.
+- Preserva proporções do editor, encaixe das mídias e o glitch de identidade.
+- Pesquisa e decisões registradas em `docs/MOTION_DESIGN.md`.
+
+## 1.2.0-dev.70.9 — Proporções do editor e remoção do cabeçalho
+
+- Remove a faixa “MATRIZ SOCIAL” do painel do Mestre e libera sua altura para o conteúdo.
+- Restaura os editores lado a lado nas janelas maiores.
+- Prévia de personagem volta a um quadro compacto quadrado; a prévia focal usa 16:9.
+- Imagens e GIFs nas prévias do Mestre preservam suas proporções, sem achatamento.
+
+## 1.2.0-dev.70.8 — Encaixe das mídias e organização do Mestre
+
+- Imagens e GIFs ocupam o retângulo completo no enquadramento padrão, sem recortes ou faixas laterais; o zoom manual continua disponível.
+- Remove o título redundante da janela Player, mantendo os controles de janela.
+- Unifica tamanhos de texto, espaçamentos, campos e botões em todas as áreas do Mestre.
+- Nomes longos, corações, pontuações, protocolos, listas, histórico e limpeza passam a respeitar a largura real da janela.
+
+## 1.2.0-dev.70.7 — Apps separados para Player e GM
+
+- O app Reputação com coração abre sempre a visão dos Players, inclusive para o GM.
+- Novo app Gerenciar Reputação com escudo abre o painel de edição e fica oculto para Players.
+- O acesso ao app de edição verifica a conta GM e as permissões ao clicar.
+
+## 1.2.0-dev.70.6 — Glitch completo, retratos e app HoloSuite
+
+- Recupera as camadas cromáticas, fragmentos e três faixas animadas do glitch original, desenhadas somente nos caracteres.
+- Imagens e GIFs inteiros no enquadramento padrão; mantém o zoom manual para recortes intencionais.
+- Miniaturas dos NPCs e seletores passam a mostrar a imagem inteira.
+- Remove os dois atalhos dos controles de token e registra um único app Reputação com coração no HoloSuite.
+- O app abre os controles para funções autorizadas e a matriz de leitura para Players, inclusive após alterações de permissão.
+
+## 1.2.0-dev.70.5 — Alinhamento da tabela dos Players
+
+- Alinha retratos, nomes, relações, corações, selos especiais e pontuação.
+- Nomes longos passam a ocupar mais linhas sem recorte; o glitch fica nos caracteres.
+- Desenha o contorno completo dos selos Vínculo, Comunhão e Duplo Sync.
+- A tabela se adapta à largura real da janela, incluindo a estrutura de root part do Foundry.
+
+## 1.2.0-dev.70.4 — Organização e legibilidade da navegação
+
+- Painel de largura estável, com cabeçalho integrado e sem faixa vazia ao lado do conteúdo.
+- Nomes maiores, contagens legíveis e setas para identificar a abertura de cada grupo.
+- Remove textos repetidos e metadados minúsculos da navegação.
+- A aba começa recolhida e preserva o tamanho, o visual e a rolagem da página dev.70.
+
+## 1.2.0-dev.70.3 — Navegação externa dos Players
+
+- Move os grupos e perfis para um painel anexado à esquerda da janela.
+- Restaura a estrutura e os estilos da página dev.70, com a rolagem original.
+- A navegação acompanha movimento, tamanho, foco e minimização da janela e é removida ao fechar.
+- Trocar perfil mantém o painel aberto; a navegação e o dossiê rolam de forma independente.
 
 ## 1.2.0-dev.70 — Restauração da Base 60.3
 

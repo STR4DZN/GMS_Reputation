@@ -1,104 +1,46 @@
-# GMS // Matriz de Reputação
+# GMS // Reputação V2
 
-**Versão:** `1.2.0-dev.73`
+`2.0.0-dev.13` · Foundry VTT V13 · Players da **dev.70.13** + novo painel do Mestre.
 
-**Foundry VTT:** v13 — mínimo `13.341`, verificado para `13.351`.
+A visão dos Players foi restaurada a partir do commit original `d759e53cafa8d764dc8b5407cb059f3a7c69d690`: templates, cards, rótulos, perfil focal, fichas de detalhes, cores, molduras, animações e carregamento de retratos. O único acréscimo nessa visão é a **pesquisa de NPCs**, por nome ou grupo, com busca sem acentos, limpar, Escape e consulta preservada ao trocar de NPC.
 
-Nesta versão: [retratos pela área visível](docs/PORTRAIT_PERFORMANCE.md), [organização da interface](docs/ARCHITECTURE_60.md) e [validação/pacote de revisão](docs/VALIDATION.md).
+O sistema de personalização de cores por NPC/grupo foi removido: não há editor, presets, herança, gravação de paletas ou alteração das cores dos Players por esses campos. Dados antigos de paleta são ignorados. Relações, scores, imagens e registros históricos permanecem preservados.
 
-Para editar a interface, use as [fontes CSS organizadas e os comandos de geração](docs/STYLES.md).
+## Painel do Mestre
 
-A [organização interna do painel do Mestre e sua validação de compatibilidade](docs/ARCHITECTURE_60.md) descreve os índices por snapshot, consultas do contexto e controles de áreas, vínculos, cadastro, edição, retratos, bulk e limpeza.
+- Abre diretamente em **Reputação**, sem Visão geral.
+- **Elenco do NPC:** todos os personagens com corações editáveis na própria linha, meios passos, valor numérico, positivo/negativo/zerar e protocolos.
+- **Matriz completa:** NPCs nas colunas e personagens nas linhas, com paginação e filtros.
+- **Lote:** ajuste vários personagens e NPCs antes de salvar; uma transação permite desfazer/refazer o conjunto.
+- **Imagens:** caminho/link, seletor do Foundry, arrastar, centralizar, imagem inteira/preencher, zoom e feedback de erro. Retrato focal também entra no histórico.
+- Rascunhos, conflitos de edição, permissões, cadastro, arquivamento, histórico, backup, migração e HoloSuite continuam disponíveis.
 
-Módulo de reputação social com interfaces separadas para Player e Mestre, perfis/matrizes, personagens, retratos, reputação em passos de 0,5, Vínculo, Comunhão, Duplo//Sinc derivado, histórico, Undo/Redo, backup, permissões, sincronização e migração da macro legada.
+Os estilos do Mestre e dos Players são isolados. Os nomes de animação da base do Mestre também usam um namespace próprio, para que a janela nova não altere a aparência ou as animações originais dos Players.
 
-## Navegação e feedback de reputação
+## Experimentar e instalar
 
-O Mestre tem voltar/avançar, troca entre personagens e acesso rápido com `Ctrl/⌘ + K`. O Player tem troca rápida de perfil e atalhos para focal/relações. A navegação preserva rascunhos e adapta os painéis à largura da janela.
+Abra **GMS_Reputation_V2_Preview.html** e confirme **2.0.0-dev.13** no topo. A prévia usa templates/controladores reais e dados fictícios; funciona offline. APIs e permissões do Foundry são simuladas nesse arquivo.
 
-Em **Sistema → Jogadores e perfis**, o Mestre vincula cada usuário a um perfil e personagem por nomes, sem digitar IDs. Os avisos pessoais mostram apenas as mudanças desse personagem nas matrizes dos outros desde a última visualização, inclusive após ficar offline: “Sua reputação aumentou com Corvo”. O resumo inclui retrato, score antes/depois, variação, corações e paginação; pode ser reaberto em **Suas atualizações**. O primeiro acesso estabelece a referência. Motion usa transições curtas e respeita movimento reduzido.
+O pacote é local, sem publicação remota. Para atualizar, faça backup do mundo, feche o Foundry e substitua a pasta `Data/modules/gms-reputation` pela pasta do ZIP. Remova a pasta anterior antes de extrair, para não deixar arquivos de paleta antigos. Reabra e use `Ctrl+F5`. Veja [instalação](docs/INSTALLATION.md).
 
-Consulte [uso, pesquisa de Motion e validação](docs/NAVIGATION_MOTION.md). Para a prévia interativa: `npm ci` e `npm run preview`; para a suíte: `npm test`.
+Com HoloSuite Core, coração abre Players e escudo abre Mestre. A API também está disponível:
 
-## Architecture 60 — Fase A
-
-A versão `1.2.0-dev.60.1` inicia uma refatoração **compatibility-first**. O schema persistente continua em **5**, o `MODULE_ID` continua `gms-reputation`, as chaves do WorldState permanecem iguais e nenhuma migração de dados é necessária. A nova arquitetura nasce em paralelo através de Contracts, Compatibility Facade, Repository, Commands, Queries e Golden WorldStates. Consulte `docs/ARCHITECTURE_60.md`.
-
-
-## Atualização pelo Foundry — 59.10
-
-O módulo agora publica os campos oficiais `url`, `manifest` e `download`. O Foundry pode instalar pelo URL do manifesto e consultar novas versões pelo gerenciador de módulos. O asset de cada release deve manter o padrão `GMS_Reputation_<versão>.zip`, usando uma tag `v<versão>`.
-
-Manifesto público: `https://raw.githubusercontent.com/STR4DZN/GMS_Reputation/main/module.json`
-
-
-## Arquitetura 59.0
-
-A versão 59.0 é uma consolidação estrutural. O módulo carrega apenas:
-
-- `scripts/main.js` como entrypoint;
-- `styles/gms-reputation-59.10.css` como autoridade visual única;
-- templates canônicos em `templates/apps` e `templates/partials`;
-- um único Motion System em `scripts/motion/motion-system.js`.
-
-Não existem no runtime ativo Performance Mode, favoritos do Player, seletor de ordenação do Player, densidade compacta, cache-bust por build, CSS de hotfix em cascata ou templates versionados.
-
-## Player
-
-A Matriz do Player é somente leitura e oferece:
-
-- troca de perfil/matriz;
-- perfil focal;
-- organização alinhada em trilho único para perfil focal e relações;
-- cards com retrato, identidade, relação, corações, score e estado especial;
-- página detalhada da relação.
-
-A ordem dos personagens é definida pelo Mestre. Não há busca, favoritos, filtros rápidos ou seletor de ordenação no Player.
-
-## Mestre
-
-O Command Deck possui seis áreas principais:
-
-1. **Perfis** — matrizes, grupos e perfil focal;
-2. **Personagens** — cadastro e retratos;
-3. **Reputação** — score e protocolos;
-4. **Histórico** — auditoria, Undo/Redo;
-5. **Limpeza** — exclusão permanente de Personagens, Perfis e Grupos antigos, exclusiva para Gamemaster completo;
-6. **Sistema** — salvamento, permissões e backup.
-
-
-
-## Gerenciador de Limpeza — 59.10
-
-A página **Limpeza** fica isolada das telas de edição comuns e só aparece para Gamemasters completos. Ela permite remover Personagens, Perfis e Grupos antigos com busca, impacto prévio, desbloqueio explícito e confirmação. Excluir um Personagem remove suas relações/rosters de todos os Perfis; excluir um Perfil preserva os Personagens; excluir um Grupo preserva seus Perfis e os move para **Sem Grupo**. Cada exclusão dispara o backup automático do WorldState antes da gravação.
-
-## Direção visual 59.10 — textura estática + scan ciano
-
-O fundo Botanical Vector permanece como textura estática: botânicos, lattices, ondas, ribbons, selo e molduras não executam animação contínua. A animação ambiental mantida é o **scan vertical de luz**, executado pelo Motion System no Player e no Mestre do topo até o final da Application. Blocos funcionais receberam opacidade um pouco maior e o canal-base rosa foi substituído por ciano; cores semânticas de reputação continuam independentes. Vínculo, Comunhão e Duplo//Sinc receberam organização dedicada no Player e no console do Mestre.
-
-## Direção visual 59.7 — Maximum Detail Fidelity
-
-Player e Mestre compartilham a direção **Botanical Vector** aprovada: fundo noturno em camadas, ornamentação botânica vetorial, linhas simétricas, lattices, selo conceitual e ribbons editoriais. Esses assets são SVG/CSS inline e ficam fora do fluxo de layout (`pointer-events: none`), portanto não substituem controles nem alteram os donos de scroll. O sistema de pétalas/partículas foi removido integralmente na 59.7.
-
-Os corações, a moldura do card, a descrição da relação e o score compartilham explicitamente a mesma cor semântica. Vínculo/Comunhão/Duplo//Sinc ocupam uma coluna própria no card e, quando a janela fica estreita, descem para uma linha segura em vez de serem cortados. A legenda da relação usa métricas fixas para não oscilar nem colidir com os corações.
-
-## Motion
-
-As animações são executadas em qualidade integral. O Motion System coordena boot, scanner, transições, mudança de relação, corações, protocolos, sincronização, acordeões e navegação contextual. Não existe perfil automático de desempenho que desligue essas animações.
-
-## Instalação
-
-Consulte `docs/INSTALLATION.md`. Ao atualizar uma versão antiga, **substitua a pasta inteira do módulo; não mescle arquivos**, para não deixar hotfixes históricos no diretório.
-
-## Testes
-
-Execute:
-
-```bash
-cd tests
-./run-all.sh
+```js
+game.modules.get("gms-reputation").api.playerDashboard.openPlayerDashboard();
+game.modules.get("gms-reputation").api.masterPanel.openMasterPanel();
 ```
 
-A suíte 59.10 valida domínio, persistência, migração, aplicações, layout da Matriz do Player, corações semânticos, fundo botânico-vetorial sem partículas, Motion/CSS, seletores do DOM real e o contrato estrutural consolidado.
+## Desenvolvimento e validação
 
-O visualizador local está em `visualizer/index.html` e usa a mesma folha CSS declarada no `module.json`.
+```bash
+npm ci
+npm run preview:build
+npm test
+PLAYWRIGHT_CHROMIUM_EXECUTABLE=/caminho/para/chromium npm run test:browser
+PLAYWRIGHT_CHROMIUM_EXECUTABLE=/caminho/para/chromium npm run test:gifs
+npm run package
+```
+
+[Restauro e validação da dev.13](docs/PLAYERS_DEV13_ORIGINAL.md) · [Pesquisa do Mestre](docs/MASTER_UX_RESEARCH.md).
+
+A conferência da integração dentro de um mundo Foundry V13 real permanece pendente.

@@ -6,6 +6,7 @@ import { loadWorldState } from "../persistence/world-store.js";
 const HISTORY_TYPE_LABELS = Object.freeze({
   relationship: "Relação alterada",
   portrait: "Retrato alterado",
+  "focal-update": "Perfil focal alterado",
   "subject-archive": "Arquivamento alterado",
   "subject-reorder": "Ordem alterada",
   "subject-active": "Ativação alterada",
@@ -55,6 +56,7 @@ export function portraitSnapshot(portrait = {}) {
   const normalized = normalizePortrait(portrait);
   return Object.freeze({
     src: normalized.src,
+    fit: normalized.fit,
     zoom: normalized.zoom,
     x: normalized.x,
     y: normalized.y
@@ -145,12 +147,24 @@ export function describeHistoryEvent(event = {}) {
     if (beforeSpecial !== afterSpecial) {
       changes.push({ key: "special", label: "Especial", before: beforeSpecial, after: afterSpecial });
     }
+  } else if (event.type === "focal-update") {
+    if (before.name !== after.name) changes.push({ key:"focal-name",label:"Nome focal",before:String(before.name || "—"),after:String(after.name || "—") });
+    if (before.description !== after.description) changes.push({ key:"focal-description",label:"Descrição",before:before.description ? "DEFINIDA" : "VAZIA",after:after.description ? "DEFINIDA" : "VAZIA" });
+    if (JSON.stringify(before.portrait) !== JSON.stringify(after.portrait)) {
+      const a=normalizePortrait(before.portrait),b=normalizePortrait(after.portrait);
+      const label = p => `${p.src ? "Imagem definida" : "Sem imagem"} / ${p.fit === "cover" ? "recorte" : "inteira"} / ${p.zoom}% / ${p.x},${p.y}`;
+      changes.push({ key:"focal-portrait",label:"Retrato focal",before:label(a),after:label(b) });
+    }
   } else if (event.type === "portrait") {
     const sourceChanged = String(before.src || "") !== String(after.src || "");
     if (sourceChanged) changes.push({ key: "portrait-src", label: "Imagem", before: before.src ? "DEFINIDA" : "VAZIA", after: after.src ? "DEFINIDA" : "VAZIA" });
+    if (normalizePortrait(before).fit !== normalizePortrait(after).fit) {
+      const fitLabel = (fit) => fit === "cover" ? "PREENCHER" : "IMAGEM INTEIRA";
+      changes.push({ key: "portrait-fit", label: "Enquadramento", before: fitLabel(before.fit), after: fitLabel(after.fit) });
+    }
     if (Number(before.zoom) !== Number(after.zoom)) changes.push({ key: "portrait-zoom", label: "Zoom", before: `${Number(before.zoom) || 100}%`, after: `${Number(after.zoom) || 100}%` });
     if (Number(before.x) !== Number(after.x) || Number(before.y) !== Number(after.y)) {
-      changes.push({ key: "portrait-position", label: "Posição", before: `${Number(before.x) || 50}/${Number(before.y) || 50}`, after: `${Number(after.x) || 50}/${Number(after.y) || 50}` });
+      changes.push({ key: "portrait-position", label: "Posição", before: `${normalizePortrait(before).x}/${normalizePortrait(before).y}`, after: `${normalizePortrait(after).x}/${normalizePortrait(after).y}` });
     }
   } else if (event.type === "subject-archive") {
     changes.push({ key: "archived", label: "Arquivo", before: before.archived ? "ARQUIVADO" : "ATIVO", after: after.archived ? "ARQUIVADO" : "ATIVO" });

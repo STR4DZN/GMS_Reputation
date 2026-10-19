@@ -1,22 +1,26 @@
 import { MASTER_SAVE_MODE } from "../../constants.js";
-import { normalizeMasterAutoSaveDelay, normalizeMasterSaveMode } from "../../persistence/master-preferences.js";
+import {
+  normalizeMasterAutoSaveDelay,
+  normalizeMasterSaveMode,
+} from "../../persistence/master-preferences.js";
 
 export const SAVE_STATUS = Object.freeze({
   DIRTY: "dirty",
   SAVING: "saving",
   SYNCED: "synced",
-  ERROR: "error"
+  ERROR: "error",
 });
 
 export const SAVE_STATUS_LABEL = Object.freeze({
   [SAVE_STATUS.DIRTY]: "Alterações pendentes",
   [SAVE_STATUS.SAVING]: "Salvando",
   [SAVE_STATUS.SYNCED]: "Sincronizado",
-  [SAVE_STATUS.ERROR]: "Erro"
+  [SAVE_STATUS.ERROR]: "Erro",
 });
 
 function normalizeAction(action) {
-  if (typeof action !== "function") throw new TypeError("Save action must be a function.");
+  if (typeof action !== "function")
+    throw new TypeError("Save action must be a function.");
   return action;
 }
 
@@ -26,11 +30,14 @@ export class MasterSaveController {
     idleDelay = 2,
     automaticDelay = 300,
     onStatus = null,
-    onCommitted = null
+    onCommitted = null,
   } = {}) {
     this.mode = normalizeMasterSaveMode(mode);
     this.idleDelay = normalizeMasterAutoSaveDelay(idleDelay);
-    this.automaticDelay = Math.max(100, Math.min(1500, Math.trunc(Number(automaticDelay) || 300)));
+    this.automaticDelay = Math.max(
+      100,
+      Math.min(1500, Math.trunc(Number(automaticDelay) || 300)),
+    );
     this.onStatus = typeof onStatus === "function" ? onStatus : null;
     this.onCommitted = typeof onCommitted === "function" ? onCommitted : null;
     this.pending = new Map();
@@ -38,15 +45,15 @@ export class MasterSaveController {
     this.status = SAVE_STATUS.SYNCED;
     this.lastError = null;
     this.destroyed = false;
-    this._operationTail = Promise.resolve();
-    this._operations = 0;
-    this._flushPromise = null;
+    this._inFlight = null;
   }
 
-  get hasPending() { return this.pending.size > 0; }
-  get pendingCount() { return this.pending.size; }
-  get isSaving() { return this._operations > 0; }
-  async whenIdle() { while (this.isSaving) await this._operationTail; }
+  get hasPending() {
+    return this.pending.size > 0;
+  }
+  get pendingCount() {
+    return this.pending.size;
+  }
 
   snapshot() {
     return Object.freeze({
@@ -56,14 +63,11 @@ export class MasterSaveController {
       label: SAVE_STATUS_LABEL[this.status],
       pendingCount: this.pendingCount,
       hasPending: this.hasPending,
-      isSaving: this.isSaving,
-      error: this.lastError
+      error: this.lastError,
     });
   }
 
   _emitStatus(status, error = null) {
-    if (this.destroyed) return;
-    if (this.isSaving && status !== SAVE_STATUS.ERROR) status = SAVE_STATUS.SAVING;
     this.status = status;
     this.lastError = error;
     this.onStatus?.(this.snapshot());
@@ -76,10 +80,19 @@ export class MasterSaveController {
 
   _schedule() {
     this._clearTimer();
-    if (!this.hasPending || this.isSaving || this.destroyed || this.mode === MASTER_SAVE_MODE.MANUAL) return;
-    const delay = this.mode === MASTER_SAVE_MODE.IDLE
-      ? Math.round(this.idleDelay * 1000)
-      : this.automaticDelay;
+    if (
+      !this.hasPending ||
+      this.destroyed ||
+      this._inFlight ||
+      this.status === SAVE_STATUS.SAVING ||
+      this.status === SAVE_STATUS.ERROR ||
+      this.mode === MASTER_SAVE_MODE.MANUAL
+    )
+      return;
+    const delay =
+      this.mode === MASTER_SAVE_MODE.IDLE
+        ? Math.round(this.idleDelay * 1000)
+        : this.automaticDelay;
     this.timer = setTimeout(() => {
       this.timer = null;
       this.flush().catch(() => {});
@@ -97,7 +110,18 @@ export class MasterSaveController {
     if (this.destroyed) throw new Error("Save controller is destroyed.");
     const id = String(key || "default");
     this.pending.set(id, normalizeAction(action));
-    this._emitStatus(SAVE_STATUS.DIRTY);
+    this._emitStatus(this._inFlight ? SAVE_STATUS.SAVING : SAVE_STATUS.DIRTY);
+    this._schedule();
+    return this.snapshot();
+  }
+
+  remove(key) {
+    this.pending.delete(String(key));
+    this._clearTimer();
+    if (this.status !== SAVE_STATUS.SAVING)
+      this._emitStatus(
+        this.hasPending ? SAVE_STATUS.DIRTY : SAVE_STATUS.SYNCED,
+      );
     this._schedule();
     return this.snapshot();
   }
@@ -109,26 +133,15 @@ export class MasterSaveController {
     return this.snapshot();
   }
 
-  _serialize(action) {
-    this._operations++;
-    this._emitStatus(SAVE_STATUS.SAVING);
-    const task = this._operationTail.then(() => this.destroyed ? null : action());
-    this._operationTail = task.catch(() => undefined);
-    return task.finally(() => {
-      this._operations--;
-      if (!this.destroyed) {
-        this._emitStatus(this.lastError ? SAVE_STATUS.ERROR : this.hasPending ? SAVE_STATUS.DIRTY : SAVE_STATUS.SYNCED, this.lastError);
-        this._schedule();
-      }
-    });
-  }
-
-  flush() {
-    if (this._flushPromise) return this._flushPromise;
-    if (this.destroyed) return Promise.resolve(null);
-    this._clearTimer();
-    this._flushPromise = this._serialize(() => this._flushBatch()).finally(() => { this._flushPromise = null; });
-    return this._flushPromise;
+  async flush() {
+    if (this._inFlight) return this._inFlight;
+    this._inFlight = this._flushBatch();
+    try {
+      return await this._inFlight;
+    } finally {
+      this._inFlight = null;
+      this._schedule();
+    }
   }
 
   async _flushBatch() {
@@ -150,27 +163,31 @@ export class MasterSaveController {
         completed += 1;
       }
     } catch (error) {
-      if (!this.destroyed) for (const [key, action] of batch.slice(completed)) if (!this.pending.has(key)) this.pending.set(key, action);
+      for (const [key, action] of batch.slice(completed))
+        if (!this.pending.has(key)) this.pending.set(key, action);
       this._emitStatus(SAVE_STATUS.ERROR, error);
       throw error;
     }
 
-    this._emitStatus(SAVE_STATUS.SYNCED);
+    this._emitStatus(this.hasPending ? SAVE_STATUS.DIRTY : SAVE_STATUS.SYNCED);
     try {
-      await this.onCommitted?.(results, batch.map(([key]) => key));
+      await this.onCommitted?.(
+        results,
+        batch.map(([key]) => key),
+      );
     } catch (callbackError) {
-      console.warn("GMS Reputation | Post-save UI callback failed after data was already persisted.", callbackError);
+      console.warn(
+        "GMS Reputation | Post-save UI callback failed after data was already persisted.",
+        callbackError,
+      );
     }
     return results;
   }
 
-  runImmediate(action, { flushPending = true } = {}) {
-    if (this.destroyed) return Promise.resolve(null);
-    return this._serialize(() => this._runImmediate(action, { flushPending }));
-  }
-
-  async _runImmediate(action, { flushPending }) {
-    if (flushPending && this.hasPending) await this._flushBatch();
+  async runImmediate(action, { flushPending = true } = {}) {
+    if (this.destroyed) return null;
+    if (this._inFlight) await this._inFlight;
+    if (flushPending && this.hasPending) await this.flush();
     this._emitStatus(SAVE_STATUS.SAVING);
     let result;
     try {
@@ -183,7 +200,10 @@ export class MasterSaveController {
     try {
       await this.onCommitted?.([result], ["immediate"]);
     } catch (callbackError) {
-      console.warn("GMS Reputation | Post-save UI callback failed after data was already persisted.", callbackError);
+      console.warn(
+        "GMS Reputation | Post-save UI callback failed after data was already persisted.",
+        callbackError,
+      );
     }
     return result;
   }

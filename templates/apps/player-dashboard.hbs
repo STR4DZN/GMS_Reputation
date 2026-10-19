@@ -1,4 +1,4 @@
-<section class="gms-player-dashboard gms-v2-tech-texture" data-gms-visual-generation="3" data-gms-build="59.10" data-gms-navigation="enhanced" data-player-matrix-surface data-profile-id="{{profileId}}" data-world-revision="{{worldRevision}}">
+<section class="gms-player-dashboard gms-v2-tech-texture" data-gms-visual-generation="3" data-gms-build="59.10" data-player-matrix-surface data-profile-id="{{profileId}}" data-world-revision="{{worldRevision}}">
   {{> "modules/gms-reputation/templates/partials/background-art.hbs"}}
   <header class="gms-player-dashboard__header">
     <span class="gms-player-dashboard__vector-field" aria-hidden="true"></span>
@@ -6,63 +6,14 @@
     <span class="gms-player-dashboard__header-notch" aria-hidden="true"></span>
     <span class="gms-player-dashboard__header-circuit" aria-hidden="true"></span>
     <div class="gms-player-dashboard__title" data-gms-v2-role="masthead">
-      <small>GMS // MATRIZ DE REPUTAÇÃO</small>
       <strong>{{#if hasProfile}}{{profileName}}{{else}}SEM PERFIL DISPONÍVEL{{/if}}</strong>
     </div>
     <span class="gms-player-dashboard__live-update" data-player-live-update data-active="false" role="status" aria-live="polite"></span>
   </header>
 
   {{#if hasProfile}}
-    <nav class="gms-player-navigation" aria-label="Navegação da matriz">
-      <div class="gms-player-navigation__perspective"><button type="button" data-player-profile-step="-1" aria-label="Perfil anterior" {{#if navigation.hasPrevious}}{{else}}disabled{{/if}}>‹</button><span><small>PERSPECTIVA</small><strong>{{navigation.position}} / {{profiles.length}}</strong></span><button type="button" data-player-profile-step="1" aria-label="Próximo perfil" {{#if navigation.hasNext}}{{else}}disabled{{/if}}>›</button></div>
-      <div class="gms-player-navigation__anchors"><button type="button" data-player-anchor="focal">Perfil focal</button><button type="button" data-player-anchor="records">Relações <span>{{totalCount}}</span></button></div>
-      <div class="gms-personal-reputation-status"><span data-personal-reputation-label>{{personalReputation.label}}</span><button type="button" data-personal-reputation-open {{#if personalReputation.available}}{{else}}disabled{{/if}}>Suas atualizações</button></div>
-      <button type="button" class="gms-navigation-bar__command" data-navigation-open><span aria-hidden="true">⌕</span><span>Trocar perfil</span><kbd>Ctrl K</kbd></button>
-    </nav>
-  {{/if}}
-
-  {{#if hasProfile}}
     <div class="gms-player-dashboard__scroll" data-gms-v2-role="dossier-scroll">
       <div class="gms-player-dashboard__content" data-player-matrix-content>
-      {{#if showProfileLibrary}}
-        <details class="gms-profile-library" aria-label="Perfis de reputação organizados por grupo" data-player-profile-library>
-          <summary class="gms-profile-library__trigger" aria-label="Abrir lista de perfis">
-            <span class="gms-profile-library__current-thumb">{{#if currentProfile.image}}<img data-gms-portrait-src="{{currentProfile.image}}" data-gms-portrait-state="suspended" alt="">{{else}}<i class="fa-solid fa-user-astronaut" aria-hidden="true"></i>{{/if}}</span>
-            <span class="gms-profile-library__current-copy"><small>PERFIL ATIVO // {{currentProfile.groupName}}</small><strong>{{currentProfile.focalName}}</strong><em>{{currentProfile.name}}</em></span>
-            <span class="gms-profile-library__summary-meta"><small>{{profileGroups.length}} GRUPOS</small><strong>Trocar perfil</strong></span>
-            <i class="fa-solid fa-chevron-down gms-profile-library__chevron" aria-hidden="true"></i>
-          </summary>
-
-          <div class="gms-profile-library__drawer">
-            <header class="gms-profile-library__masthead">
-              <div><small>DIRETÓRIO DE PERSPECTIVAS</small><strong>Perfis e grupos</strong><p>Abra um grupo e escolha a perspectiva desejada.</p></div>
-              <span><i class="fa-solid fa-signal" aria-hidden="true"></i> SINCRONIZADO</span>
-            </header>
-            <div class="gms-profile-library__list" aria-label="Lista de grupos de perfis">
-              {{#each profileGroups}}
-                <details class="gms-profile-library__group" data-profile-group="{{id}}" data-active="{{active}}" {{#if active}}open{{/if}}>
-                  <summary>
-                    <span class="gms-profile-library__group-mark" aria-hidden="true"></span>
-                    <span class="gms-profile-library__group-copy"><strong>{{name}}</strong></span>
-                    <span class="gms-profile-library__group-count"><b>{{count}}</b><small>PERFIS</small></span>
-                    <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
-                  </summary>
-                  <div class="gms-profile-library__profiles">
-                    {{#each profiles}}
-                      <button type="button" class="gms-profile-library__profile" data-player-profile-choice="{{id}}" data-selected="{{selected}}" aria-current="{{#if selected}}true{{else}}false{{/if}}">
-                        <span class="gms-profile-library__thumb">{{#if image}}<img data-gms-portrait-src="{{image}}" data-gms-portrait-state="suspended" alt="">{{else}}<i class="fa-solid fa-user-astronaut" aria-hidden="true"></i>{{/if}}</span>
-                        <span class="gms-profile-library__identity"><strong>{{focalName}}</strong><small>{{name}}</small></span>
-                        {{#if selected}}<span class="gms-profile-library__active">EM USO</span>{{else}}<i class="fa-solid fa-chevron-right" aria-hidden="true"></i>{{/if}}
-                      </button>
-                    {{/each}}
-                  </div>
-                </details>
-              {{/each}}
-            </div>
-          </div>
-        </details>
-      {{/if}}
-
       <section class="gms-player-dashboard__focal" aria-label="Perfil focal" data-gms-v2-role="focal-dossier">
         {{> "modules/gms-reputation/templates/partials/focal-profile.hbs" focal}}
       </section>
@@ -74,13 +25,58 @@
       </section>
       </div>
     </div>
+    {{#if showProfileLibrary}}
+      <div hidden data-player-navigation-mount>
+        <details class="gms-npc-navigation" aria-label="Navegação de NPCs por grupo" data-player-profile-library {{#if profileLibraryOpen}}open{{/if}}>
+          <summary class="gms-npc-navigation__toggle" data-player-navigation-toggle aria-label="Abrir ou recolher navegação de NPCs" title="Navegação de NPCs">
+            <i class="fa-solid fa-users" aria-hidden="true"></i>
+            <span>NPCs</span>
+            <i class="fa-solid fa-chevron-left gms-npc-navigation__arrow" aria-hidden="true"></i>
+          </summary>
+          <div class="gms-npc-navigation__drawer">
+            <header class="gms-npc-navigation__current">
+              <span class="gms-npc-navigation__portrait">{{#if currentProfile.image}}<img data-gms-media-src="{{currentProfile.image}}" data-gms-media-state="dormant" alt="">{{else}}<i class="fa-solid fa-user" aria-hidden="true"></i>{{/if}}</span>
+              <div><span class="gms-npc-navigation__label">Perfil atual</span><strong>{{currentProfile.focalName}}</strong></div>
+            </header>
+            <section class="gms-npc-navigation__search" aria-label="Pesquisa de NPCs">
+              <label for="gms-player-npc-search">Pesquisa</label>
+              <div class="gms-npc-navigation__search-field">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <input id="gms-player-npc-search" type="search" data-player-npc-search placeholder="Nome ou grupo do NPC" autocomplete="off" aria-controls="gms-player-npc-results">
+                <button type="button" data-player-npc-search-clear aria-label="Limpar pesquisa" hidden><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+              </div>
+              <small data-player-npc-search-status role="status" aria-live="polite" aria-atomic="true"></small>
+            </section>
+            <div id="gms-player-npc-results" class="gms-npc-navigation__list" data-player-navigation-list aria-label="Grupos e NPCs">
+              <p class="gms-npc-navigation__search-empty" data-player-npc-search-empty hidden>Nenhum NPC encontrado.</p>
+              {{#each profileGroups}}
+                <details class="gms-npc-navigation__group" data-profile-group="{{id}}" data-player-npc-group-name="{{name}}" data-active="{{active}}" {{#if active}}open{{/if}}>
+                  <summary title="{{name}}">
+                    <span class="gms-npc-navigation__group-name">{{name}}</span>
+                    <span class="gms-npc-navigation__count" aria-label="{{count}} perfis">{{count}}</span>
+                    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                  </summary>
+                  <div class="gms-npc-navigation__profiles">
+                    {{#each profiles}}
+                      <button type="button" class="gms-npc-navigation__profile" data-player-profile-choice="{{id}}" data-player-npc-keywords="{{name}} {{focalName}}" data-selected="{{selected}}" aria-current="{{#if selected}}true{{else}}false{{/if}}" title="{{name}}">
+                        <span class="gms-npc-navigation__portrait">{{#if image}}<img data-gms-media-src="{{image}}" data-gms-media-state="dormant" alt="" loading="lazy">{{else}}<i class="fa-solid fa-user" aria-hidden="true"></i>{{/if}}</span>
+                        <span class="gms-npc-navigation__name">{{focalName}}</span>
+                        {{#if selected}}<i class="fa-solid fa-check gms-npc-navigation__selected" aria-hidden="true"></i>{{/if}}
+                      </button>
+                    {{/each}}
+                  </div>
+                </details>
+              {{/each}}
+            </div>
+          </div>
+        </details>
+      </div>
+    {{/if}}
   {{else}}
     <div class="gms-player-dashboard__empty">
       <i class="fa-solid fa-folder-open" aria-hidden="true"></i>
       <strong>Nenhum perfil social ativo.</strong>
       <p>O Mestre ainda não disponibilizou um perfil de reputação neste mundo.</p>
-      <p data-personal-reputation-label>{{personalReputation.label}}</p>
     </div>
   {{/if}}
-  {{> "modules/gms-reputation/templates/partials/navigation-palette.hbs"}}
 </section>

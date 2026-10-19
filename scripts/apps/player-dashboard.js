@@ -1,5 +1,7 @@
+import { wireVisiblePortraits } from "../components/visible-portraits.js";
+import { wirePlayerNavigationSearch } from "./player-navigation-search.js";
+import { mountPlayerProfileNavigation } from "./player-profile-navigation.js";
 import { MODULE_ID } from "../constants.js";
-import { wirePortraitVisibility } from "../components/portrait-visibility.js";
 import { loadWorldState } from "../persistence/world-store.js";
 import { buildPlayerCardContext } from "../components/player-card.js";
 import { buildFocalProfileContext } from "../components/focal-profile.js";
@@ -8,15 +10,11 @@ import { HandlebarsApplicationV2, appElement, destroyListeners, listen, notify, 
 import { subscribeWorldStateChanges } from "../events/world-sync.js";
 import { wireApplicationAccessibility } from "../utils/accessibility.js";
 import { wireMotionSystem } from "../motion/motion-system.js";
-import { adjacentId, wireNavigationPalette } from "../ui/navigation.js";
-import { getPersonalReputationStatus } from "../persistence/personal-reputation.js";
-import { registerReputationFeedbackSurface, unregisterReputationFeedbackSurface } from "../ui/reputation-feedback.js";
 
 const CARD_TEMPLATE = `modules/${MODULE_ID}/templates/partials/player-card.hbs`;
 const FOCAL_TEMPLATE = `modules/${MODULE_ID}/templates/partials/focal-profile.hbs`;
 
 const PARTIALS = [
-  `modules/${MODULE_ID}/templates/partials/navigation-palette.hbs`,
   `modules/${MODULE_ID}/templates/partials/background-art.hbs`,
   `modules/${MODULE_ID}/templates/partials/portrait-frame.hbs`,
   `modules/${MODULE_ID}/templates/partials/identity.hbs`,
@@ -48,13 +46,11 @@ export function buildPlayerDashboardContext({ profileId = "", state = loadWorldS
   const profile = resolveProfile(state, profileId);
   if (!profile) {
     return Object.freeze({
-      personalReputation: getPersonalReputationStatus(state),
       hasProfile: false,
       profiles: Object.freeze([]),
       profileGroups: Object.freeze([]),
       profileId: "",
-      cards: Object.freeze([]),
-      navigationKind: "player", navigationPlaceholder: "Nome do perfil…"
+      cards: Object.freeze([])
     });
   }
 
@@ -120,14 +116,9 @@ export function buildPlayerDashboardContext({ profileId = "", state = loadWorldS
   }
 
   return Object.freeze({
-    personalReputation: getPersonalReputationStatus(state),
     hasProfile: true,
     profileId: profile.id,
     profileName: profile.name,
-    navigationKind: "player",
-    navigationPlaceholder: "Nome do perfil ou grupo…",
-    navigation: Object.freeze({ position: profiles.findIndex((item) => item.id === profile.id) + 1,
-      hasPrevious: Boolean(adjacentId(profiles, profile.id, -1)), hasNext: Boolean(adjacentId(profiles, profile.id, 1)) }),
     currentProfile: Object.freeze({
       id: profile.id,
       name: String(profile.name || "Perfil"),
@@ -169,8 +160,8 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
     classes: ["gms-reputation-app", "gms-reputation-player-dashboard-app"],
     tag: "section",
     window: {
-      title: "GMS // Matriz de Reputação",
-      icon: "fa-solid fa-people-arrows-left-right",
+      title: "",
+      icon: "",
       resizable: true
     },
     position: { width: 940, height: 780 }
@@ -194,17 +185,22 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
     this._liveUpdateTimer = null;
     this._accessibilityController = null;
     this._motionController = null;
+    this._mediaController = null;
     this._motionBooted = false;
     this._pendingMotion = "";
+    this._profileLibraryOpen = false;
+    this._focusProfileLibrary = false;
     this._navigationController = null;
-    this._syncTail = Promise.resolve();
+    this._navigationScrollTop = 0;
+    this._navigationQuery = "";
+    this._navigationSearch = null;
   }
 
   async _prepareContext(options) {
     const parent = await super._prepareContext?.(options) ?? {};
     const context = buildPlayerDashboardContext({ profileId: this.profileId });
     if (context.hasProfile) this.profileId = context.profileId;
-    return { ...parent, ...context };
+    return { ...parent, ...context, profileLibraryOpen: this._profileLibraryOpen };
   }
 
   _wireCardDetails(root) {
@@ -251,10 +247,7 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
     if (!replacement) return false;
     const previousSpecial = existing.querySelector?.("[data-special-state]")?.dataset?.specialState ?? "standard";
     const nextSpecial = replacement.querySelector?.("[data-special-state]")?.dataset?.specialState ?? "standard";
-    const focused = existing.contains(globalThis.document?.activeElement);
-    const identityFocused = globalThis.document?.activeElement?.matches?.(".gms-reputation-identity");
     existing.replaceWith(replacement);
-    if (focused) (identityFocused ? replacement.querySelector(".gms-reputation-identity") : replacement)?.focus?.({ preventScroll: true });
     this._motionController?.relationship?.(replacement);
     if (previousSpecial !== nextSpecial) this._motionController?.protocol?.(replacement.querySelector?.("[data-special-state]"));
     return true;
@@ -277,15 +270,49 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
       listen(this._listeners, button, "click", async () => {
         const nextId = String(button.dataset.playerProfileChoice || "");
         if (!nextId || nextId === this.profileId) return;
-        await this._navigateProfile(nextId);
+        this.profileId = nextId;
+        this._focusProfileLibrary = true;
+        this._pendingMotion = "profile";
+        await this.render({ force: true });
       });
+    }
+  }
+
+  _wireProfileLibrary(root) {
+    const library = root?.querySelector?.("[data-player-profile-library]");
+    const tab = library?.querySelector?.("[data-player-navigation-toggle]");
+    if (!library || !tab) return;
+    listen(this._listeners, library, "toggle", () => {
+      this._profileLibraryOpen = library.open;
+    });
+    listen(this._listeners, root, "keydown", (event) => {
+      if (event.key !== "Escape" || !library.open || event.defaultPrevented) return;
+      event.preventDefault();
+      event.stopPropagation();
+      const search = library.querySelector("[data-player-npc-search]");
+      if (search?.value && event.target === search) { this._navigationSearch?.clear(); return; }
+      library.open = false;
+      this._profileLibraryOpen = false;
+      tab.focus?.();
+    }, { capture: true });
+    if (this._focusProfileLibrary) {
+      const selected = library.querySelector("[data-player-profile-choice][data-selected='true']") ?? tab;
+      selected.focus?.({ preventScroll: true });
+      selected.scrollIntoView?.({ block: "nearest" });
+      this._focusProfileLibrary = false;
     }
   }
 
   _wireProfileGroupAccordion(root) {
     const groups = [...(root?.querySelectorAll?.("[data-player-profile-library] details[data-profile-group]") ?? [])];
     for (const group of groups) {
+      let wasOpen = group.open;
       listen(this._listeners, group, "toggle", () => {
+        // Native details also emit toggle after being inserted already open.
+        // That initial event must not reset the retained navigation scroll.
+        if (group.closest("[data-player-profile-library]")?.dataset.gmsNpcSearchActive === "true") { wasOpen = group.open; return; }
+        if (group.open === wasOpen) return;
+        wasOpen = group.open;
         if (!group.open) return;
         for (const other of groups) {
           if (other !== group && other.open) other.open = false;
@@ -296,26 +323,19 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
   }
 
   _rewireCardSurface(root) {
-    this._portraitVisibilityController?.refresh?.();
     destroyListeners(this._cardListeners);
     this._wireCardDetails(root);
-    this._accessibilityController?.destroy?.();
     this._accessibilityController = wireApplicationAccessibility(root, { onEscape: () => this.close() });
   }
 
-  _onWorldStateSync(event) {
-    this._syncTail = this._syncTail.then(() => this._applyWorldStateSync(event)).catch((error) => console.warn("GMS Reputation | Player sync failed.", error));
-    return this._syncTail;
-  }
-
-  async _applyWorldStateSync(event) {
+  async _onWorldStateSync(event) {
     if (!this.rendered) return;
     const root = appElement(this);
     if (!root) return;
     const { state, diff } = event;
     const profile = state.profiles?.[this.profileId];
     if (!profile || profile.active === false || profile.archived) { await this.render({ force: true }); return; }
-    if (diff.changedGroupIds?.length || diff.structuralSubjectIds.length || diff.structuralProfileIds?.length || diff.focalProfileIds.some((id) => id !== this.profileId)) { await this.render({ force: true }); return; }
+    if (diff.changedGroupIds?.length || diff.structuralSubjectIds.length || diff.structuralProfileIds?.includes?.(this.profileId)) { await this.render({ force: true }); return; }
     const ids = new Set(diff.changedSubjectIds);
     for (const change of diff.relationshipChanges) if (change.profileId === this.profileId) ids.add(change.subjectId);
     if (ids.size > 8) { await this.render({ force: true }); return; }
@@ -330,60 +350,51 @@ export class ReputationPlayerDashboardApplication extends HandlebarsApplicationV
     this._motionController?.sync?.(root.querySelector?.("[data-player-live-update]") ?? root);
   }
 
-  async _navigateProfile(profileId) {
-    if (!profileId || profileId === this.profileId) return;
-    this.profileId = String(profileId);
-    this._pendingMotion = "profile";
-    await this.render({ force: true });
-  }
-
-  _wireNavigation(root, context) {
-    this._navigationController = wireNavigationPalette(root, {
-      items: context.profileGroups.flatMap((group) => group.profiles.map((profile) => ({ label: profile.focalName,
-        description: `${profile.name} · ${group.name}`, group: "PERFIS", target: { profileId: profile.id } }))),
-      onNavigate: ({ profileId }) => this._navigateProfile(profileId)
-    });
-    for (const button of root.querySelectorAll("[data-player-profile-step]")) listen(this._listeners, button, "click", () => {
-      const id = adjacentId(context.profiles, this.profileId, Number(button.dataset.playerProfileStep));
-      if (id) return this._navigateProfile(id);
-    });
-    for (const button of root.querySelectorAll("[data-player-anchor]")) listen(this._listeners, button, "click", () => {
-      const target = root.querySelector(`.gms-player-dashboard__${button.dataset.playerAnchor}`);
-      target?.scrollIntoView?.({ block: "start", behavior: globalThis.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ? "auto" : "smooth" });
-    });
-  }
-
   _onRender(context, options) {
     super._onRender?.(context, options);
-    this._portraitVisibilityController?.destroy?.();
-    this._portraitVisibilityController = null;
+    this._mediaController?.destroy?.();
+    this._mediaController = null;
     destroyListeners(this._listeners);
     destroyListeners(this._cardListeners);
     this._accessibilityController?.destroy?.();
     this._accessibilityController = null;
     this._motionController?.destroy?.();
     this._motionController = null;
-    this._navigationController?.destroy?.();
 
     const root = appElement(this);
     if (!root) return;
-    this._motionController = wireMotionSystem(root, { kind: "player", boot: !this._motionBooted });
+    this._navigationSearch?.destroy();
+    this._navigationSearch = null;
+    this._navigationScrollTop = this._navigationController?.scrollTop ?? this._navigationScrollTop;
+    this._navigationController?.destroy();
+    this._navigationController = mountPlayerProfileNavigation(this, root.querySelector?.("[data-player-profile-library]"));
+    const navigation = this._navigationController?.element;
+    if (navigation) {
+      this._navigationSearch = wirePlayerNavigationSearch(navigation.querySelector('[data-player-profile-library]'), {
+        query: this._navigationQuery,
+        onChange: query => { this._navigationQuery = query; },
+        onVisibilityChange: () => this._mediaController?.refresh?.()
+      });
+      const list = navigation.querySelector("[data-player-navigation-list]");
+      if (list) list.scrollTop = this._navigationScrollTop;
+      this._wireProfileLibrary(navigation);
+      this._wireProfileChoices(navigation);
+      this._wireProfileGroupAccordion(navigation);
+    }
+    this._mediaController = wireVisiblePortraits(root, { companion: navigation });
+    this._motionController = wireMotionSystem(root, { kind: "player", boot: !this._motionBooted, companion: navigation });
     this._motionBooted = true;
     if (this._pendingMotion) { this._motionController.transition?.(this._pendingMotion, root); this._pendingMotion = ""; }
-    this._wireProfileChoices(root);
-    this._wireProfileGroupAccordion(root);
     this._wireCardDetails(root);
-    this._wireNavigation(root, context);
-    this._accessibilityController = wireApplicationAccessibility(root, { onEscape: () => this.close() });
-    this._motionController?.reveal?.(root.querySelectorAll("[data-player-card]"));
-    this._portraitVisibilityController = wirePortraitVisibility(root);
-    registerReputationFeedbackSurface(this, { kind: "player", profileId: () => this.profileId, onInspect: openSubjectDetail });
   }
 
   async _onClose(options) {
-    this._portraitVisibilityController?.destroy?.(); this._portraitVisibilityController = null;
-    this._navigationController?.destroy?.(); this._navigationController = null;
-    unregisterReputationFeedbackSurface(this);
+    this._navigationSearch?.destroy();
+    this._navigationSearch = null;
+    this._mediaController?.destroy?.();
+    this._mediaController = null;
+    this._navigationController?.destroy();
+    this._navigationController = null;
     destroyListeners(this._listeners);
     destroyListeners(this._cardListeners);
     this._accessibilityController?.destroy?.();

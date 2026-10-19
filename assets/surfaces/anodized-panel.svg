@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+ <!-- Etched routing and panel joints, aligned to a 32 px service grid. -->
+ <path d="M0 32h256M0 96h256M0 160h256M0 224h256M32 0v256M96 0v256M160 0v256M224 0v256" stroke="#c8dfec" stroke-opacity=".035" stroke-width=".6"/>
+ <path d="M0 .5h220l35 35v184M.5 256V36L36 .5" stroke="#b4d6e3" stroke-opacity=".17" stroke-width=".7"/>
+ <path d="M0 82h44l14-14h36m162 108h-40l-16 16h-38M128 0v20l12 12h36" stroke="#c8dfec" stroke-opacity=".12" stroke-width=".8"/>
+ <path d="M8 8h12M8 8v12M248 248h-12M248 248v-12" stroke="#d7edf2" stroke-opacity=".23" stroke-width="1"/>
+ <path d="M12 126h4m-4 4h4m-4 4h4m224-8h4m-4 4h4m-4 4h4" stroke="#bcd8e1" stroke-opacity=".17"/>
+ <path d="M92 66h4v4h-4zM158 190h4v4h-4zM176 30h4v4h-4z" stroke="#c8dfec" stroke-opacity=".23" stroke-width=".8"/>
+ <path d="M56 242h32m4 0h8m4 0h4" stroke="#d7edf2" stroke-opacity=".16"/>
+</svg>

@@ -261,6 +261,13 @@ export async function updateFocalProfile(profileId, patch = {}) {
     profile.metadata ??= {};
     profile.metadata.updatedAt = now;
     profile.metadata.updatedBy = globalThis.game?.user?.id ?? null;
+    appendHistoryEvent(draft, {
+      profileId: id,
+      type: "focal-update",
+      before: current,
+      after: next,
+      transactionId: createTransactionId("focal-update")
+    });
   });
 }
 

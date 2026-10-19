@@ -8,6 +8,7 @@ import { loadWorldState, mutateWorldState } from "../persistence/world-store.js"
 const REVERSIBLE_TYPES = new Set([
   "relationship",
   "portrait",
+  "focal-update",
   "subject-archive",
   "subject-active",
   "subject-reorder",
@@ -130,6 +131,13 @@ function applyRelationshipSnapshot(draft, event, snapshot, now) {
 function applyEventSnapshot(draft, event, snapshot, now) {
   const subjectId = String(event.subjectId || "");
   if (event.type === "relationship") return applyRelationshipSnapshot(draft, event, snapshot, now);
+  if (event.type === "focal-update") {
+    const profile = draft.profiles?.[String(event.profileId || "")];
+    if (!profile) throw new Error(`Undo target focal profile is unavailable: ${event.profileId}.`);
+    profile.focal = { name:String(snapshot?.name || profile.name || ""), description:String(snapshot?.description || ""), portrait:normalizePortrait(snapshot?.portrait) };
+    touch(profile,now);
+    return;
+  }
   if (["profile-update", "profile-reorder", "profile-group"].includes(event.type)) {
     const profileId = String(event.profileId || "");
     const profile = draft.profiles?.[profileId];
@@ -172,14 +180,11 @@ function applyEventSnapshot(draft, event, snapshot, now) {
   touch(subject, now);
 }
 
-async function applyHistoryDirection(direction = "undo", { reason = "", expectedTransactionId } = {}) {
+async function applyHistoryDirection(direction = "undo", { reason = "" } = {}) {
   if (!canUser(globalThis.game?.user, MODULE_CAPABILITY.HISTORY)) throw new Error("Sua função atual não possui permissão para desfazer/refazer alterações.");
   const state = loadWorldState();
   const stack = buildUndoRedoState(state);
   const target = direction === "redo" ? stack.redoTarget : stack.undoTarget;
-  if (expectedTransactionId !== undefined && String(expectedTransactionId) !== target?.transactionId) {
-    throw new Error("O histórico mudou durante a confirmação. Revise a alteração atual antes de desfazer/refazer.");
-  }
   if (!target?.transactionId) return state;
   const targetId = target.transactionId;
   const events = state.history.filter((event) => REVERSIBLE_TYPES.has(event?.type) && transactionKey(event) === targetId);
@@ -212,12 +217,14 @@ async function applyHistoryDirection(direction = "undo", { reason = "", expected
 }
 
 export async function undoLastTransaction(options = {}) {
-  if (options.expectedTransactionId === undefined && !buildUndoRedoState().canUndo) return loadWorldState();
+  const stack = buildUndoRedoState();
+  if (!stack.canUndo) return loadWorldState();
   return applyHistoryDirection("undo", options);
 }
 
 export async function redoLastTransaction(options = {}) {
-  if (options.expectedTransactionId === undefined && !buildUndoRedoState().canRedo) return loadWorldState();
+  const stack = buildUndoRedoState();
+  if (!stack.canRedo) return loadWorldState();
   return applyHistoryDirection("redo", options);
 }
 

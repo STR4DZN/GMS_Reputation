@@ -1,3 +1,5 @@
+import { wireChoreography } from "./choreography.js";
+
 const DEFAULT_SCANNER_MS = 3200;
 const AMBIENT_SCANNER_MS = 5000;
 const AMBIENT_FIRST_DELAY_MS = 900;
@@ -10,7 +12,7 @@ function now() {
 
 
 export function shouldRunMotion(root) {
-  return Boolean(root) && !globalThis.document?.hidden && !globalThis.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+  return Boolean(root);
 }
 
 function shellHeight(root) {
@@ -37,11 +39,13 @@ function createScanner(root) {
 
 /**
  * Controller central de Motion Design.
- * Mantém o estilo visual e respeita movimento reduzido e abas em segundo plano.
+ * Runtime 59.10: motion em qualidade integral. Nenhum perfil automático,
+ * preferência do sistema ou visibilityState pode desativar os disparos de animação.
  */
 export function wireMotionSystem(root, {
   kind = "generic",
   boot = true,
+  companion = null,
   scannerDuration = DEFAULT_SCANNER_MS
 } = {}) {
   if (!root?.querySelectorAll) {
@@ -53,7 +57,6 @@ export function wireMotionSystem(root, {
       relationship() { return false; },
       protocol() { return false; },
       sync() { return false; },
-      reveal() { return false; },
       destroy() {}
     });
   }
@@ -62,13 +65,15 @@ export function wireMotionSystem(root, {
   root.dataset.gmsMotionSystem = "59";
   root.dataset.gmsRuntimeBuild = "59.10";
   const timers = new Set();
-  const animations = new Set();
-  const frames = new Set();
   const removers = [];
   const cooldowns = new Map();
+  const classCleanups = new Map();
+  let scannerCleanup = null;
   let scanner = root.querySelector?.("[data-motion-scanner='true']") ?? null;
   let observer = null;
   let destroyed = false;
+  const choreography = wireChoreography(root);
+  const companionChoreography = companion?.querySelectorAll ? wireChoreography(companion) : null;
 
   const later = (fn, delay) => {
     const id = setTimeout(() => {
@@ -80,7 +85,7 @@ export function wireMotionSystem(root, {
   };
 
   const canTrigger = (key, cooldown = 0) => {
-    if (!shouldRunMotion(root)) return false;
+    if (destroyed || !shouldRunMotion(root)) return false;
     const stamp = now();
     const previous = Number(cooldowns.get(key) || 0);
     if (cooldown > 0 && stamp - previous < cooldown) return false;
@@ -90,35 +95,37 @@ export function wireMotionSystem(root, {
 
   const restartClass = (target, className, duration, { key = className, cooldown = 0 } = {}) => {
     if (!target?.classList || !canTrigger(key, cooldown)) return false;
+    const cleanups = classCleanups.get(target) ?? new Map();
+    classCleanups.set(target, cleanups);
+    const previous = cleanups.get(className);
+    if (previous != null) { clearTimeout(previous); timers.delete(previous); }
     target.classList.remove(className);
-    const activate = () => {
-      if (destroyed || !shouldRunMotion(root)) return;
-      target.classList.add(className);
-      later(() => target?.classList?.remove?.(className), duration);
-    };
-    if (typeof globalThis.requestAnimationFrame === "function") {
-      const id = requestAnimationFrame(() => { frames.delete(id); activate(); });
-      frames.add(id);
-    } else activate();
+    try { void target.offsetWidth; } catch (_error) { /* browser may not expose layout in tests */ }
+    target.classList.add(className);
+    cleanups.set(className, later(() => {
+      target?.classList?.remove?.(className);
+      cleanups.delete(className);
+      if (!cleanups.size) classCleanups.delete(target);
+    }, duration));
     return true;
   };
 
   const scan = (variant = "boot", { cooldown = 900, force = false, duration = scannerDuration } = {}) => {
     if (!force && !canTrigger(`scanner:${variant}`, cooldown)) return false;
-    if (!shouldRunMotion(root)) return false;
+    if (destroyed || !shouldRunMotion(root)) return false;
     scanner ??= createScanner(root);
     if (!scanner) return false;
     const resolvedDuration = Math.max(800, Number(duration) || DEFAULT_SCANNER_MS);
     scanner.dataset.variant = String(variant || "boot");
-    const distance = `${shellHeight(root)}px`;
-    scanner.style?.setProperty?.("--gms54-scan-distance", distance);
+    scanner.style?.setProperty?.("--gms54-scan-distance", `${shellHeight(root)}px`);
     scanner.style?.setProperty?.("--gms54-scan-duration", `${resolvedDuration}ms`);
-    scanner.style?.setProperty?.("--gms57-scan-distance", distance);
+    scanner.style?.setProperty?.("--gms57-scan-distance", `${shellHeight(root)}px`);
     scanner.style?.setProperty?.("--gms57-scan-duration", `${resolvedDuration}ms`);
     scanner.classList.remove("is-active");
     try { void scanner.offsetWidth; } catch (_error) { /* no-op */ }
     scanner.classList.add("is-active");
-    later(() => scanner?.classList?.remove?.("is-active"), resolvedDuration + 160);
+    if (scannerCleanup != null) { clearTimeout(scannerCleanup); timers.delete(scannerCleanup); }
+    scannerCleanup = later(() => { scanner?.classList?.remove?.("is-active"); scannerCleanup = null; }, resolvedDuration + 160);
     return true;
   };
 
@@ -132,6 +139,8 @@ export function wireMotionSystem(root, {
   const bootShell = () => {
     if (!canTrigger("shell:boot", 0)) return false;
     restartClass(root, "is-gms-motion-booting", 1380, { key: "shell:boot-class" });
+    choreography.enter();
+    companionChoreography?.enter();
     later(() => scan("boot", { cooldown: 0, force: true }), BOOT_DELAY_MS);
     return true;
   };
@@ -143,10 +152,12 @@ export function wireMotionSystem(root, {
       cooldown: 120
     });
     if (changed && ["profile", "detail"].includes(normalized)) scan(normalized, { cooldown: 850 });
+    if (changed) choreography.transition(normalized, target);
     return changed;
   };
 
   const section = (panel, order = 0) => {
+    choreography.section(panel, order);
     panel?.style?.setProperty?.("--gms57-section-delay", `${Math.max(0, Number(order) || 0) * 72}ms`);
     return restartClass(panel, "is-gms-motion-section-change", 660 + (Math.max(0, Number(order) || 0) * 80), {
       key: `section:${panel?.dataset?.masterSectionPanel || "unknown"}`,
@@ -167,41 +178,22 @@ export function wireMotionSystem(root, {
       key: "heart-change",
       cooldown: 95
     });
+    if (changed) choreography.relationship(target);
     return changed;
   };
 
-  const protocol = (target) => restartClass(target, "is-gms-motion-protocol-change", 820, {
-    key: "protocol",
-    cooldown: 180
-  });
+  const protocol = (target) => {
+    const changed = restartClass(target, "is-gms-motion-protocol-change", 820, { key: "protocol", cooldown: 180 });
+    if (changed) choreography.protocol(target);
+    return changed;
+  };
 
   const sync = (target = root) => {
     const changed = restartClass(target, "is-gms-motion-sync", 760, { key: "sync", cooldown: 600 });
     if (changed) scan("sync", { cooldown: 1400 });
+    if (changed) choreography.sync();
     return changed;
   };
-
-  const reveal = (elements) => {
-    if (!shouldRunMotion(root)) return false;
-    for (const [index, element] of [...elements].slice(0, 12).entries()) {
-      if (!element?.animate) continue;
-      const animation = element.animate([{ opacity: 0, transform: "translateY(8px)" }, { opacity: 1, transform: "translateY(0)" }], { duration: 260, delay: index * 24, easing: "cubic-bezier(.2,.8,.2,1)" });
-      animations.add(animation);
-      animation.finished?.then(() => animations.delete(animation), () => animations.delete(animation));
-    }
-    return true;
-  };
-
-  const stopAnimations = () => {
-    if (shouldRunMotion(root)) return;
-    for (const animation of animations) animation.cancel();
-    animations.clear();
-    scanner?.classList?.remove?.("is-active");
-  };
-  const media = globalThis.matchMedia?.("(prefers-reduced-motion: reduce)");
-  media?.addEventListener?.("change", stopAnimations);
-  globalThis.document?.addEventListener?.("visibilitychange", stopAnimations);
-  removers.push(() => media?.removeEventListener?.("change", stopAnimations), () => globalThis.document?.removeEventListener?.("visibilitychange", stopAnimations));
 
   const wireAccordions = () => {
     for (const details of root.querySelectorAll("details")) {
@@ -241,7 +233,6 @@ export function wireMotionSystem(root, {
 
   return Object.freeze({
     scan,
-    reveal,
     boot: bootShell,
     transition,
     section,
@@ -250,12 +241,14 @@ export function wireMotionSystem(root, {
     sync,
     destroy() {
       destroyed = true;
-      for (const animation of animations) animation.cancel();
-      animations.clear();
-      for (const id of frames) globalThis.cancelAnimationFrame?.(id);
-      frames.clear();
+      choreography.destroy();
+      companionChoreography?.destroy();
       for (const id of timers) clearTimeout(id);
       timers.clear();
+      for (const [target, cleanups] of classCleanups) {
+        for (const className of cleanups.keys()) target.classList?.remove?.(className);
+      }
+      classCleanups.clear();
       for (const remove of removers.splice(0)) {
         try { remove(); } catch (_error) { /* no-op */ }
       }

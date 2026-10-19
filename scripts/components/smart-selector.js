@@ -1,5 +1,4 @@
-import { setPortraitImageSource } from "./portrait-visibility.js";
-
+import { setPortraitImageSource } from "./visible-portraits.js";
 function text(value, fallback = "") {
   const normalized = String(value ?? "").trim();
   return normalized || fallback;
@@ -131,8 +130,7 @@ export function wireSmartSelector(root, {
     const primary = option.querySelector("[data-smart-selector-option-primary]")?.textContent?.trim() ?? "";
     const secondary = option.querySelector("[data-smart-selector-option-secondary]")?.textContent?.trim() ?? "";
     const badge = option.querySelector("[data-smart-selector-option-badge]")?.textContent?.trim() ?? "";
-    const optionImage = option.querySelector("img");
-    const image = optionImage?.getAttribute?.("data-gms-portrait-src") ?? optionImage?.getAttribute?.("src") ?? "";
+    const image = option.querySelector("img")?.getAttribute?.("data-gms-media-src") ?? option.querySelector("img")?.getAttribute?.("src") ?? "";
     if (currentPrimary) currentPrimary.textContent = primary;
     if (currentSecondary) { currentSecondary.textContent = secondary; currentSecondary.hidden = !secondary; }
     if (currentBadge) { currentBadge.textContent = badge; currentBadge.hidden = !badge; }
