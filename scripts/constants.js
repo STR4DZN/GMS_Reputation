@@ -1,6 +1,6 @@
 export const MODULE_ID = "gms-reputation";
 export const MODULE_TITLE = "GMS // Reputação V2";
-export const MODULE_VERSION = "2.0.0-dev.13";
+export const MODULE_VERSION = "2.0.0-dev.16";
 export const DATA_SCHEMA_VERSION = 5;
 
 export const SETTINGS = Object.freeze({

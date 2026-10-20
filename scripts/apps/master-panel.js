@@ -1,3 +1,4 @@
+import { portraitEquals } from "../core/portrait.js";
 import { wireVisiblePortraits } from "../components/master-visible-portraits.js";
 import {
   createWorkbenchState,
@@ -1351,6 +1352,11 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
     const subjectId = this.subjectId;
     const draftKey = `subject:${subjectId}`;
     const queuePortrait = (snapshot) => {
+      if (this._saveController.status !== "saving" && portraitEquals(snapshot, loadWorldState().subjects[subjectId]?.portrait)) {
+        this._portraitDrafts.delete(draftKey);
+        this._saveController.remove(`portrait:${subjectId}`);
+        return;
+      }
       const entry = { portrait: snapshot };
       this._portraitDrafts.set(draftKey, entry);
       const controller = this._portraitController;
@@ -1368,6 +1374,7 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
     };
     this._portraitController = wirePortraitEditor(editorRoot, {
       initialPortrait: draftPortrait,
+      savedPortrait: loadWorldState().subjects[subjectId]?.portrait,
       verifiedSource: loadWorldState().subjects[subjectId]?.portrait?.src || "",
       onChange: (portrait) => {
         draftPortrait = portrait;
@@ -1408,6 +1415,14 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
         ),
         portrait: { ...draftPortrait },
       };
+      const registered = loadWorldState().profiles[profileId]?.focal;
+      if (this._saveController.status !== "saving" && registered &&
+          entry.name === registered.name && entry.description === registered.description &&
+          portraitEquals(entry.portrait, registered.portrait)) {
+        this._portraitDrafts.delete(draftKey);
+        this._saveController.remove(draftKey);
+        return;
+      }
       const controller = this._focalPortraitController;
       this._portraitDrafts.set(draftKey, entry);
       this._saveController.queue(draftKey, async () => {
@@ -1420,6 +1435,7 @@ export class ReputationMasterPanelApplication extends HandlebarsApplicationV2 {
     };
     this._focalPortraitController = wirePortraitEditor(editorRoot, {
       initialPortrait: draftPortrait,
+      savedPortrait: loadWorldState().profiles[profileId]?.focal?.portrait,
       verifiedSource:
         loadWorldState().profiles[profileId]?.focal?.portrait?.src || "",
       onChange: (portrait) => {

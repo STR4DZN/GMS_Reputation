@@ -1,0 +1,71 @@
+/* Master-only previews model the original Player frames. No Player selector changes. */
+#gms-reputation-master-panel#gms-reputation-master-panel {
+  & .gms-reputation-portrait-editor { container: gms-portrait-editor / inline-size; }
+  & .gms-portrait-preview-heading { display:flex; align-items:center; justify-content:space-between; gap:14px; }
+  & .gms-portrait-preview-heading strong { color:#e8edf3; font-size:14px; }
+  & .gms-portrait-preview-heading button { width:auto; min-height:34px; padding:6px 12px; white-space:nowrap; }
+  & .gms-portrait-preview-grid { display:grid; grid-template-columns: minmax(210px, 1fr) minmax(150px, .8fr); gap:16px; align-items:center; padding:16px; border:1px solid #303d49; background:#060b11; }
+  & .gms-portrait-preview-grid figure { margin:0; min-width:0; display:grid; justify-items:center; gap:12px; }
+  & .gms-portrait-preview-grid figcaption { display:grid; gap:4px; text-align:center; max-width:240px; }
+  & .gms-portrait-preview-grid figcaption strong { color:#e5edf4; font-size:12px; }
+  & .gms-portrait-preview-grid figcaption span { color:#aab8c5; font-size:11px; line-height:1.45; }
+  & [data-portrait-preview], & [data-portrait-secondary-preview] {
+    position:relative !important; display:block !important; flex:none !important;
+    width:192px !important; height:240px !important; min-width:192px !important; min-height:240px !important;
+    max-width:none !important; max-height:none !important; aspect-ratio:auto !important;
+    margin:0 !important; padding:0 !important; border:0 !important; border-radius:0 !important;
+    clip-path:none !important; overflow:hidden !important; background:#05090e !important;
+    box-shadow:none !important; box-sizing:border-box !important; touch-action:none;
+  }
+  & [data-portrait-preview] > .gms-reputation-portrait,
+  & [data-portrait-secondary-preview] > .gms-reputation-portrait {
+    position:absolute !important; inset:0 auto auto 0 !important;
+    display:block !important; width:64px !important; height:80px !important;
+    min-width:64px !important; min-height:80px !important; max-width:none !important; max-height:none !important;
+    margin:0 !important; padding:0 !important; aspect-ratio:auto !important;
+    transform:scale(3) !important; transform-origin:0 0 !important;
+    border:1px solid #3a444c !important; border-radius:0 !important; clip-path:none !important;
+    box-sizing:border-box !important; overflow:hidden !important; background:#05090e !important;
+    filter:none !important; box-shadow:none !important;
+  }
+  & [data-portrait-secondary-preview] { width:132px !important; height:132px !important; min-width:132px !important; min-height:132px !important; }
+  & [data-portrait-secondary-preview] > .gms-reputation-portrait { width:132px !important; height:132px !important; min-width:132px !important; min-height:132px !important; transform:none !important; }
+  & [data-portrait-kind="focal"] [data-portrait-preview] { width:230px !important; height:235px !important; min-width:230px !important; min-height:235px !important; }
+  & [data-portrait-kind="focal"] [data-portrait-preview] > .gms-reputation-portrait { width:92px !important; height:94px !important; min-width:92px !important; min-height:94px !important; transform:scale(2.5) !important; }
+  & [data-portrait-kind="focal"] [data-portrait-secondary-preview] { width:68px !important; height:68px !important; min-width:68px !important; min-height:68px !important; }
+  & [data-portrait-kind="focal"] [data-portrait-secondary-preview] > .gms-reputation-portrait { width:34px !important; height:34px !important; min-width:34px !important; min-height:34px !important; transform:scale(2) !important; }
+  & .gms-portrait-preview-grid .gms-reputation-portrait__image {
+    position:absolute !important; inset:0 !important; display:block !important;
+    width:100% !important; height:100% !important; min-width:0 !important; min-height:0 !important; max-width:none !important; max-height:none !important;
+    object-fit:contain !important;
+    object-position:var(--gms-portrait-x,50%) var(--gms-portrait-y,50%) !important;
+    transform:scale(var(--gms-portrait-zoom,1)) !important;
+    transform-origin:var(--gms-portrait-x,50%) var(--gms-portrait-y,50%) !important;
+    filter:none !important; box-shadow:none !important; animation:none !important; transition:none !important;
+  }
+  & .gms-portrait-preview-grid [hidden] { display:none !important; }
+  & .gms-portrait-preview-grid .is-fit-cover > .gms-reputation-portrait__image { object-fit:cover !important; }
+  & [data-portrait-preview]:focus-visible { outline:2px solid #70d9e6 !important; outline-offset:4px; }
+  & [data-portrait-preview][data-drop-active="true"] { outline:2px solid #70d9e6 !important; outline-offset:4px; }
+  & .gms-portrait-original {
+    width:min(1100px,88vw); max-width:88vw; max-height:88vh; margin:auto;
+    padding:18px; border:1px solid #506677; background:#080e15; color:#e8eff5;
+    box-shadow:0 20px 80px #000b; overflow:auto;
+  }
+  & .gms-portrait-original::backdrop { background:#000c; }
+  & .gms-portrait-original header { display:flex; align-items:center; justify-content:space-between; gap:16px; padding-bottom:14px; }
+  & .gms-portrait-original header strong { color:#e8eff5; font-size:16px; }
+  & .gms-portrait-original header button { width:auto; padding:8px 18px; min-height:34px; }
+  & .gms-portrait-original__stage { display:grid; place-items:center; min-height:120px; background:#03070c; }
+  & .gms-portrait-original__image {
+    position:static !important; display:block !important; width:100% !important; height:65vh !important;
+    min-width:0 !important; min-height:0 !important; max-width:100% !important; max-height:65vh !important;
+    margin:0 auto !important; padding:0 !important; border:0 !important;
+    object-fit:contain !important; transform:none !important; clip-path:none !important; filter:none !important;
+  }
+  & .gms-portrait-original p { margin:12px 0 0; color:#aab8c5; font-size:12px; line-height:1.5; }
+}
+
+@container gms-portrait-editor (max-width: 450px) {
+  #gms-reputation-master-panel#gms-reputation-master-panel .gms-portrait-preview-grid { grid-template-columns:minmax(0,1fr); }
+}

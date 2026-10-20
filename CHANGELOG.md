@@ -1,3 +1,11 @@
+# 2.0.0-dev.16 — Retorno à dev.14 com correção pontual do Mestre
+
+Desfaz a reorganização da dev.15, restaurando a base dev.14 e mantendo integralmente o editor de imagens dessa versão. A correção limita-se à janela do Mestre: a lista de NPCs não comprime as linhas dentro da rolagem e a grade de NPCs/perfis usa duas colunas explícitas em janelas desktop, evitando que os nomes de grupos fiquem espremidos. Preserva larguras de navegação, tipografia, dossiês, corações, protocolos, Players e todos os arquivos de imagem/customização da dev.14.
+
+# 2.0.0-dev.14 — Editor com prévias reais e preservação das imagens
+
+Editor do Mestre com quadro real da tabela dos Players (64×80) ampliado para ajuste e prévia da ficha detalhada; perfil focal com prévia dos Players e miniatura do menu. Visualização modal do original completo, com GIF nativo e sem reenquadramento. Botão para repor o ajuste registrado. Preserva imagens/enquadramentos existentes ao abrir, navegar e salvar sem alterações; a mesma fonte não reseta posição, fit ou zoom. Novas fontes começam em Imagem inteira, centralizadas a 100%. Entradas aceitam décimos e atualizam apenas a propriedade editada. Recarregamento de falhas atende ambas as prévias. Layout e controladores originais dos Players mantidos.
+
 # 2.0.0-dev.13 — Players originais e novo Mestre
 
 Restaura a visão dos Players da dev.70.13, incluindo templates, rótulos, composição focal, cores, efeitos, animações, fichas de detalhes e carregamento de retratos. O único acréscimo é a pesquisa de NPCs por nome/grupo. Remove o sistema de paletas por NPC/grupo, seus controles, presets, persistência, herança e integração com histórico/undo. Campos antigos de paleta deixam de participar do modelo; histórico anterior e dados de reputação são preservados. Mantém o painel novo do Mestre: edição direta, matriz, lotes, protocolos, imagens, histórico e desfazer/refazer. Isola CSS e nomes de animação entre as duas visões. HTML offline e ZIP instalável gerados dos mesmos fontes.

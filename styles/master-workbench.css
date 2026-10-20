@@ -1594,7 +1594,7 @@
   #gms-reputation-master-panel.gms-reputation-app,
   .gms-master-panel[data-dashboard-v2]
 ) {
-  & .gms-portrait-feedback-actions:has(> button[hidden]) {
+  & .gms-portrait-feedback-actions:not(:has(> button:not([hidden]))) {
     display: none;
   }
   & .gms-portrait-numeric {
@@ -1702,5 +1702,50 @@
   }
   & .gms-master-panel__savebar button {
     font-size: 11px !important;
+  }
+}
+
+/* Pontual: janela do Mestre no módulo. Mantém dimensões e composição dev.14.
+   Uma lista flex não comprime a altura das linhas para caber no max-height;
+   o conteúdo excedente pertence à rolagem, nunca à linha do NPC seguinte. */
+@container gms-master-panel (min-width:821px) {
+#gms-reputation-master-panel.gms-reputation-master-panel-app {
+  & .gms-workbench-npc-list {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  & .gms-workbench-npc-list > button {
+    flex: 0 0 auto;
+    height: auto !important;
+    max-height: none !important;
+    margin: 0 !important;
+  }
+  & .gms-workbench-npc-list > button > span:nth-child(2) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  & .gms-workbench-npc-list strong {
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  & .gms-workbench-npc-list small {
+    display: block;
+    white-space: nowrap !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+}
+/* A grade e as posições históricas de subjects/profile/focal precisam usar
+   as mesmas duas colunas; impedir a coluna implícita que espremia os grupos.
+   O seletor aponta para a aplicação do Mestre, com ou sem wrapper do PART. */
+@container gms-master-panel (min-width:1000px) {
+  #gms-reputation-master-panel.gms-reputation-master-panel-app[data-master-active-section="profiles"] .gms-master-panel__content {
+    grid-template-columns: minmax(300px, 1.1fr) minmax(0, 1fr) !important;
   }
 }

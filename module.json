@@ -2,7 +2,7 @@
   "id": "gms-reputation",
   "title": "GMS // Reputação V2",
   "description": "Players originais da dev.70.13 com pesquisa de NPCs; novo painel do Mestre com edição direta, matriz, lotes, imagens, histórico e desfazer. Sem sistema de paletas por NPC ou grupo.",
-  "version": "2.0.0-dev.13",
+  "version": "2.0.0-dev.16",
   "authors": [
     {
       "name": "GMS"
@@ -10,7 +10,7 @@
   ],
   "url": "https://github.com/STR4DZN/GMS_Reputation",
   "manifest": "https://raw.githubusercontent.com/STR4DZN/GMS_Reputation/main/module.json",
-  "download": "https://github.com/STR4DZN/GMS_Reputation/releases/download/v2.0.0-dev.13/GMS_Reputation_2.0.0-dev.13.zip",
+  "download": "https://github.com/STR4DZN/GMS_Reputation/releases/download/v2.0.0-dev.16/GMS_Reputation_2.0.0-dev.16.zip",
   "compatibility": {
     "minimum": "13.341",
     "verified": "13.351"
@@ -22,7 +22,8 @@
     "styles/player-original-scoped.css",
     "styles/master-foundation.css",
     "styles/master-workbench.css",
-    "styles/player-npc-search.css"
+    "styles/player-npc-search.css",
+    "styles/master-portrait-editor.css"
   ],
   "socket": true,
   "relationships": {

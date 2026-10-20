@@ -1,11 +1,23 @@
 <section class="gms-reputation-portrait-editor" data-portrait-editor data-portrait-kind="{{kind}}">
-  <div class="gms-reputation-portrait-editor__preview" data-portrait-preview tabindex="0" aria-label="Pré-visualização e posicionamento do retrato">
-    {{> "modules/gms-reputation/templates/partials/portrait-frame.hbs"}}
+  <div class="gms-portrait-preview-heading"><strong>Enquadramento nos Players</strong><button type="button" data-action="openPortraitOriginal" {{#if hasImage}}{{else}}disabled{{/if}}>Ampliar original</button></div>
+  <div class="gms-portrait-preview-grid">
+    <figure>
+      <div class="gms-reputation-portrait-editor__preview" data-portrait-preview tabindex="0" aria-label="Prévia do quadro real dos Players. Arraste ou use as setas para posicionar.">
+        {{> "modules/gms-reputation/templates/partials/portrait-frame.hbs"}}
+      </div>
+      <figcaption><strong>{{previewTitle}}</strong><span>Quadro real ampliado para ajustar.</span></figcaption>
+    </figure>
+    <figure>
+      <div class="gms-portrait-secondary-preview" data-portrait-secondary-preview aria-label="{{secondaryTitle}}">
+        {{> "modules/gms-reputation/templates/partials/portrait-frame.hbs" secondaryPreview}}
+      </div>
+      <figcaption><strong>{{secondaryTitle}}</strong><span>{{secondaryHint}}</span></figcaption>
+    </figure>
   </div>
 
   <p class="gms-portrait-source-label" data-portrait-source-label>{{sourceName}}</p>
   <p data-portrait-status role="status" aria-live="polite">{{#if hasImage}}Ajuste o enquadramento e salve.{{else}}Escolha uma imagem no Foundry ou use um link direto.{{/if}}</p>
-  <div class="gms-portrait-feedback-actions"><button type="button" data-action="retryPortrait" hidden>Tentar carregar novamente</button></div>
+  <div class="gms-portrait-feedback-actions"><button type="button" data-action="restoreSavedPortrait" disabled>Repor ajuste salvo</button><button type="button" data-action="retryPortrait" hidden>Tentar carregar novamente</button></div>
   <div class="gms-reputation-portrait-editor__source">
     <input type="hidden" name="portraitSrc" value="{{portrait.src}}">
     <label>
@@ -22,15 +34,15 @@
     <select name="portraitFit" aria-label="Enquadramento da imagem">
       {{#each fitOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
     </select>
-    <small>Imagem inteira preserva a proporção e pode deixar margens. Preencher ocupa o quadro com recorte, sem deformar.</small>
+    <small data-portrait-framing-hint>Imagem inteira preserva a proporção e pode deixar margens. Preencher ocupa o quadro com recorte, sem deformar.</small>
   </label>
 
   <div class="gms-reputation-portrait-editor__calibration">
-    <label><span>Zoom</span><span class="gms-portrait-numeric"><input type="number" data-portrait-number="zoom" min="50" max="300" step="1" value="{{portrait.zoom}}" aria-label="Zoom em porcentagem">%</span><input type="range" name="portraitZoom" min="50" max="300" step="1" value="{{portrait.zoom}}"></label>
-    <label><span>Horizontal</span><span class="gms-portrait-numeric"><input type="number" data-portrait-number="x" min="0" max="100" step="1" value="{{portrait.x}}" aria-label="Posição horizontal em porcentagem">%</span><input type="range" name="portraitX" min="0" max="100" step="1" value="{{portrait.x}}"></label>
-    <label><span>Vertical</span><span class="gms-portrait-numeric"><input type="number" data-portrait-number="y" min="0" max="100" step="1" value="{{portrait.y}}" aria-label="Posição vertical em porcentagem">%</span><input type="range" name="portraitY" min="0" max="100" step="1" value="{{portrait.y}}"></label>
+    <label><span>Zoom</span><span class="gms-portrait-numeric"><input type="number" data-portrait-number="zoom" min="50" max="300" step="0.1" value="{{portrait.zoom}}" aria-label="Zoom em porcentagem">%</span><input type="range" name="portraitZoom" min="50" max="300" step="0.1" value="{{portrait.zoom}}"></label>
+    <label><span>Horizontal</span><span class="gms-portrait-numeric"><input type="number" data-portrait-number="x" min="0" max="100" step="0.1" value="{{portrait.x}}" aria-label="Posição horizontal em porcentagem">%</span><input type="range" name="portraitX" min="0" max="100" step="0.1" value="{{portrait.x}}"></label>
+    <label><span>Vertical</span><span class="gms-portrait-numeric"><input type="number" data-portrait-number="y" min="0" max="100" step="0.1" value="{{portrait.y}}" aria-label="Posição vertical em porcentagem">%</span><input type="range" name="portraitY" min="0" max="100" step="0.1" value="{{portrait.y}}"></label>
     <div class="gms-portrait-frame-actions"><button type="button" data-action="centerPortrait">Centralizar</button><button type="button" data-action="resetPortraitFrame">Restaurar enquadramento</button></div>
   </div>
 
-  <p class="gms-reputation-portrait-editor__hint">Zoom amplia sem distorcer. Acima de 100%, partes da imagem podem sair do quadro. Arraste a prévia para reposicionar; setas movem 1%, Shift + seta move 5%. Resetar volta à imagem inteira, centralizada em 100%.</p>
+  <p class="gms-reputation-portrait-editor__hint">Zoom amplia sem distorcer. Acima de 100%, partes da imagem podem sair do quadro. Arraste a prévia para reposicionar; setas movem 1%, Shift + seta move 5%. Restaurar enquadramento mostra a imagem inteira em 100%. “Repor ajuste salvo” recupera os valores registrados antes da edição.</p>
 </section>

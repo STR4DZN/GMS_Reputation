@@ -1,3 +1,4 @@
+import { openPortraitOriginal } from "./portrait-original-viewer.js";
 import { setPortraitImageSource } from "./master-visible-portraits.js";
 import {
   dragPortraitFrame,
@@ -7,6 +8,7 @@ import {
   normalizePortraitSource,
   resetPortraitFrame,
   portraitSourceMeta,
+  portraitEquals,
 } from "../core/portrait.js";
 import { openPortraitFilePicker } from "../utils/file-picker.js";
 
@@ -54,6 +56,18 @@ export function buildPortraitEditorContext(
       }),
     ]),
     hasImage: Boolean(normalized.src),
+    isFocal: kind === "focal",
+    previewTitle: kind === "focal" ? "Perfil dos Players" : "Tabela dos Players",
+    secondaryTitle: kind === "focal" ? "Menu de NPCs" : "Ficha ampliada",
+    secondaryHint: kind === "focal" ? "A miniatura do menu mostra sempre a imagem inteira." : "O mesmo ajuste dentro do quadro quadrado da ficha.",
+    secondaryPreview: Object.freeze({
+      portrait: kind === "focal" ? normalizePortrait({...normalized,fit:"contain",zoom:100,x:50,y:50}) : normalized,
+      portraitScale: kind === "focal" ? 1 : normalized.zoom / 100,
+      kind: kind === "focal" ? "focal" : "subject",
+      fit: kind === "focal" ? "contain" : normalized.fit,
+      hasImage: Boolean(normalized.src), source: portraitSourceMeta(normalized.src),
+      label: kind === "focal" ? "Imagem inteira no menu de NPCs" : "Enquadramento na ficha ampliada",
+    }),
     source: portraitSourceMeta(normalized.src),
     remoteUrl,
     sourceName: portraitSourceName(normalized.src),
@@ -69,6 +83,7 @@ export function wirePortraitEditor(
   {
     initialPortrait = {},
     verifiedSource = initialPortrait?.src || "",
+    savedPortrait = initialPortrait,
     onChange = null,
     onError = null,
     filePicker = openPortraitFilePicker,
@@ -84,7 +99,11 @@ export function wirePortraitEditor(
   const xInput = root.querySelector('input[name="portraitX"]');
   const yInput = root.querySelector('input[name="portraitY"]');
   const preview = root.querySelector("[data-portrait-preview]");
-  const frame = root.querySelector(".gms-reputation-portrait");
+  const frames = [...root.querySelectorAll(".gms-reputation-portrait")];
+  const frame = frames[0];
+  const originalButton = root.querySelector('[data-action="openPortraitOriginal"]');
+  const restoreButton = root.querySelector('[data-action="restoreSavedPortrait"]');
+  let originalView = null;
   const listeners = [];
   let portrait = normalizePortrait(
     initialPortrait?.src !== undefined
@@ -97,6 +116,7 @@ export function wirePortraitEditor(
           y: yInput?.value,
         },
   );
+  const registered = normalizePortrait(savedPortrait?.src !== undefined ? savedPortrait : portrait);
   const verifiedSources = new Set([String(verifiedSource || "")]);
   const pendingVerifications = new Set();
   let dragState = null;
@@ -117,7 +137,7 @@ export function wirePortraitEditor(
     listeners.push(() => target.removeEventListener(type, handler, options));
   };
 
-  const ensurePreviewNodes = () => {
+  const ensurePreviewNodes = (frame) => {
     if (!frame) return {};
     let image = frame.querySelector(".gms-reputation-portrait__image");
     let placeholder = frame.querySelector(
@@ -147,6 +167,7 @@ export function wirePortraitEditor(
   };
 
   const apply = (next, { emitChange = true } = {}) => {
+    const previous = portrait;
     portrait = normalizePortrait(next);
     if (sourceInput) sourceInput.value = portrait.src;
     if (urlInput && urlInput !== globalThis.document?.activeElement) {
@@ -164,39 +185,54 @@ export function wirePortraitEditor(
     for (const number of root.querySelectorAll("[data-portrait-number]"))
       number.value = String(portrait[number.dataset.portraitNumber]);
 
-    if (frame) {
+    if (originalButton) originalButton.disabled = !portrait.src;
+    if (restoreButton) restoreButton.disabled = portraitEquals(portrait, registered);
+    const framingHint = root.querySelector("[data-portrait-framing-hint]");
+    if (framingHint) framingHint.textContent = portrait.fit === "cover"
+      ? "Preencher ocupa o quadro sem deformar; as bordas podem ser cortadas."
+      : portrait.zoom > 100 ? "Imagem inteira com zoom acima de 100%: parte da imagem pode sair do quadro."
+      : "Imagem inteira preserva a proporção; margens são normais quando o formato é diferente do quadro.";
+    for (const frame of frames) {
+      const effective = frame.closest("[data-portrait-secondary-preview]") && root.dataset.portraitKind === "focal"
+        ? {...portrait, fit:"contain", zoom:100, x:50, y:50} : portrait;
       const meta = portraitSourceMeta(portrait.src);
       frame.dataset.portraitSource = meta.origin;
       frame.dataset.portraitAnimated = String(meta.animated);
       frame.style.setProperty(
         "--gms-portrait-zoom",
-        String(portrait.zoom / 100),
+        String(effective.zoom / 100),
       );
-      frame.style.setProperty("--gms-portrait-x", `${portrait.x}%`);
-      frame.style.setProperty("--gms-portrait-y", `${portrait.y}%`);
+      frame.style.setProperty("--gms-portrait-x", `${effective.x}%`);
+      frame.style.setProperty("--gms-portrait-y", `${effective.y}%`);
       frame.classList.toggle(
         "is-fit-contain",
-        getPortraitFitMode(portrait) === "contain",
+        getPortraitFitMode(effective) === "contain",
       );
       frame.classList.toggle(
         "is-fit-fill",
-        getPortraitFitMode(portrait) === "fill",
+        getPortraitFitMode(effective) === "fill",
       );
       frame.classList.toggle(
         "is-fit-cover",
-        getPortraitFitMode(portrait) === "cover",
+        getPortraitFitMode(effective) === "cover",
       );
       frame.classList.toggle("has-image", Boolean(portrait.src));
       frame.classList.toggle("is-empty", !portrait.src);
-      const { image, placeholder } = ensurePreviewNodes();
+      const { image, placeholder } = ensurePreviewNodes(frame);
       if (image) {
         setPortraitImageSource(image, portrait.src);
         image.hidden = !portrait.src;
       }
       if (placeholder) placeholder.hidden = Boolean(portrait.src);
     }
-    if (emitChange) emit();
+    if (emitChange && !portraitEquals(previous, portrait)) emit();
     return portrait;
+  };
+
+  const reloadCurrentSource = () => {
+    for (const candidate of frames)
+      setPortraitImageSource(candidate.querySelector(".gms-reputation-portrait__image"), portrait.src, {force:true});
+    preview?.scrollIntoView?.({block:"nearest",behavior:"auto"});
   };
 
   const applySource = (source) => {
@@ -212,20 +248,17 @@ export function wirePortraitEditor(
     if (urlInput)
       urlInput.value = /^https?:\/\//i.test(normalized) ? normalized : "";
     showStatus("Carregando a prévia…");
-    apply({ ...portrait, src: normalized, zoom: 100, x: 50, y: 50 });
+    if (normalized === portrait.src) {
+      reloadCurrentSource();
+      return true;
+    }
+    apply({ src: normalized, fit: "contain", zoom: 100, x: 50, y: 50 });
+    preview?.scrollIntoView?.({block:"nearest",behavior:"auto"});
     return true;
   };
 
-  [zoomInput, xInput, yInput].forEach((input) =>
-    listen(input, "input", () => {
-      apply({
-        ...portrait,
-        zoom: readNumber(zoomInput, portrait.zoom),
-        x: readNumber(xInput, portrait.x),
-        y: readNumber(yInput, portrait.y),
-      });
-    }),
-  );
+  for (const [input, field] of [[zoomInput,"zoom"],[xInput,"x"],[yInput,"y"]])
+    listen(input, "input", () => apply({...portrait, [field]:readNumber(input,portrait[field])}));
   for (const input of root.querySelectorAll("[data-portrait-number]"))
     listen(input, "change", () => {
       if (input.value === "" || !Number.isFinite(Number(input.value))) {
@@ -239,10 +272,18 @@ export function wirePortraitEditor(
     });
   listen(root.querySelector('[data-action="retryPortrait"]'), "click", () => {
     showStatus("Carregando a prévia…");
-    const image = frame?.querySelector(".gms-reputation-portrait__image");
-    setPortraitImageSource(image, portrait.src, { force: true });
+    reloadCurrentSource();
   });
   listen(fitInput, "change", () => apply({ ...portrait, fit: fitInput.value }));
+
+  listen(originalButton, "click", () => {
+    originalView?.destroy();
+    originalView = openPortraitOriginal(root, {source:portrait.src, label:"Imagem ou GIF original", returnFocus:originalButton});
+  });
+  listen(restoreButton, "click", () => {
+    apply(registered);
+    showStatus("Enquadramento salvo recuperado. Nenhuma imagem foi substituída.");
+  });
 
   const useUrlButton = root.querySelector('[data-action="usePortraitUrl"]');
   listen(useUrlButton, "click", () => applySource(urlInput?.value));
@@ -447,6 +488,7 @@ export function wirePortraitEditor(
     },
     reset: () => apply(resetPortraitFrame(portrait)),
     destroy() {
+      originalView?.destroy();
       for (const cancel of pendingVerifications) cancel();
       pendingVerifications.clear();
       listeners.splice(0).forEach((remove) => remove());

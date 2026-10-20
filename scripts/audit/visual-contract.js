@@ -5,6 +5,7 @@ export const VISUAL_REQUIRED_STYLES = Object.freeze([
   "styles/master-foundation.css",
   "styles/master-workbench.css",
   "styles/player-npc-search.css",
+  "styles/master-portrait-editor.css",
 ]);
 
 export const VISUAL_SURFACES = Object.freeze({

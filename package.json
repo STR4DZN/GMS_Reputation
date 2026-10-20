@@ -1,17 +1,1 @@
-{
-  "name": "gms-reputation-dev",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "test": "bash tests/run-all.sh",
-    "styles:build": "node tools/build-styles.mjs",
-    "styles:check": "node tools/build-styles.mjs --check",
-    "prepreview": "npm run styles:build",
-    "preview": "node visualizer/serve.mjs",
-    "test:browser": "python tools/run-browser-tests.py"
-  },
-  "devDependencies": {
-    "handlebars": "4.7.9",
-    "postcss": "8.5.29"
-  }
-}
+{"name":"gms-reputation-v2","private":true,"type":"module","scripts":{"preview:build":"python3 tools/build-preview.py","package":"python3 tools/package-module.py","test":"python3 tests/check-preservation.py && node tests/master-window.mjs"},"devDependencies":{"playwright-core":"^1.62.1"}}
